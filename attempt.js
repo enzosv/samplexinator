@@ -94,15 +94,18 @@ async function renderAttempt() {
   const numQuestions = questions.length;
   const scorePercentage = (score / numQuestions) * 100;
   const scoreContainer = document.getElementById("score-breakdown");
-  let scoreBreakdownText = `<h4>Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(
-    2
-  )}%)</h4>`;
+  console.log(scorePercentage);
+  let scoreBreakdownText = `<h4 class="${
+    scorePercentage < 75 ? "incorrect" : "correct"
+  }">Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(2)}%)</h4>`;
 
   for (const category in categoryCounts) {
     const correct = categoryScores[category];
     const total = categoryCounts[category];
     const categoryPercentage = total > 0 ? (correct / total) * 100 : 0;
-    scoreBreakdownText += `<p>${category}: ${correct} / ${total} (${categoryPercentage.toFixed(
+    scoreBreakdownText += `<p class="${
+      categoryPercentage < 75 ? "incorrect" : "correct"
+    }">${category}: ${correct} / ${total} (${categoryPercentage.toFixed(
       2
     )}%)</p>`;
   }
