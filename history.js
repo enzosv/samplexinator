@@ -30,6 +30,12 @@ async function renderHistory() {
   const response = await fetch(`./questions.json`);
   const allQuestions = await response.json();
 
+  let chartLabels = [];
+  let totalScores = [];
+  let anatomyScores = [];
+  let physicsScores = [];
+  let procedureScores = [];
+
   history.forEach((attempt, index) => {
     if (!attempt.answers) {
       return;
@@ -40,6 +46,7 @@ async function renderHistory() {
     let questions = [];
     let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
     let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
+
     Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
       const q = findQuestion(allQuestions, questionId);
       if (!q) {
@@ -59,8 +66,32 @@ async function renderHistory() {
     const scoreClass = scorePercentage < 75 ? "text-danger" : "";
     let date = new Date(attempt.timestamp).toLocaleString();
 
-    const row = document.createElement("tr");
+    // Populate data for chart
+    chartLabels.push(`Attempt ${index + 1}`);
+    totalScores.push(scorePercentage);
+    anatomyScores.push(
+      categoryCounts.anatomy > 0
+        ? (categoryScores.anatomy * categoryCounts.anatomy * score * 100) /
+            numQuestions ** 2
+        : 0
+    );
+    physicsScores.push(
+      categoryCounts.physics > 0
+        ? (categoryScores.physics * categoryCounts.physics * score * 100) /
+            numQuestions ** 2
+        : 0
+    );
+    procedureScores.push(
+      categoryCounts.procedures > 0
+        ? (categoryScores.procedures *
+            categoryCounts.procedures *
+            score *
+            100) /
+            numQuestions ** 2
+        : 0
+    );
 
+    const row = document.createElement("tr");
     row.innerHTML = `
             <td>${index + 1}</td>
             <td>${date}</td>
@@ -72,14 +103,68 @@ async function renderHistory() {
       const correct = categoryScores[category] ?? 0;
       const total = categoryCounts[category] ?? 0;
       const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
-      // row.innerHTML += `<td>${correct}/${total} <small>(${
-      //   categoryPercentage.toFixed(2) ?? 0
-      // }%)</small></td>`;
       row.innerHTML += `<td class="${
         categoryPercentage < 75 ? "text-danger" : ""
       }">${correct}/${total}</td>`;
     }
     row.innerHTML += `<td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>`;
     historyTable.appendChild(row);
+  });
+
+  // Render the chart
+  renderChart(
+    chartLabels,
+    totalScores,
+    anatomyScores,
+    physicsScores,
+    procedureScores
+  );
+}
+
+function renderChart(labels, total, anatomy, physics, procedures) {
+  const chartContainer = document.getElementById("history-chart");
+  console.log(chartContainer);
+  const ctx = chartContainer.getContext("2d");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Total Score (%)",
+          data: total,
+          backgroundColor: "blue",
+        },
+        {
+          label: "Anatomy (%)",
+          data: anatomy,
+          backgroundColor: "green",
+        },
+        {
+          label: "Physics (%)",
+          data: physics,
+          backgroundColor: "orange",
+        },
+        {
+          label: "Procedures (%)",
+          data: procedures,
+          backgroundColor: "purple",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: {
+            display: true,
+            text: "Percentage Score",
+          },
+        },
+      },
+    },
   });
 }
