@@ -27,7 +27,6 @@ async function renderHistory() {
   const response = await fetch(`./questions.json`);
   const allQuestions = await response.json();
 
-  let labels = [];
   let anatomyScores = [];
   let physicsScores = [];
   let procedureScores = [];
@@ -60,7 +59,6 @@ async function renderHistory() {
       totalCounts[q.category]++;
     });
 
-    labels.push(`Attempt ${index + 1}`);
     anatomyScores.push(categoryScores.anatomy);
     physicsScores.push(categoryScores.physics);
     procedureScores.push(categoryScores.procedures);
@@ -75,7 +73,7 @@ async function renderHistory() {
     historyTable.appendChild(row);
   });
   populateAverage(totalScores, totalCounts);
-  renderChart(labels, anatomyScores, physicsScores, procedureScores);
+  renderChart(anatomyScores, physicsScores, procedureScores);
 }
 
 function generateRow(
@@ -137,7 +135,9 @@ function scoreClass(percentage) {
   return percentage < 75 ? "text-danger" : "";
 }
 
-function renderChart(labels, anatomyScores, physicsScores, procedureScores) {
+function renderChart(anatomyScores, physicsScores, procedureScores) {
+  const labels = anatomyScores.map((_, i) => `Attempt ${i + 1}`);
+
   const ctx = document.getElementById("history-chart").getContext("2d");
   new Chart(ctx, {
     type: "bar",
