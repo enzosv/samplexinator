@@ -41,21 +41,23 @@
     </button>
 
     <script>
+      const letters = ["A", "B", "C", "D"];
       let questions = [];
       let answers = {};
       const storageKey = "quizHistory";
 
       async function loadQuestions() {
-        const files = ["anatomy.json", "physics.json", "procedures.json"]; // JSON files
+        const response = await fetch(`./questions.json`);
+        const data = await response.json();
         let loadedQuestions = [];
 
-        for (const file of files) {
-          const response = await fetch(`./${file}`);
-          const data = await response.json();
-          const shuffled = data
+        const categories = ["anatomy", "physics", "procedures"];
+        for (let i = 0; i < data.length; i++) {
+          const category = data[i];
+          const shuffled = category
             .sort(() => 0.5 - Math.random()) // shuffle
             .slice(0, 1) // number of questions per category
-            .map((q) => ({ ...q, source: file.split(".")[0] })); // add category to data
+            .map((q) => ({ ...q, category: categories[i] })); // add category to data
           loadedQuestions = [...loadedQuestions, ...shuffled];
         }
 
@@ -70,14 +72,14 @@
         questions.forEach((q, index) => {
           const div = document.createElement("div");
           div.className = "question border p-3 mb-3 rounded";
-          div.innerHTML = `<p><strong>${q.question_text}</strong></p>`;
+          div.innerHTML = `<p><strong>${q.question}</strong></p>`;
 
           for (const [key, value] of Object.entries(q.options)) {
             div.innerHTML += `
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question-${q.question_number}" value="${key}" onchange="saveAnswer(${q.question_number}, '${key}')"> 
+                            <input class="form-check-input" type="radio" name="question-${q.id}" value="${key}" onchange="saveAnswer(${q.id}, '${key}')">
                             <label class="form-check-label">
-                                ${key}: ${value}
+                                ${letters[key]}: ${value}
                             </label>
                         </div>
                     `;
@@ -88,34 +90,17 @@
         document.getElementById("submit-btn").style.display = "block";
       }
 
-      function saveAnswer(questionNumber, choice) {
-        answers[questionNumber] = choice;
+      function saveAnswer(questionId, choice) {
+        console.log(questionId, choice);
+        answers[questionId] = choice;
       }
 
       function submitAnswers() {
-        let score = 0;
         let history = JSON.parse(localStorage.getItem(storageKey)) || [];
-        let scoreBreakdown = { anatomy: 0, physics: 0, procedure: 0 };
-        let totalBreakdown = { anatomy: 0, physics: 0, procedure: 0 };
 
-        questions.forEach((q, index) => {
-          const userAnswer = answers[q.question_number] || "No answer";
-          const correct = userAnswer === q.correct_answer;
-          if (correct) {
-            score++;
-            scoreBreakdown[q.source]++;
-          }
-          totalBreakdown[q.source]++;
-        });
-
-        const scorePercentage = (score / questions.length) * 100;
         const attempt = {
           timestamp: new Date().toISOString(),
-          score: scorePercentage,
-          scoreBreakdown,
-          totalBreakdown,
-          questions,
-          answers,
+          answers: answers,
         };
 
         history.push(attempt);
