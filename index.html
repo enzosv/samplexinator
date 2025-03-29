@@ -50,9 +50,9 @@
           const response = await fetch(`./${file}`);
           const data = await response.json();
           const shuffled = data
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 5)
-            .map((q) => ({ ...q, source: file }));
+            .sort(() => 0.5 - Math.random()) // shuffle
+            .slice(0, 1) // number of questions per category
+            .map((q) => ({ ...q, source: file })); // add category to data
           loadedQuestions = [...loadedQuestions, ...shuffled];
         }
 
