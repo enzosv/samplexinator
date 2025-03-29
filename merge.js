@@ -1,37 +1,33 @@
+let ID = 0;
 function loadQuestions() {
   const files = ["anatomy.json", "physics.json", "procedures.json"]; // JSON files
-  let loadedQuestions = [];
+  let questions = {};
 
   const fs = require("fs");
 
   for (const file of files) {
     const data = require(`./${file}`);
-    loadedQuestions.push(transformQuestions(data, file.split(".")[0]));
+    questions[file.split(".")[0]] = transformQuestions(data);
   }
 
-  fs.writeFile(
-    "questions.json",
-    JSON.stringify(loadedQuestions),
-    function (err) {
-      if (err) {
-        console.log(err);
-      }
+  fs.writeFile("questions.json", JSON.stringify(questions), function (err) {
+    if (err) {
+      console.log(err);
     }
-  );
+  });
 }
 
-function transformQuestions(questions, category) {
-  return questions.map((q, index) => {
+function transformQuestions(questions) {
+  return questions.map((q, _) => {
     const optionKeys = Object.keys(q.options);
     const optionsArray = optionKeys.map((key) => q.options[key]);
     const correctIndex = optionKeys.indexOf(q.correct_answer);
-
+    ID++;
     return {
-      id: index + 1, // Assign a unique ID
+      id: ID, // Assign a unique ID
       question: q.question_text,
       options: optionsArray,
       correct_answer: correctIndex,
-      category: category,
     };
   });
 }
