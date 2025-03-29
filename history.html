@@ -24,7 +24,7 @@
   </head>
   <body class="container">
     <h2 class="text-center">Quiz History</h2>
-    <a href="index.html" class="btn btn-secondary mt-3">Back to Exam</a>
+    <a href="index.html" class="btn btn-secondary mt-3">Back to Samplex</a>
 
     <canvas id="scoreChart" class="mt-3"></canvas>
     <table class="table table-striped mt-3">
@@ -42,8 +42,10 @@
       const storageKey = "quizHistory";
       const history = JSON.parse(localStorage.getItem(storageKey)) || [];
       const tableBody = document.getElementById("history-table");
-      const scores = [];
       const attempts = [];
+      const anatomyScores = [];
+      const physicsScores = [];
+      const procedureScores = [];
 
       history.forEach((attempt, index) => {
         const row = document.createElement("tr");
@@ -56,8 +58,21 @@
                 <td><a href="attempt.html?index=${index}" class="btn btn-sm btn-primary">View</a></td>
             `;
         tableBody.appendChild(row);
-        scores.push(attempt.score);
+
         attempts.push(index + 1);
+        anatomyScores.push(
+          (attempt.scoreBreakdown.anatomy / attempt.totalBreakdown.anatomy) *
+            100 || 0
+        );
+        physicsScores.push(
+          (attempt.scoreBreakdown.physics / attempt.totalBreakdown.physics) *
+            100 || 0
+        );
+        procedureScores.push(
+          (attempt.scoreBreakdown.procedure /
+            attempt.totalBreakdown.procedure) *
+            100 || 0
+        );
       });
 
       new Chart(document.getElementById("scoreChart"), {
@@ -66,15 +81,24 @@
           labels: attempts,
           datasets: [
             {
-              label: "Quiz Scores",
-              data: scores,
-              backgroundColor: scores.map((score) =>
-                score >= 75 ? "green" : "red"
-              ),
+              label: "Anatomy",
+              data: anatomyScores,
+              backgroundColor: "blue",
+            },
+            {
+              label: "Physics",
+              data: physicsScores,
+              backgroundColor: "yellow",
+            },
+            {
+              label: "Procedure",
+              data: procedureScores,
+              backgroundColor: "purple",
             },
           ],
         },
         options: {
+          responsive: true,
           scales: {
             y: { beginAtZero: true, max: 100 },
           },
