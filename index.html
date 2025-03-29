@@ -51,13 +51,11 @@
         const data = await response.json();
         let loadedQuestions = [];
 
-        const categories = ["anatomy", "physics", "procedures"];
-        for (let i = 0; i < data.length; i++) {
-          const category = data[i];
-          const shuffled = category
+        for (const category in data) {
+          const shuffled = data[category]
             .sort(() => 0.5 - Math.random()) // shuffle
             .slice(0, 1) // number of questions per category
-            .map((q) => ({ ...q, category: categories[i] })); // add category to data
+            .map((q) => ({ ...q, category: category })); // add category to data
           loadedQuestions = [...loadedQuestions, ...shuffled];
         }
 
