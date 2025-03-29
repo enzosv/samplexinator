@@ -1,0 +1,552 @@
+[
+  {
+    "question_number": 1,
+    "question_text": "Which of the following statements is true in evaluation of upper airway obstruction?",
+    "options": {
+      "A": "Additional inspiratory lateral view of the neck is needed for assessment of subglottic stenosis.",
+      "B": "In most conditions, soft tissue neck study is usually sufficient to make the diagnosis.",
+      "C": "Pediatric patients with respiratory distress should be immobilized.",
+      "D": "Supine position is the preferred position in the setting of acute epiglottitis."
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 2,
+    "question_text": "What is the gold standard for cardiac function assessment for pediatric patients?",
+    "options": {
+      "A": "Chest radiograph",
+      "B": "Computed Tomography Angiography",
+      "C": "Echocardiography",
+      "D": "Magnetic Resonance Imaging"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 3,
+    "question_text": "What is the contrast of choice in pediatric patients with intussusception during fluoroscopic reduction?",
+    "options": {
+      "A": "Air",
+      "B": "Barium",
+      "C": "Ionic hypertonic Iodine solution",
+      "D": "Non-ionic water-soluble iodinated contrast medium"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 4,
+    "question_text": "In intravenous urography for pediatric patients, a poorly visible nephrogram likely indicates which of the following conditions?",
+    "options": {
+      "A": "Diminished renal function",
+      "B": "Hypotension",
+      "C": "Hypovolemia",
+      "D": "Obstruction of the renal collecting system"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 5,
+    "question_text": "The following are indications for voiding cystourethrogram EXCEPT:",
+    "options": {
+      "A": "Detailed anatomic evaluation of the bladder",
+      "B": "Detailed anatomic evaluation of the renal parenchyma and collecting system",
+      "C": "Identification of vesico-ureteral reflux",
+      "D": "Study of the anatomy of the male urethra"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 6,
+    "question_text": "Which of the following statements comprise proper technique for mediolateral oblique (MLO) view of mammography?",
+    "options": {
+      "A": "Presence of an everted nipple",
+      "B": "Pectoralis muscle shadow is perpendicular to the posterior nipple line",
+      "C": "Presence of inframammary fold which ensures adequate compression of the retromammary region",
+      "D": "Visualization of the pectoralis minor muscle"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 7,
+    "question_text": "What is the diagnostic mammographic view that will verify skin lesions and show palpable lesion obscured by dense tissue?",
+    "options": {
+      "A": "Exaggerated craniocaudal",
+      "B": "Rolled views",
+      "C": "Spot compression",
+      "D": "Tangential view"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 8,
+    "question_text": "The following statements are true about patient positioning for breast MRI, EXCEPT:",
+    "options": {
+      "A": "Arms are up by the patient's head",
+      "B": "Avoid firm breast compression",
+      "C": "Axillary tail not included in the field of vision",
+      "D": "Prone position to minimize respiratory motion"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 9,
+    "question_text": "Which of the following is an absolute contraindication in performing hysterosalphingogram?",
+    "options": {
+      "A": "Active infection",
+      "B": "Active vaginal bleeding",
+      "C": "Infertility",
+      "D": "Recurrent pregnancy loss"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 10,
+    "question_text": "What Biophysical parameter evaluates for chronic fetal hypoxia?",
+    "options": {
+      "A": "Amniotic fluid volume",
+      "B": "Fetal heart rate",
+      "C": "Fetal tone",
+      "D": "Gross motor activity"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 11,
+    "question_text": "Which of the following statements is TRUE about the gestational age?",
+    "options": {
+      "A": "Accurate prediction is made by a composite of biparietal diameter, fetal length and abdominal girth",
+      "B": "Accurate to about 1.1 weeks at 12-18 weeks",
+      "C": "Assigned during the first ultrasound and may be changed if the last menstrual period (LMP) varies on subsequent ultrasound",
+      "D": "Most accurate as the pregnancy advances"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 12,
+    "question_text": "What diagnostic imaging method will enable real time radiographic visualization of moving anatomic structures (e.g. peristalsis)?",
+    "options": {
+      "A": "CT Scan",
+      "B": "Doppler Ultrasound",
+      "C": "Fluoroscopy",
+      "D": "MRI"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 13,
+    "question_text": "Which of the following structures will attenuate x-ray beam the least?",
+    "options": {
+      "A": "Air",
+      "B": "Bone",
+      "C": "Metal",
+      "D": "Soft-tissue"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 14,
+    "question_text": "What is the signal intensity of a lesion with restricted diffusion?",
+    "options": {
+      "A": "hyperintense on Diffusion Weighted Image (DWI)",
+      "B": "hypointense on DWI",
+      "C": "isointense to brain parenchyma on DWI",
+      "D": "signal void on DWI"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 15,
+    "question_text": "Which of the following brain metabolite changes is most likely associated with tumor?",
+    "options": {
+      "A": "Elevated lactate",
+      "B": "Elevated lipid",
+      "C": "Elevation of choline to creatine ratio",
+      "D": "Elevation of N-acetyl aspartate to creatine ratio"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 16,
+    "question_text": "What is the preferred initial imaging study for stroke?",
+    "options": {
+      "A": "CT with contrast",
+      "B": "CT without contrast",
+      "C": "MR with contrast",
+      "D": "MR without contrast"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 17,
+    "question_text": "Which of the following findings is compatible with CT and MRI appearance of subacute blood?",
+    "options": {
+      "A": "Isodense to gray matter (CT) and hyperintense (T1WMRI)",
+      "B": "Isodense to gray matter (CT) and hypointense (T1WMRI)",
+      "C": "Isodense to gray matter (CT) and isointense (T1WMRI)",
+      "D": "Isodense to gray matter (CT) and mixed signal (T1WMRI)"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 18,
+    "question_text": "What is the radiologic method of choice for investigating a patient suspected on clinical or radiologic grounds of having bronchiolitis or interstitial lung disease?",
+    "options": {
+      "A": "Chest X-ray",
+      "B": "Contrast chest CT scan",
+      "C": "High-Resolution CT Scan (HRCT)",
+      "D": "Plain Chest CT scan"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 19,
+    "question_text": "As a general rule, what imaging exam should constitute the first step in establishing the presence of a disease process in the lungs?",
+    "options": {
+      "A": "Chest CT scan",
+      "B": "Chest MRI",
+      "C": "Chest Radiograph",
+      "D": "Chest Ultrasound"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 20,
+    "question_text": "What physiologic compromise is often seen in chest images performed using portable radiography?",
+    "options": {
+      "A": "Decreased lung volume",
+      "B": "Image rotation",
+      "C": "Kyphotic or lordotic appearance",
+      "D": "Magnified appearance of intrathoracic structures"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 21,
+    "question_text": "Why is it difficult to evaluate pulmonary hypertension in a radiograph taken in AP supine position?",
+    "options": {
+      "A": "Physiologically the supine position elevates the diaphragm compressing the lower lobes",
+      "B": "Supine position increases systemic venous return to the heart",
+      "C": "Supine position magnifies the cardiac silhouette",
+      "D": "The normal gravitational effect evens out the blood flow between the upper and lower zones"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 22,
+    "question_text": "What special radiologic technique is used to detect small pneumothorax and air trapping?",
+    "options": {
+      "A": "Apical lordotic view",
+      "B": "Cone down view",
+      "C": "Expiratory radiograph",
+      "D": "Lateral decubitus view"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 23,
+    "question_text": "What imaging examination is used mainly to assess chest dynamics such as in suspected diaphragmatic paralysis or in the evaluation of apparent pseudotumor images?",
+    "options": {
+      "A": "Chest CT scan",
+      "B": "Chest fluoroscopy",
+      "C": "Chest lateral decubitus view",
+      "D": "Chest sonography"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 24,
+    "question_text": "On coronary CTA, optimal timing is achieved when which of the following heart chamber is most opacified?",
+    "options": {
+      "A": "Left atrium",
+      "B": "Left ventricle",
+      "C": "Right atrium",
+      "D": "Right ventricle"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 25,
+    "question_text": "ECG gating is employed during coronary CT angiography to acquire the most optimal images at which phase of the cardiac cycle?",
+    "options": {
+      "A": "Early diastole",
+      "B": "Early systole",
+      "C": "End diastole",
+      "D": "Full systole"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 26,
+    "question_text": "On coronary artery calcium screening, a patient is classified as high risk for underlying stenosis and future cardiac events when he obtains an Agatston score of 4 which corresponds to what value?",
+    "options": {
+      "A": "130 HU",
+      "B": "299 HU",
+      "C": "400 HU",
+      "D": "499 HU"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 27,
+    "question_text": "Coronary artery bypass graft patency is best assessed with which of the following procedures?",
+    "options": {
+      "A": "Cardiac perfusion MRI",
+      "B": "Cardiac SPECT",
+      "C": "CT coronary angiography",
+      "D": "Echocardiography"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 28,
+    "question_text": "Which cardiac MRI sequence imparts bright signal to coherently flowing blood creating a \"white blood\" appearance similar to contrast studies?",
+    "options": {
+      "A": "GRE",
+      "B": "Steady-state free precession (SSFP) cine imaging",
+      "C": "T1WI",
+      "D": "T2WI"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 29,
+    "question_text": "The 17-segment standardized myocardial segmentation for regional analysis of left ventricular function and myocardial perfusion employed on cardiac MR and cardiac CT is derived from which plane?",
+    "options": {
+      "A": "Horizontal long axis (four chamber view)",
+      "B": "Left ventricular short axis",
+      "C": "Left ventricular outflow tract",
+      "D": "Vertical long axis (left ventricular long axis, apical two chamber)"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 30,
+    "question_text": "What is the imaging method of choice in the evaluation of hematuria and examination of the collecting system?",
+    "options": {
+      "A": "CT urogram",
+      "B": "Intravenous Pyelogram",
+      "C": "Plain CT scan",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 31,
+    "question_text": "Which of the following statements is FALSE regarding imaging methods of the urinary tract?",
+    "options": {
+      "A": "CT urogram has improved contrast resolution than the traditional intravenous pyelography.",
+      "B": "The arterial phase scan in CT urogram results in the characteristic cortico-medullary phase.",
+      "C": "The renal parenchyma is normally uniformly enhanced in the pyelogram phase in CT urogram.",
+      "D": "Ultrasound is used to characterize lesions, detect hydronephrosis and assess kidney size."
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 32,
+    "question_text": "What is the imaging procedure which is independent of renal function performed by cystoscopic catheterization of the ureteral orifice followed by contrast injection?",
+    "options": {
+      "A": "Antegrade pyelography",
+      "B": "Retrograde pyelography",
+      "C": "Urethrogram",
+      "D": "Voiding urethrocystogram"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 33,
+    "question_text": "What is the imaging method of choice for locating undescended testes and staging of testicular neoplasms?",
+    "options": {
+      "A": "Abdominal xray",
+      "B": "CT scan",
+      "C": "Radionuclide imaging",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 34,
+    "question_text": "Which of the following examinations is usually performed to diagnose congenital anomalies of the female genital tract and mechanical causes of infertility with demonstration of the uterine cavity and tubal patency?",
+    "options": {
+      "A": "CT scan",
+      "B": "Hysterosalphingogram",
+      "C": "MRI",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 35,
+    "question_text": "What remains as the imaging modality of choice for the adrenal glands?",
+    "options": {
+      "A": "CT scan with contrast",
+      "B": "MRI",
+      "C": "Scintigraphy",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 36,
+    "question_text": "Which of the following statements is INCORRECT about prostate sonography?",
+    "options": {
+      "A": "It is most frequently used as a biopsy guide for patients in whom digital rectal exam or prostate-specific antigen suggests prostate cancer.",
+      "B": "It is sufficiently sensitive and specific to screen prostate cancer.",
+      "C": "It is useful to detect seminal vesicle masses and cysts.",
+      "D": "Prostate ultrasound is performed with high frequency (often 7 MHz) intrarectal probe."
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 37,
+    "question_text": "Doppler ultrasound is useful in differentiating the hepatic artery from the bile duct. Which of the following findings is indicative of the hepatic artery on Doppler study?",
+    "options": {
+      "A": "Antegrade flow throughout diastole.",
+      "B": "Continuous flow pattern modulated by respiration.",
+      "C": "No color flow.",
+      "D": "Triphasic wave pattern undulating with cardiac and respiratory motions."
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 38,
+    "question_text": "Which of the following is a hepatobiliary-specific paramagnetic contrast agent?",
+    "options": {
+      "A": "Gadolinium oxide",
+      "B": "Gadolinium-EOB-DPTA",
+      "C": "Magnetite (Fe3O4)",
+      "D": "Superparamagnetic iron oxide (SPIO)"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 39,
+    "question_text": "Which of the following is an absolute contraindication to antegrade barium study?",
+    "options": {
+      "A": "Colonic obstruction",
+      "B": "Duodenitis",
+      "C": "Gastritis",
+      "D": "Small bowel obstruction"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 40,
+    "question_text": "With multidetector computed tomography (MDCT) multiphasic scan of the liver, at what time is the portal venous phase acquired after contrast IV injection?",
+    "options": {
+      "A": "15-25 seconds",
+      "B": "30-45 seconds",
+      "C": "50-80 seconds",
+      "D": "15 minutes"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 41,
+    "question_text": "What phase in the CT pancreatic protocol acquired nearly 35 to 40 seconds after administration of the contrast medium during which there is peak enhancement of the pancreas?",
+    "options": {
+      "A": "Plain/precontrast",
+      "B": "Arterial",
+      "C": "Parenchymal",
+      "D": "Portal venous"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 42,
+    "question_text": "What MRI sequence exploits fat-water cancellation artifact and is best used in the demonstration of focal or diffuse hepatic steatosis?",
+    "options": {
+      "A": "Diffusion-weighted imaging",
+      "B": "T1-weighted in-phase and opposed-phase gradient echo",
+      "C": "T2-weighted images",
+      "D": "Apparent diffusion coefficient"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 43,
+    "question_text": "Which of the organs is examined with a prone spot view on routine barium enema?",
+    "options": {
+      "A": "Rectum",
+      "B": "Cecum",
+      "C": "Hepatic flexure",
+      "D": "Sigmoid"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 44,
+    "question_text": "What is the specialized fat-saturation imaging sequence used to reduce the signal intensity of fat and enhance the visibility of edema and other pathologic processes within bone marrow?",
+    "options": {
+      "A": "DWI/ADC",
+      "B": "Proton density sequence",
+      "C": "STIR",
+      "D": "Time of flight (TOF) sequence"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 45,
+    "question_text": "The following are advantages of MRI from CT scan, EXCEPT?",
+    "options": {
+      "A": "Absence ionizing radiation",
+      "B": "Faster acquisition time",
+      "C": "Produces outstanding soft tissue contrast resolution",
+      "D": "Provides images in any anatomic plane."
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 46,
+    "question_text": "Which of the following multiple spin echo sequences DOES NOT significantly reduce image acquisition time in MRI?",
+    "options": {
+      "A": "Fast spin-echo",
+      "B": "Proton density-weighted images",
+      "C": "Rapid acquisition relaxation enhanced",
+      "D": "Turbo spin-echo"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 47,
+    "question_text": "Which of these pelvic radiographic views is used to assess femoral capital epiphyses and Perthes in children?",
+    "options": {
+      "A": "AP view",
+      "B": "Lateral view",
+      "C": "Frog leg view",
+      "D": "Judet's view"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 48,
+    "question_text": "Which of these imaging modalities is particularly useful in evaluation of complex bony injuries of the pelvis, sacro-iliac joints and for identifying bony fragments in the acetabulum?",
+    "options": {
+      "A": "CT scan",
+      "B": "Fluoroscopy",
+      "C": "MRI",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 49,
+    "question_text": "Which of the imaging modalities will best provide better assessment of the muscles, joints and ligaments?",
+    "options": {
+      "A": "CT scan",
+      "B": "fluoroscopy",
+      "C": "MRI",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 50,
+    "question_text": "Which of the following is the most effective way to evaluate the ovaries?",
+    "options": {
+      "A": "CT scan",
+      "B": "Hysterosalpingography",
+      "C": "Transabdominal ultrasound",
+      "D": "Transvaginal ultrasound"
+    },
+    "correct_answer": "D"
+  }
+]

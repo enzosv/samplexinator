@@ -1,0 +1,739 @@
+[
+  {
+    "question_number": 1,
+    "question_text": "Quantum motile refers to the",
+    "options": {
+      "A": "Grainy appearance of medical images",
+      "B": "Incident photon interacting and exciting the total atom",
+      "C": "Interaction of x-rays or gamma rays with the electric field of the nucleus",
+      "D": "Weighted averaging of the corresponding pixel with its neighbors"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 2,
+    "question_text": "Electron transitions between atomic shells result in production of",
+    "options": {
+      "A": "X-ray",
+      "B": "Gamma ray",
+      "C": "Fission fragments",
+      "D": "Isotopes"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 3,
+    "question_text": "The radiation emission accompanying high speed electron deceleration in an x-ray tube is known as",
+    "options": {
+      "A": "Bremsstrahlung",
+      "B": "Linear energy transfer",
+      "C": "Positron Annihilation",
+      "D": "Scattering"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 4,
+    "question_text": "When an accelerated electron collides with a tungsten target in an x-ray tube, what percent of energy loss results in Bremsstrahlung x-ray production?",
+    "options": {
+      "A": "1%",
+      "B": "50%",
+      "C": "99%",
+      "D": "100%"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 5,
+    "question_text": "What is the primary mode of interaction of diagnostic x-rays with soft tissues and materials of low atomic number such as air?",
+    "options": {
+      "A": "Compton scattering",
+      "B": "Pair production",
+      "C": "Photoelectric effect",
+      "D": "Rayleigh scattering"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 6,
+    "question_text": "Characteristic x-ray production in an x-ray tube is mostly the result of",
+    "options": {
+      "A": "Electron-electron interactions",
+      "B": "Electron-nuclei interactions",
+      "C": "Nuclear decay",
+      "D": "Photoelectric effect"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 7,
+    "question_text": "What chemical element is found in trace amounts in the cathode filament of an x-ray tube increases the efficiency of thermionic emission and prolongs filament life?",
+    "options": {
+      "A": "Cadmium",
+      "B": "Lead",
+      "C": "Thorium",
+      "D": "Tungstem"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 8,
+    "question_text": "This refers to a reduction in the x-ray beam intensity toward the anode side of the x-ray field.",
+    "options": {
+      "A": "Beam hardening",
+      "B": "Heel effect",
+      "C": "Isomeric transition",
+      "D": "Quantum noise"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 9,
+    "question_text": "Which of the following parts of a rotating anode is often the cause of x-ray tube failure?",
+    "options": {
+      "A": "Anode disk",
+      "B": "Rotor",
+      "C": "Rotor bearing",
+      "D": "Stator"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 10,
+    "question_text": "This is often used in x-ray room shielding designs calculations.",
+    "options": {
+      "A": "Half value layer",
+      "B": "Third value layer",
+      "C": "Fifth value layer",
+      "D": "Tenth value layer"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 11,
+    "question_text": "What is the SI unit for absorbed dose",
+    "options": {
+      "A": "Gray",
+      "B": "Rad",
+      "C": "Kerma",
+      "D": "Sievert"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 12,
+    "question_text": "Which filter is used for chest radiography?",
+    "options": {
+      "A": "\"Bow-tie\"",
+      "B": "Compensation",
+      "C": "Trough",
+      "D": "Wedge"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 13,
+    "question_text": "X-ray beam quality (penetrability) is determined by",
+    "options": {
+      "A": "Exposure time",
+      "B": "Focal spot size",
+      "C": "Kyp",
+      "D": "mA"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 14,
+    "question_text": "This functions to absorb incident x-rays and emits visible light which exposes the film emulsion.",
+    "options": {
+      "A": "Collimator",
+      "B": "Grid",
+      "C": "Image intestier",
+      "D": "Intensifying screen"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 15,
+    "question_text": "In film processing which of the following is NOT part of the fixer solution?",
+    "options": {
+      "A": "Acetic acid",
+      "B": "Hydroquinone",
+      "C": "Ammonium thiosulfate",
+      "D": "Potassium chloride"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 16,
+    "question_text": "This refers to the ability of an imaging system to distinctly depict two objects as they become smaller and closer together.",
+    "options": {
+      "A": "Contrast resolution",
+      "B": "Digital resolution",
+      "C": "Image resolution",
+      "D": "Spatial resolution"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 17,
+    "question_text": "Which of the following statements is NOT TRUE of film badges?",
+    "options": {
+      "A": "During fluoroscopy, film badges are typically placed at collar level to measure dose to the thyroid and lens of the eye.",
+      "B": "Exposure to excessive moisture or heat will damage the film emulsion, making dose estimates difficult or impossible.",
+      "C": "Film badges have an area of film not covered by metal filter or plastic to detect medium and high-energy beta radiation.",
+      "D": "The film badge is usually replaced every three to six months and sent to the commercial supplier for processing."
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 18,
+    "question_text": "How far in meters from the x-ray tube and patient should the radiology personnel stand during a procedure to minimize exposure from scatter radiation?",
+    "options": {
+      "A": "0.5",
+      "B": "1.0",
+      "C": "1.5",
+      "D": "2.0"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 19,
+    "question_text": "Which of the following techniques when used increases radiation exposure of the patient during fluoroscopy?",
+    "options": {
+      "A": "Last-image-hold devices using digital image memory",
+      "B": "Magnification modes",
+      "C": "Restriction of field size with collimation",
+      "D": "Short bursts of exposure"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 20,
+    "question_text": "What is the maximum radiation dose allowable in mSv to the fetus of a declared pregnant radiation worker over the 9-month gestational period?",
+    "options": {
+      "A": "0.5",
+      "B": "5",
+      "C": "50",
+      "D": "500"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 21,
+    "question_text": "Which of the following biological damage to the patient is considered a stochastic effect of radiation?",
+    "options": {
+      "A": "Cancer",
+      "B": "Cataract",
+      "C": "Erythema",
+      "D": "Generalized pancytopenia"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 22,
+    "question_text": "The most radiosensitive organ system is/are the",
+    "options": {
+      "A": "Bone marrow",
+      "B": "Eye",
+      "C": "Gonads",
+      "D": "Skin"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 23,
+    "question_text": "Which of the following statements on radiation effects in utero is NOT TRUE?",
+    "options": {
+      "A": "During the preimplantation period, the incidence of congenital anomalies is high.",
+      "B": "Embionic malformations occur more frequently during the period of major organogenesis",
+      "C": "The greatest probability of a malformation in a specific organ system exists when the radiation exposure is received during the period of peak differentiation of that system.",
+      "D": "The incidence of prenatal death and congenital anomalies during the fetal growth stage is negligible."
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 24,
+    "question_text": "What is the principal component of the imaging chain that distinguish fluoroscopy from radiography?",
+    "options": {
+      "A": "Filters",
+      "B": "Image intensifier",
+      "C": "Video camera",
+      "D": "X-ray tube"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 25,
+    "question_text": "Prior to reuse, an imaging plate is exposed to what type of light in order to erase any residual trapped energy?",
+    "options": {
+      "A": "Blue",
+      "B": "Green",
+      "C": "Red",
+      "D": "White"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 26,
+    "question_text": "For general diagnostic radiology, which of the following is a disadvantage of digital radiographic images over the analog screen-film counterparts?",
+    "options": {
+      "A": "Computer archiving",
+      "B": "Electronic transmission",
+      "C": "Inferior contrast resolution",
+      "D": "Lower spatial resolution"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 27,
+    "question_text": "This refers to a system for storage and transfer of radiologic images.",
+    "options": {
+      "A": "DICOM",
+      "B": "LAN",
+      "C": "PACS",
+      "D": "WAN"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 28,
+    "question_text": "Based on the strength of magnetic moment, physiologic concentration, and isotopic abundance, this is the best element utilized for the production of MR images.",
+    "options": {
+      "A": "Hydrogen",
+      "B": "Oxygen",
+      "C": "Phosphorus",
+      "D": "Sodium"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 29,
+    "question_text": "This inversion recovery sequence reduces CSF signal and permits better evaluation of anatomy that has significant fractions of fluid with long T1 relaxation constants.",
+    "options": {
+      "A": "FLAIR",
+      "B": "GRASS",
+      "C": "SPGR",
+      "D": "STIR"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 30,
+    "question_text": "Which of the enumerated artifacts is helpful in determining the age of a hemorrhage based on the signal characteristics of the blood degradation products?",
+    "options": {
+      "A": "Center-point",
+      "B": "Chemical shift",
+      "C": "Magnetic susceptibility",
+      "D": "Wraparound"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 31,
+    "question_text": "This energy coupling is a unique property of nuclei to selectively absorb then release energy, when placed in a strong external magnetic field.",
+    "options": {
+      "A": "Excitation",
+      "B": "Magnetism",
+      "C": "Precession",
+      "D": "Resonance"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 32,
+    "question_text": "MRI T1W in phase and out of phase sequences are used to identify the presence of fat in structures such as the liver and adrenal gland. What MRI artifact is applied to determine the presence of fat in specific anatomic structures?",
+    "options": {
+      "A": "chemical shift",
+      "B": "partial-volume",
+      "C": "susceptibility",
+      "D": "wraparound"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 33,
+    "question_text": "Despite the disadvantage of high cost and extensive fringe field, which magnet type is most widely used for clinical imaging because of its high field strength with excellent stability and uniformity?",
+    "options": {
+      "A": "Bar",
+      "B": "Permanent",
+      "C": "Resistive",
+      "D": "Superconductive"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 34,
+    "question_text": "Which coil is responsible for the banging noise one hears during MR imaging?",
+    "options": {
+      "A": "Gradient",
+      "B": "Phased array",
+      "C": "Radiofrequency",
+      "D": "Shim"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 35,
+    "question_text": "What is the most common bioeffect of MRI?",
+    "options": {
+      "A": "Cavitation",
+      "B": "Disorientation",
+      "C": "Genetic Aberrations",
+      "D": "Tissue Heating"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 36,
+    "question_text": "An anode angle of zero degrees in a dedicated mammographic system requires a tube tilt of ___ degrees to provide adequate coverage for the 60- to 70 cm typical source to image distance:",
+    "options": {
+      "A": "0",
+      "B": "15",
+      "C": "24",
+      "D": "36"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 37,
+    "question_text": "In the mammographic x-ray system, this x-ray tube/filter combination results in inappropriate attenuation of the target’s characteristic xrays:",
+    "options": {
+      "A": "Molybdenum filter with Molybdenum target",
+      "B": "Rhodium filter with Rhodium target",
+      "C": "Rhodium filter with Molybdenum target",
+      "D": "Molybdenum filter with Rhodium target"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 38,
+    "question_text": "The amount of scatter radiation in mammography increases with:",
+    "options": {
+      "A": "increasing breast thickness",
+      "B": "decreasing breast area",
+      "C": "increasing kVp",
+      "D": "increasing mA"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 39,
+    "question_text": "Which of the following features IS NOT employed in the design of the mammographic screen-film system?",
+    "options": {
+      "A": "low attenuation carbon filter",
+      "B": "single high definition phosphor screen",
+      "C": "single emulsion film",
+      "D": "screen is positioned in front of the cassette"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 40,
+    "question_text": "The required luminance of a mammography view box should be at least?",
+    "options": {
+      "A": "1500 cd/m2",
+      "B": "2000 cd/m2",
+      "C": "2500 cd/m2",
+      "D": "3000 cd/m2"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 41,
+    "question_text": "In which of the following tissues is the speed of sound highest in medical ultrasound?",
+    "options": {
+      "A": "Lung",
+      "B": "Kidney",
+      "C": "Liver",
+      "D": "Skull bone"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 42,
+    "question_text": "Which of the following sonographic artifacts can help in identifying larger fatty masses?",
+    "options": {
+      "A": "Refraction",
+      "B": "Enhancement",
+      "C": "Speed propagation",
+      "D": "Reverberation"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 43,
+    "question_text": "Which of the following IS NOT a feature of a “low Q” transducer?",
+    "options": {
+      "A": "Wide band width",
+      "B": "Short spatial pulse length",
+      "C": "Ideal for blood velocity measurements",
+      "D": "Does not imply poor quality in the signal"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 44,
+    "question_text": "Which part of the single element ultrasound transducer assembly provides the interface between the transducer element and the tissue and minimize the acoustic impedance difference between the transducer and patient?",
+    "options": {
+      "A": "Matching layer",
+      "B": "Piezoelectric element",
+      "C": "Backing block",
+      "D": "Acoustic absorber"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 45,
+    "question_text": "To maintain the line density and penetration depth of the ultrasound image, which of the following “trade offs” must be done?",
+    "options": {
+      "A": "Decrease the field of view and number of A lines",
+      "B": "Increase the field of view and number of A lines",
+      "C": "Increase the field of view and decrease the number of A lines",
+      "D": "Decrease the field of view and increase the number of A lines"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 46,
+    "question_text": "What is the CT number (Hounsfield units) of water?",
+    "options": {
+      "A": "-1000",
+      "B": "-300",
+      "C": "0",
+      "D": "1000"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 47,
+    "question_text": "True of windowing and leveling in CT imaging:",
+    "options": {
+      "A": "Routine to display images using only one widow and one level setting for each image",
+      "B": "Wider window results in greater contrast",
+      "C": "Window is the CT number at the center of level",
+      "D": "Window width determines contrast of the image"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 48,
+    "question_text": "This type of CT artifact is commonly observed in between the petrous bones, where a spider web-like artifact connects the two bones on the image.",
+    "options": {
+      "A": "Beam hardening",
+      "B": "Chemical shift",
+      "C": "Partial volume averaging",
+      "D": "Wraparound"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 49,
+    "question_text": "This is a user-adjustable amplification of the returning echo signals as a function of time, to make up for beam attenuation.",
+    "options": {
+      "A": "Dynamic frequency tuning",
+      "B": "Dynamic range compression",
+      "C": "Time gain compensation",
+      "D": "Signal summation"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 50,
+    "question_text": "Which is NOT an advantage of power doppler over color flow imaging?",
+    "options": {
+      "A": "Aliasing is not a problem",
+      "B": "Determines direction of flow",
+      "C": "More sensitive to slow blood flow",
+      "D": "Not affected by doppler angle"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 51,
+    "question_text": "Which is a major disadvantage to the electronic transmission of data in analog form?",
+    "options": {
+      "A": "Accumulation of noise",
+      "B": "Amplification",
+      "C": "Attenuation",
+      "D": "Distortion"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 52,
+    "question_text": "Which is NOT a major component of a computer?",
+    "options": {
+      "A": "Central processing unit",
+      "B": "Input/output devices",
+      "C": "Keyboard",
+      "D": "Main memory"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 53,
+    "question_text": "What refers to the maximal data transfer rate that is actually achieved?",
+    "options": {
+      "A": "Bandwith",
+      "B": "Datagrams",
+      "C": "Packets",
+      "D": "Throughput"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 54,
+    "question_text": "Which among the radiologic studies has the most image storage requirement?",
+    "options": {
+      "A": "Chest radiograph(PAL)",
+      "B": "Digital screening mammogram(2cc and 2 mlo)",
+      "C": "Thallium 201 myocardial perfusion SPECT study",
+      "D": "Ultrasound (60 images)"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 55,
+    "question_text": "Which is NOT an advantage of Picture Archiving and Communication Systems(PACS)?",
+    "options": {
+      "A": "Ability to enhance images",
+      "B": "Prompt access to images",
+      "C": "Reduce film cost",
+      "D": "Security and reliability"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 56,
+    "question_text": "What is the best way to reduce motion blurring?",
+    "options": {
+      "A": "Ask a pediatric patient to stop crying",
+      "B": "Instruct a tachypneic patient to hold his breath",
+      "C": "Reduce the image acquisition time",
+      "D": "Terminate the radiologic technologist with Parkinson's disease"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 57,
+    "question_text": "Which is NOT a principal component of image quality?",
+    "options": {
+      "A": "Attenuation",
+      "B": "Contrast",
+      "C": "Noise",
+      "D": "Spatial Resolution"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 58,
+    "question_text": "What refers to the difference in the image gray scale between closely adjacent regions on the image?",
+    "options": {
+      "A": "Brightness",
+      "B": "Collimation",
+      "C": "Contrast",
+      "D": "Resolution"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 59,
+    "question_text": "What image system is used to provide a large amount of on-line storage?",
+    "options": {
+      "A": "Compact disc",
+      "B": "Magnetic tape",
+      "C": "Optical disc",
+      "D": "Redundant array of independent disks"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 60,
+    "question_text": "Which of the following interactions of ultrasound with matter produces the characteristic texture and gray scale in the acoustic image?",
+    "options": {
+      "A": "Absorption",
+      "B": "Reflection",
+      "C": "Refraction",
+      "D": "Scattering"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 61,
+    "question_text": "In an ultrasound image, what type of resolution refers to the ability to discern as separate two closely spaced objects perpendicular to the beam direction?",
+    "options": {
+      "A": "Axial",
+      "B": "Depth",
+      "C": "Elevational",
+      "D": "Lateral"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 62,
+    "question_text": "Which of the following ultrasound artifacts appears as intense signals distal to tissues with low ultrasound attenuation resulting in increased transmission as sound passes through?",
+    "options": {
+      "A": "Enhancement",
+      "B": "Mirror image",
+      "C": "Refraction",
+      "D": "Reverberation"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 63,
+    "question_text": "What are the two mechanisms by which ultrasound can cause biologic effects at high intensities?",
+    "options": {
+      "A": "Cavitation and bubble formation",
+      "B": "Expansion and contraction",
+      "C": "Heat and movement",
+      "D": "Ionization and pair production"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 64,
+    "question_text": "In an ultrasound equipment, the receiver processes signals through a 4 step sequence. Which step refers to a user modifiable amplification of the returning echo to adjust for beam attenuation?",
+    "options": {
+      "A": "Dynamic range compression",
+      "B": "Noise rejection",
+      "C": "Rectification and demodulation",
+      "D": "Time gain compensation"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 65,
+    "question_text": "Which is the most effective method to reduce radiation dose to the patient during fluoroscopy?",
+    "options": {
+      "A": "Acquire less number of radiographic images",
+      "B": "High kV and low mA technique",
+      "C": "Lesson fluoroscopy time",
+      "D": "Use largest field of view"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 66,
+    "question_text": "Which among the following is NOT a basic tenet of radiation safety?",
+    "options": {
+      "A": "Distance",
+      "B": "Equipment modification",
+      "C": "Shielding",
+      "D": "Time"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 67,
+    "question_text": "Which equipment provides a real time estimate of the amount of radiation that the patient has received during fluoroscopy?",
+    "options": {
+      "A": "Flat panel array detector",
+      "B": "Image intensifier",
+      "C": "Ionization chamber",
+      "D": "Radiation area product meter"
+    },
+    "correct_answer": "D"
+  }
+]

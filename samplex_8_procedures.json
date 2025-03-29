@@ -1,0 +1,299 @@
+[
+  {
+    "question_number": 1,
+    "question_text": "Which radiographic projection of the cervical spine demonstrates the C7, T1, T2 vertebrae usually obscured by the overlapping of clavicle and soft tissues of the shoulder girdle on standard lateral projection?",
+    "options": {
+      "A": "Extension view",
+      "B": "Flexion view",
+      "C": "Oblique view",
+      "D": "Swimmer’s view"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 2,
+    "question_text": "Which is the examination of choice for emergency evaluation of suspected intracranial hemorrhage?",
+    "options": {
+      "A": "Contrast-enhanced T1WI",
+      "B": "FLAIR",
+      "C": "Non-contrast CT",
+      "D": "Susceptibility-weighted imaging (SWI)"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 3,
+    "question_text": "In the evaluation of failed back surgery, this technique is particularly useful in differentiating post-operative scar from disc material:",
+    "options": {
+      "A": "Non-contrast CT",
+      "B": "CT myelography",
+      "C": "Contrast-enhanced MR",
+      "D": "Positron emission tomography (PET)-CT"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 4,
+    "question_text": "Which plain radiographic view best demonstrates a fracture of the zygomatic arch?",
+    "options": {
+      "A": "Anteroposterior",
+      "B": "Lateral",
+      "C": "Submentovertical",
+      "D": "Towne’s"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 5,
+    "question_text": "Which plain radiograph view best demonstrates the maxillary sinus?",
+    "options": {
+      "A": "Anteroposterior",
+      "B": "Lateral",
+      "C": "Towne’s",
+      "D": "Water’s"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 6,
+    "question_text": "Which is the current dominant imaging modality for the evaluation of developmental hip dysplasia?",
+    "options": {
+      "A": "CT Scan",
+      "B": "Dynamic Ultrasound",
+      "C": "Frog-leg position",
+      "D": "MRI"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 7,
+    "question_text": "Which is true regarding non-surgical reduction of intussusception?",
+    "options": {
+      "A": "Air contrast material is contraindicated because of its high incidence of perforation.",
+      "B": "Hydrostatic enema is still the preferred method of reduction.",
+      "C": "Manual palpation should not be attempted in refractory cases as an adjunctive measure.",
+      "D": "Presence of obstruction for more than 24 hours is a contraindication for non-surgical reduction."
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 8,
+    "question_text": "Which is FALSE regarding diagnostic imaging of airway foreign bodies in children?",
+    "options": {
+      "A": "If in doubt, one should obtain inspiratory-expiratory film sequences.",
+      "B": "In questionable cases, fluoroscopy may be done.",
+      "C": "In some cases, one may need to obtain decubitus films, with the involved side up.",
+      "D": "It is readily detected on chest films."
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 9,
+    "question_text": "What is/are the best imaging test/s for evaluating gastroesophageal reflux disease?",
+    "options": {
+      "A": "Double contrast barium esophagram and endoscopy",
+      "B": "Esophagram and endoscopy",
+      "C": "Esophagram and pH testing by esophageal probe",
+      "D": "Single contrast esophagram"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 10,
+    "question_text": "What MR sequence/s are most sensitive in the detection of fatty infiltration of the liver?",
+    "options": {
+      "A": "In-phase and out-phase",
+      "B": "STIR",
+      "C": "T1W",
+      "D": "T2W"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 11,
+    "question_text": "On lateral view, the left atrium is in direct contact with what structure?",
+    "options": {
+      "A": "Aorta",
+      "B": "Diaphragm",
+      "C": "Esophagus",
+      "D": "IVC"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 12,
+    "question_text": "In left anterior oblique view (LAO), posteriorly, the lower portion of the cardiac silhouette is made up of the following structures?",
+    "options": {
+      "A": "Aorta",
+      "B": "Left atrium",
+      "C": "Left ventricle",
+      "D": "Pulmonary artery"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 13,
+    "question_text": "Which of the following statements regarding the right anterior oblique is correct?",
+    "options": {
+      "A": "The patient is rotated 45 degrees to the left",
+      "B": "The patient is rotated 60 degrees to the right",
+      "C": "The only significant structure in the posterior cardiac border is the right atrium",
+      "D": "The only important structure in the anterior cardiac border is pulmonary artery"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 14,
+    "question_text": "In angiocardiography, the following are the standard views, EXCEPT?",
+    "options": {
+      "A": "Both obliques",
+      "B": "Four Chamber",
+      "C": "Frontal",
+      "D": "Lateral"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 15,
+    "question_text": "What is the best MRI sequence to visualize intracellular fat in an adrenal adenoma?",
+    "options": {
+      "A": "Chemical shift imaging",
+      "B": "Fat saturation",
+      "C": "T2-weighted image",
+      "D": "Diffusion weighted"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 16,
+    "question_text": "Zonal anatomy of the prostate gland is best delineated in which radiologic examination?",
+    "options": {
+      "A": "Contrast-enhanced CT scan",
+      "B": "MRI T1WI",
+      "C": "MRI T2WI",
+      "D": "Ultrasound"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 17,
+    "question_text": "To differentiate blood clots from tumor of the urinary bladder posterior wall in ultrasound, what should be done?",
+    "options": {
+      "A": "Ask the patient to empty his bladder to evaluate for gross hematuria",
+      "B": "Keep the patient in supine position",
+      "C": "Move the patient from supine to lateral position",
+      "D": "Scan with partially filled urinary bladder"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 18,
+    "question_text": "Which is the most sensitive test for identifying pathologic states within the bone marrow?",
+    "options": {
+      "A": "Arthrography",
+      "B": "CT scan",
+      "C": "MRI",
+      "D": "Radionuclide techniques"
+    },
+    "correct_answer": "C"
+  },
+  {
+    "question_number": 19,
+    "question_text": "What is the best x-ray view to visualize the glenohumeral joint?",
+    "options": {
+      "A": "Anteroposterior",
+      "B": "Axillary",
+      "C": "Scapular",
+      "D": "Stryker Notch"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 20,
+    "question_text": "Which imaging view of the knee is used to detect clinically suspected intraarticular loose bodies and best to image the intercondylar fossa?",
+    "options": {
+      "A": "Laurine",
+      "B": "Hughston",
+      "C": "Skyline",
+      "D": "Tunnel"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 21,
+    "question_text": "Diagnostic imaging of musculoskeletal disease in nuclear imaging depends on what type of radiation?",
+    "options": {
+      "A": "Beta",
+      "B": "Gamma",
+      "C": "Kappa",
+      "D": "Omega"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 22,
+    "question_text": "In determining the Boehler’s angle, what view is needed to measure the angle?",
+    "options": {
+      "A": "Anteroposterior",
+      "B": "Lateral",
+      "C": "Oblique",
+      "D": "Posteroanterior"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 23,
+    "question_text": "What is the recommended technique to reduce the radiation exposure to patients who will undergo HRCT?",
+    "options": {
+      "A": "Decrease kVp to 100 and mA to 200",
+      "B": "Decrease scan time",
+      "C": "Increase slice thickness to 2.0 cm",
+      "D": "Scan during full inspiration"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 24,
+    "question_text": "What is the most common cause of motion artifacts in portable chest radiographs?",
+    "options": {
+      "A": "Limited kVp",
+      "B": "Longer exposure time",
+      "C": "Poor patient position",
+      "D": "Short focus to film distance"
+    },
+    "correct_answer": "B"
+  },
+  {
+    "question_number": 25,
+    "question_text": "Asymmetric increase in the radiopacity in the poorly positioned patient whose left chest is closer to the film is due to which of the following?",
+    "options": {
+      "A": "Decreased tissue traversed by the x-ray",
+      "B": "Increased absorptive power of the chest wall",
+      "C": "Increased kVp",
+      "D": "Increased scattered radiation"
+    },
+    "correct_answer": "A"
+  },
+  {
+    "question_number": 26,
+    "question_text": "The following are requisites to obtain good chest radiographs, EXCEPT:",
+    "options": {
+      "A": "Collimation",
+      "B": "Focus to film distance of 6 ft",
+      "C": "Grid to reduce scattered radiation",
+      "D": "High kilovoltage potential (140 kVp)"
+    },
+    "correct_answer": "D"
+  },
+  {
+    "question_number": 27,
+    "question_text": "The following are the correct cursor positions in measuring the BPD, EXCEPT:",
+    "options": {
+      "A": "Outer edge of near calvarial wall to inner edge of far calvarial wall.",
+      "B": "Inner edge of near calvarial wall to outer edge of far calvarial wall.",
+      "C": "Middle of near calvarial wall to middle of far calvarial wall.",
+      "D": "Outer edge of near calvarial wall to outer edge of far calvarial wall."
+    },
+    "correct_answer": "A"
+  }
+]
