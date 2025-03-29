@@ -26,7 +26,6 @@
   </head>
   <body class="container">
     <h2 class="text-center">Quiz App</h2>
-    <p id="score" class="fw-bold text-center"></p>
     <div id="quiz-container" class="mt-3"></div>
     <button
       id="submit-btn"
@@ -44,13 +43,16 @@
       const storageKey = "quizHistory";
 
       async function loadQuestions() {
-        const files = ["anatomy.json", "physics.json", "procedures.json"]; // Add JSON files here
+        const files = ["anatomy.json", "physics.json", "procedures.json"]; // JSON files
         let loadedQuestions = [];
 
         for (const file of files) {
           const response = await fetch(`./${file}`);
           const data = await response.json();
-          const shuffled = data.sort(() => 0.5 - Math.random()).slice(0, 5);
+          const shuffled = data
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5)
+            .map((q) => ({ ...q, source: file }));
           loadedQuestions = [...loadedQuestions, ...shuffled];
         }
 
@@ -90,39 +92,32 @@
       function submitAnswers() {
         let score = 0;
         let history = JSON.parse(localStorage.getItem(storageKey)) || [];
+        let scoreBreakdown = { anatomy: 0, physics: 0, procedure: 0 };
+        let totalBreakdown = { anatomy: 0, physics: 0, procedure: 0 };
 
-        document.querySelectorAll(".question").forEach((div, index) => {
-          const q = questions[index];
+        questions.forEach((q, index) => {
           const userAnswer = answers[q.question_number] || "No answer";
           const correct = userAnswer === q.correct_answer;
-
           if (correct) {
             score++;
+            scoreBreakdown[q.source.split(".")[0]]++;
           }
-          div.innerHTML += `<p class="${
-            correct ? "text-success" : "text-danger"
-          }">Your Answer: ${userAnswer} | Correct Answer: ${
-            q.correct_answer
-          }</p>`;
+          totalBreakdown[q.source.split(".")[0]]++;
         });
 
         const scorePercentage = (score / questions.length) * 100;
-        const scoreElement = document.getElementById("score");
-        scoreElement.innerText = `Score: ${score} / ${
-          questions.length
-        } (${scorePercentage.toFixed(2)}%)`;
-        scoreElement.className = `fw-bold text-center ${
-          scorePercentage >= 75 ? "text-success" : "text-danger"
-        }`;
-
-        history.push({
+        const attempt = {
           timestamp: new Date().toISOString(),
           score: scorePercentage,
+          scoreBreakdown,
+          totalBreakdown,
           questions,
           answers,
-        });
+        };
+
+        history.push(attempt);
         localStorage.setItem(storageKey, JSON.stringify(history));
-        document.getElementById("submit-btn").style.display = "none";
+        window.location.href = `attempt.html?index=${history.length - 1}`;
       }
 
       window.onload = loadQuestions;
