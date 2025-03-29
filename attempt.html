@@ -24,6 +24,7 @@
   <body class="container">
     <h2 class="text-center">Quiz Attempt</h2>
     <p id="attempt-info" class="fw-bold text-center"></p>
+    <div id="score-breakdown" class="mt-3 text-center"></div>
     <div id="attempt-container" class="mt-3"></div>
     <a href="history.html" class="btn btn-secondary mt-3">Back to History</a>
 
@@ -43,6 +44,12 @@
         } - Score: ${attempt.score.toFixed(2)}% (${new Date(
           attempt.timestamp
         ).toLocaleString()})`;
+
+        const scoreBreakdown = {
+          anatomy: { correct: 0, total: 0 },
+          physics: { correct: 0, total: 0 },
+          procedure: { correct: 0, total: 0 },
+        };
 
         const container = document.getElementById("attempt-container");
         attempt.questions.forEach((q, index) => {
@@ -81,7 +88,27 @@
             attempt.answers[q.question_number] || "No answer"
           } | Correct Answer: ${q.correct_answer}</p>`;
           container.appendChild(div);
+
+          // Update score breakdown
+          const category = q.source || "unknown";
+          if (scoreBreakdown[category]) {
+            scoreBreakdown[category].total++;
+            if (attempt.answers[q.question_number] === q.correct_answer) {
+              scoreBreakdown[category].correct++;
+            }
+          }
         });
+
+        // Render score breakdown
+        const breakdownContainer = document.getElementById("score-breakdown");
+        breakdownContainer.innerHTML = `<h4>Score Breakdown</h4>`;
+        for (const [category, data] of Object.entries(scoreBreakdown)) {
+          const percentage =
+            data.total > 0 ? (data.correct / data.total) * 100 : 0;
+          breakdownContainer.innerHTML += `<p>${
+            category.charAt(0).toUpperCase() + category.slice(1)
+          }: ${data.correct} / ${data.total} (${percentage.toFixed(2)}%)</p>`;
+        }
       }
     </script>
   </body>
