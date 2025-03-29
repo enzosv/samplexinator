@@ -33,79 +33,16 @@
       <thead>
         <tr>
           <th>Attempt</th>
-          <th>Score</th>
+          <th>Total Score</th>
+          <th>Anatomy</th>
+          <th>Physics</th>
+          <th>Procedure</th>
           <th>Date</th>
           <th>View</th>
         </tr>
       </thead>
       <tbody id="history-table"></tbody>
     </table>
-    <script>
-      const storageKey = "quizHistory";
-      const history = JSON.parse(localStorage.getItem(storageKey)) || [];
-      const tableBody = document.getElementById("history-table");
-      const attempts = [];
-      const anatomyScores = [];
-      const physicsScores = [];
-      const procedureScores = [];
-
-      history.forEach((attempt, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-                <td>${index + 1}</td>
-                <td class="${
-                  attempt.score >= 75 ? "high-score" : "low-score"
-                }">${attempt.score.toFixed(2)}%</td>
-                <td>${new Date(attempt.timestamp).toLocaleString()}</td>
-                <td><a href="attempt.html?index=${index}" class="btn btn-sm btn-primary">View</a></td>
-            `;
-        tableBody.appendChild(row);
-
-        attempts.push(index + 1);
-        anatomyScores.push(
-          (attempt.scoreBreakdown.anatomy / attempt.totalBreakdown.anatomy) *
-            100 || 0
-        );
-        physicsScores.push(
-          (attempt.scoreBreakdown.physics / attempt.totalBreakdown.physics) *
-            100 || 0
-        );
-        procedureScores.push(
-          (attempt.scoreBreakdown.procedure /
-            attempt.totalBreakdown.procedure) *
-            100 || 0
-        );
-      });
-
-      new Chart(document.getElementById("scoreChart"), {
-        type: "bar",
-        data: {
-          labels: attempts,
-          datasets: [
-            {
-              label: "Anatomy",
-              data: anatomyScores,
-              backgroundColor: "blue",
-            },
-            {
-              label: "Physics",
-              data: physicsScores,
-              backgroundColor: "yellow",
-            },
-            {
-              label: "Procedure",
-              data: procedureScores,
-              backgroundColor: "purple",
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true, max: 100 },
-          },
-        },
-      });
-    </script>
+    <script src="history.js"></script>
   </body>
 </html>
