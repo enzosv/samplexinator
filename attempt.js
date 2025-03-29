@@ -1,4 +1,6 @@
-function renderAttempt() {
+const letters = ["A", "B", "C", "D"];
+
+async function renderAttempt() {
   const urlParams = new URLSearchParams(window.location.search);
   const attemptIndex = urlParams.get("index");
   const storageKey = "quizHistory";
@@ -15,29 +17,40 @@ function renderAttempt() {
   attemptInfo.innerHTML = `Attempt ${parseInt(attemptIndex) + 1} - 
     (${new Date(attempt.timestamp).toLocaleString()})`;
 
-  const scoreBreakdown = {
-    total: { correct: 0, total: 0 },
-    anatomy: { correct: 0, total: 0 },
-    physics: { correct: 0, total: 0 },
-    procedure: { correct: 0, total: 0 },
-  };
-
+  let score = 0;
   const container = document.getElementById("attempt-container");
-  attempt.questions.forEach((q) => {
-    const div = document.createElement("div");
-    div.className = "question border p-3 mb-3 rounded";
-    div.innerHTML = `<p><strong>${q.question_text}</strong></p>`;
+  container.innerHTML = "";
 
-    for (const [key, value] of Object.entries(q.options)) {
-      const isUserAnswer = attempt.answers[q.question_number] === key;
-      const isCorrect = q.correct_answer === key;
-      div.innerHTML += `
+  // Fetch questions data
+  const response = await fetch(`./questions.json`);
+  const data = await response.json();
+  let allQuestions = [];
+  data.forEach((category) => {
+    allQuestions = [...allQuestions, ...category];
+  });
+
+  attempt.answers &&
+    Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
+      const q = allQuestions.find((q) => q.id == questionId);
+      if (!q) {
+        console.error("Question not found:", questionId);
+        return;
+      }
+
+      const div = document.createElement("div");
+      div.className = "question border p-3 mb-3 rounded";
+      div.innerHTML = `<p><strong>${q.question}</strong></p>`;
+
+      for (const [key, value] of Object.entries(q.options)) {
+        const isUserAnswer = userAnswer === key;
+        const isCorrect = q.correct_answer === key;
+        div.innerHTML += `
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="question-${
-                              q.question_number
+                              q.id
                             }" value="${key}" disabled ${
-        isUserAnswer ? "checked" : ""
-      }>
+          isUserAnswer ? "checked" : ""
+        }>
                             <label class="form-check-label ${
                               isCorrect
                                 ? "correct"
@@ -45,46 +58,29 @@ function renderAttempt() {
                                 ? "incorrect"
                                 : ""
                             }">
-                                ${key}: ${value}
+                                ${letters[key]}: ${value}
                             </label>
                         </div>
                     `;
-    }
-
-    div.innerHTML += `<p class="fw-bold ${
-      attempt.answers[q.question_number] === q.correct_answer
-        ? "text-success"
-        : "text-danger"
-    }">Your Answer: ${
-      attempt.answers[q.question_number] || "No answer"
-    } | Correct Answer: ${q.correct_answer}</p>`;
-    container.appendChild(div);
-
-    // Update score breakdown
-    const category = q.source || "unknown";
-    if (scoreBreakdown[category]) {
-      scoreBreakdown[category].total++;
-      if (attempt.answers[q.question_number] === q.correct_answer) {
-        scoreBreakdown[category].correct++;
       }
-    }
-    scoreBreakdown.total.total++;
-    if (attempt.answers[q.question_number] === q.correct_answer) {
-      scoreBreakdown.total.correct++;
-    }
-  });
 
-  // Render score breakdown
-  const breakdownContainer = document.getElementById("score-breakdown");
-  breakdownContainer.innerHTML = `<h4>Score Breakdown</h4>`;
-  for (const [category, data] of Object.entries(scoreBreakdown)) {
-    const percentage = data.total > 0 ? (data.correct / data.total) * 100 : 0;
-    const colorClass = percentage >= 75 ? "text-success" : "text-danger";
-    breakdownContainer.innerHTML += `<p>${
-      category.charAt(0).toUpperCase() + category.slice(1)
-    }: 
-      ${data.correct} / ${data.total} 
-      <span class="${colorClass}">(${percentage.toFixed(2)}%)</span></p>`;
-  }
+      const correct = userAnswer == q.correct_answer;
+      if (correct) {
+        score++;
+      }
+
+      div.innerHTML += `<p class="fw-bold ${
+        correct ? "text-success" : "text-danger"
+      }">Your Answer: ${letters[userAnswer] || "No answer"} | Correct Answer: ${
+        letters[q.correct_answer]
+      }</p>`;
+      container.appendChild(div);
+    });
+
+  const scorePercentage = (score / allQuestions.length) * 100;
+  const scoreContainer = document.getElementById("score-breakdown");
+  scoreContainer.innerHTML = `<h4>Score: ${score} / ${
+    allQuestions.length
+  } (${scorePercentage.toFixed(2)}%)</h4>`;
 }
 renderAttempt();
