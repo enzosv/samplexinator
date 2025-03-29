@@ -52,7 +52,7 @@
           const shuffled = data
             .sort(() => 0.5 - Math.random()) // shuffle
             .slice(0, 1) // number of questions per category
-            .map((q) => ({ ...q, source: file })); // add category to data
+            .map((q) => ({ ...q, source: file.split(".")[0] })); // add category to data
           loadedQuestions = [...loadedQuestions, ...shuffled];
         }
 
@@ -100,9 +100,9 @@
           const correct = userAnswer === q.correct_answer;
           if (correct) {
             score++;
-            scoreBreakdown[q.source.split(".")[0]]++;
+            scoreBreakdown[q.source]++;
           }
-          totalBreakdown[q.source.split(".")[0]]++;
+          totalBreakdown[q.source]++;
         });
 
         const scorePercentage = (score / questions.length) * 100;
