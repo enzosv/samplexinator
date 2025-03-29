@@ -64,33 +64,51 @@ async function renderHistory() {
     anatomyScores.push(categoryScores.anatomy);
     physicsScores.push(categoryScores.physics);
     procedureScores.push(categoryScores.procedures);
+    const row = generateRow(
+      index,
+      attempt.timestamp,
+      score,
+      numQuestions,
+      categoryCounts,
+      categoryScores
+    );
+    historyTable.appendChild(row);
+  });
+  populateAverage(totalScores, totalCounts);
+  renderChart(labels, anatomyScores, physicsScores, procedureScores);
+}
 
-    const row = document.createElement("tr");
-    const date = new Date(attempt.timestamp).toLocaleString();
-    const scorePercentage = (score / numQuestions) * 100;
+function generateRow(
+  index,
+  timestamp,
+  score,
+  numQuestions,
+  categoryCounts,
+  categoryScores
+) {
+  const row = document.createElement("tr");
+  const date = new Date(timestamp).toLocaleString();
+  const scorePercentage = (score / numQuestions) * 100;
 
-    row.innerHTML = `
+  row.innerHTML = `
             <td>${index + 1}</td>
             <td>${date}</td>
             <td class="${scoreClass(
               scorePercentage
             )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
-      2
-    )}%)</small></td>`;
+    2
+  )}%)</small></td>`;
 
-    for (const category in categoryCounts) {
-      const correct = categoryScores[category] ?? 0;
-      const total = categoryCounts[category] ?? 0;
-      const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
-      row.innerHTML += `<td class="${scoreClass(
-        categoryPercentage
-      )}">${correct}/${total}</td>`;
-    }
-    row.innerHTML += `<td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>`;
-    historyTable.appendChild(row);
-  });
-  populateAverage(totalScores, totalCounts);
-  renderChart(labels, anatomyScores, physicsScores, procedureScores);
+  for (const category in categoryCounts) {
+    const correct = categoryScores[category] ?? 0;
+    const total = categoryCounts[category] ?? 0;
+    const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
+    row.innerHTML += `<td class="${scoreClass(
+      categoryPercentage
+    )}">${correct}/${total}</td>`;
+  }
+  row.innerHTML += `<td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>`;
+  return row;
 }
 
 function populateAverage(totalScores, totalCounts) {
