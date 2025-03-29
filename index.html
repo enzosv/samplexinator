@@ -36,30 +36,31 @@
     >
       Submit Answers
     </button>
+    <a href="history.html" class="btn btn-secondary mt-3">View History</a>
 
     <script>
       let questions = [];
       let answers = {};
+      const storageKey = "quizHistory";
 
       async function loadQuestions() {
-        const files = ["procedures.json", "samplex_1_anatomy.json"]; // Add JSON files here
+        const files = ["anatomy.json", "physics.json", "procedures.json"]; // Add JSON files here
         let loadedQuestions = [];
 
         for (const file of files) {
           const response = await fetch(`./${file}`);
           const data = await response.json();
-          const shuffled = data.sort(() => 0.5 - Math.random()).slice(0, 1); // Random 5 questions per file
+          const shuffled = data.sort(() => 0.5 - Math.random()).slice(0, 5);
           loadedQuestions = [...loadedQuestions, ...shuffled];
         }
 
-        questions = loadedQuestions.sort(() => 0.5 - Math.random()); // Shuffle all
+        questions = loadedQuestions.sort(() => 0.5 - Math.random());
         renderQuestions();
       }
 
       function renderQuestions() {
         const container = document.getElementById("quiz-container");
         container.innerHTML = "";
-        answers = {};
 
         questions.forEach((q, index) => {
           const div = document.createElement("div");
@@ -88,6 +89,8 @@
 
       function submitAnswers() {
         let score = 0;
+        let history = JSON.parse(localStorage.getItem(storageKey)) || [];
+
         document.querySelectorAll(".question").forEach((div, index) => {
           const q = questions[index];
           const userAnswer = answers[q.question_number] || "No answer";
@@ -112,6 +115,13 @@
           scorePercentage >= 75 ? "text-success" : "text-danger"
         }`;
 
+        history.push({
+          timestamp: new Date().toISOString(),
+          score: scorePercentage,
+          questions,
+          answers,
+        });
+        localStorage.setItem(storageKey, JSON.stringify(history));
         document.getElementById("submit-btn").style.display = "none";
       }
 
