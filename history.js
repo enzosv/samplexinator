@@ -32,6 +32,9 @@ async function renderHistory() {
   let physicsScores = [];
   let procedureScores = [];
 
+  let totalScores = { anatomy: 0, physics: 0, procedures: 0 };
+  let totalCounts = { anatomy: 0, physics: 0, procedures: 0 };
+
   history.forEach((attempt, index) => {
     if (!attempt.answers) {
       return;
@@ -51,8 +54,10 @@ async function renderHistory() {
       if (q.correct) {
         score++;
         categoryScores[q.category]++;
+        totalScores[q.category]++;
       }
       categoryCounts[q.category]++;
+      totalCounts[q.category]++;
     });
 
     labels.push(`Attempt ${index + 1}`);
@@ -64,11 +69,12 @@ async function renderHistory() {
     const date = new Date(attempt.timestamp).toLocaleString();
     const scorePercentage = (score / numQuestions) * 100;
 
-    const scoreClass = scorePercentage < 75 ? "text-danger" : "";
     row.innerHTML = `
             <td>${index + 1}</td>
             <td>${date}</td>
-            <td class="${scoreClass}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+            <td class="${scoreClass(
+              scorePercentage
+            )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
       2
     )}%)</small></td>`;
 
@@ -76,15 +82,41 @@ async function renderHistory() {
       const correct = categoryScores[category] ?? 0;
       const total = categoryCounts[category] ?? 0;
       const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
-      row.innerHTML += `<td class="${
-        categoryPercentage < 75 ? "text-danger" : ""
-      }">${correct}/${total}</td>`;
+      row.innerHTML += `<td class="${scoreClass(
+        categoryPercentage
+      )}">${correct}/${total}</td>`;
     }
     row.innerHTML += `<td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>`;
     historyTable.appendChild(row);
   });
-
+  populateAverage(totalScores, totalCounts);
   renderChart(labels, anatomyScores, physicsScores, procedureScores);
+}
+
+function populateAverage(totalScores, totalCounts) {
+  const averageScore =
+    ((totalScores.anatomy + totalScores.physics + totalScores.procedures) *
+      100) /
+    (totalCounts.anatomy + totalCounts.physics + totalCounts.procedures);
+
+  const anatomyScore = (totalScores.anatomy * 100) / totalCounts.anatomy;
+  const physicsScore = (totalScores.physics * 100) / totalCounts.physics;
+  const proceduresScore =
+    (totalScores.procedures * 100) / totalCounts.procedures;
+
+  document.getElementById("average-scores").innerHTML = `
+<th>${history.length} Attempts</th>
+<th></th>
+<th class="${scoreClass(averageScore)}">${averageScore.toFixed(2)}%</th>
+<th class="${scoreClass(anatomyScore)}">${anatomyScore.toFixed(2)}%</th>
+<th class="${scoreClass(physicsScore)}">${physicsScore.toFixed(2)}%</th>
+<th class="${scoreClass(proceduresScore)}">${proceduresScore.toFixed(2)}%</th>
+<th></th>
+`;
+}
+
+function scoreClass(percentage) {
+  return percentage < 75 ? "text-danger" : "";
 }
 
 function renderChart(labels, anatomyScores, physicsScores, procedureScores) {
