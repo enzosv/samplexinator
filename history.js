@@ -7,12 +7,9 @@ function findQuestion(allQuestions, questionId) {
     const found = allQuestions[category].find(
       (q) => q.id == parseInt(questionId)
     );
-    if (!found) {
-      continue;
+    if (found) {
+      return { ...found, category };
     }
-    const q = found;
-    q.category = category;
-    return q;
   }
   return null;
 }
@@ -30,8 +27,7 @@ async function renderHistory() {
   const response = await fetch(`./questions.json`);
   const allQuestions = await response.json();
 
-  let chartLabels = [];
-  let totalScores = [];
+  let labels = [];
   let anatomyScores = [];
   let physicsScores = [];
   let procedureScores = [];
@@ -42,8 +38,6 @@ async function renderHistory() {
     }
     const numQuestions = Object.keys(attempt.answers).length;
     let score = 0;
-
-    let questions = [];
     let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
     let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
 
@@ -54,7 +48,6 @@ async function renderHistory() {
         return;
       }
       q.correct = userAnswer == q.correct_answer;
-      questions.push(q);
       if (q.correct) {
         score++;
         categoryScores[q.category]++;
@@ -62,36 +55,16 @@ async function renderHistory() {
       categoryCounts[q.category]++;
     });
 
-    const scorePercentage = (score / numQuestions) * 100;
-    const scoreClass = scorePercentage < 75 ? "text-danger" : "";
-    let date = new Date(attempt.timestamp).toLocaleString();
-
-    // Populate data for chart
-    chartLabels.push(`Attempt ${index + 1}`);
-    totalScores.push(scorePercentage);
-    anatomyScores.push(
-      categoryCounts.anatomy > 0
-        ? (categoryScores.anatomy * categoryCounts.anatomy * score * 100) /
-            numQuestions ** 2
-        : 0
-    );
-    physicsScores.push(
-      categoryCounts.physics > 0
-        ? (categoryScores.physics * categoryCounts.physics * score * 100) /
-            numQuestions ** 2
-        : 0
-    );
-    procedureScores.push(
-      categoryCounts.procedures > 0
-        ? (categoryScores.procedures *
-            categoryCounts.procedures *
-            score *
-            100) /
-            numQuestions ** 2
-        : 0
-    );
+    labels.push(`Attempt ${index + 1}`);
+    anatomyScores.push(categoryScores.anatomy);
+    physicsScores.push(categoryScores.physics);
+    procedureScores.push(categoryScores.procedures);
 
     const row = document.createElement("tr");
+    const date = new Date(attempt.timestamp).toLocaleString();
+    const scorePercentage = (score / numQuestions) * 100;
+
+    const scoreClass = scorePercentage < 75 ? "text-danger" : "";
     row.innerHTML = `
             <td>${index + 1}</td>
             <td>${date}</td>
@@ -111,59 +84,38 @@ async function renderHistory() {
     historyTable.appendChild(row);
   });
 
-  // Render the chart
-  renderChart(
-    chartLabels,
-    totalScores,
-    anatomyScores,
-    physicsScores,
-    procedureScores
-  );
+  renderChart(labels, anatomyScores, physicsScores, procedureScores);
 }
 
-function renderChart(labels, total, anatomy, physics, procedures) {
-  const chartContainer = document.getElementById("history-chart");
-  console.log(chartContainer);
-  const ctx = chartContainer.getContext("2d");
-
+function renderChart(labels, anatomyScores, physicsScores, procedureScores) {
+  const ctx = document.getElementById("history-chart").getContext("2d");
   new Chart(ctx, {
     type: "bar",
     data: {
       labels: labels,
       datasets: [
         {
-          label: "Total Score (%)",
-          data: total,
-          backgroundColor: "blue",
+          label: "Anatomy",
+          data: anatomyScores,
+          backgroundColor: "#3498db",
         },
         {
-          label: "Anatomy (%)",
-          data: anatomy,
-          backgroundColor: "green",
+          label: "Physics",
+          data: physicsScores,
+          backgroundColor: "#2ecc71",
         },
         {
-          label: "Physics (%)",
-          data: physics,
-          backgroundColor: "orange",
-        },
-        {
-          label: "Procedures (%)",
-          data: procedures,
-          backgroundColor: "purple",
+          label: "Procedure",
+          data: procedureScores,
+          backgroundColor: "#f1c40f",
         },
       ],
     },
     options: {
       responsive: true,
       scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-          title: {
-            display: true,
-            text: "Percentage Score",
-          },
-        },
+        x: { stacked: true },
+        y: { stacked: true },
       },
     },
   });
