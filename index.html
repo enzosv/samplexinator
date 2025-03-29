@@ -37,7 +37,7 @@
       onclick="submitAnswers()"
       style="display: none"
     >
-      Submit Answers
+      Submit
     </button>
 
     <script>
@@ -70,17 +70,16 @@
         questions.forEach((q, index) => {
           const div = document.createElement("div");
           div.className = "question border p-3 mb-3 rounded";
-          div.innerHTML = `<p><strong>${q.question}</strong></p>`;
+          div.innerHTML = `<p><strong>${index + 1}) ${q.question}</strong></p>`;
 
           for (const [key, value] of Object.entries(q.options)) {
             div.innerHTML += `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question-${q.id}" value="${key}" onchange="saveAnswer(${q.id}, '${key}')">
-                            <label class="form-check-label">
-                                ${letters[key]}: ${value}
-                            </label>
-                        </div>
-                    `;
+            <div class="form-check">
+    <input class="form-check-input d-none" type="radio" id="option-${q.id}-${key}" name="question-${q.id}" value="${key}" onchange="saveAnswer(${q.id}, '${key}');">
+    <label class="form-check-label btn btn-outline-primary w-100 text-start py-2" for="option-${q.id}-${key}">
+        <strong>${letters[key]}</strong>: ${value}
+    </label>
+</div>`;
           }
 
           container.appendChild(div);
@@ -89,8 +88,27 @@
       }
 
       function saveAnswer(questionId, choice) {
-        console.log(questionId, choice);
         answers[questionId] = choice;
+
+        const options = document.getElementsByName(`question-${questionId}`);
+        options.forEach((option) => {
+          const label = document.querySelector(
+            `label[for="option-${questionId}-${option.value}"]`
+          );
+          if (label) {
+            label.classList.remove("btn-primary", "active"); // Remove highlight from all
+            label.classList.add("btn-outline-primary"); // Reapply outline
+          }
+        });
+
+        // Highlight the selected option
+        const selectedLabel = document.querySelector(
+          `label[for="option-${questionId}-${choice}"]`
+        );
+        if (selectedLabel) {
+          selectedLabel.classList.remove("btn-outline-primary");
+          selectedLabel.classList.add("btn-primary", "active");
+        }
       }
 
       function submitAnswers() {
