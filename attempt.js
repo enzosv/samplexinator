@@ -9,21 +9,21 @@ function renderAttempt() {
       "<p class='text-danger'>Invalid attempt.</p>";
     return;
   }
+
   const attempt = history[attemptIndex];
-  document.getElementById("attempt-info").innerText = `Attempt ${
-    parseInt(attemptIndex) + 1
-  } - Score: ${attempt.score.toFixed(2)}% (${new Date(
-    attempt.timestamp
-  ).toLocaleString()})`;
+  const attemptInfo = document.getElementById("attempt-info");
+  attemptInfo.innerHTML = `Attempt ${parseInt(attemptIndex) + 1} - 
+    (${new Date(attempt.timestamp).toLocaleString()})`;
 
   const scoreBreakdown = {
+    total: { correct: 0, total: 0 },
     anatomy: { correct: 0, total: 0 },
     physics: { correct: 0, total: 0 },
     procedure: { correct: 0, total: 0 },
   };
 
   const container = document.getElementById("attempt-container");
-  attempt.questions.forEach((q, index) => {
+  attempt.questions.forEach((q) => {
     const div = document.createElement("div");
     div.className = "question border p-3 mb-3 rounded";
     div.innerHTML = `<p><strong>${q.question_text}</strong></p>`;
@@ -68,6 +68,10 @@ function renderAttempt() {
         scoreBreakdown[category].correct++;
       }
     }
+    scoreBreakdown.total.total++;
+    if (attempt.answers[q.question_number] === q.correct_answer) {
+      scoreBreakdown.total.correct++;
+    }
   });
 
   // Render score breakdown
@@ -75,9 +79,12 @@ function renderAttempt() {
   breakdownContainer.innerHTML = `<h4>Score Breakdown</h4>`;
   for (const [category, data] of Object.entries(scoreBreakdown)) {
     const percentage = data.total > 0 ? (data.correct / data.total) * 100 : 0;
+    const colorClass = percentage >= 75 ? "text-success" : "text-danger";
     breakdownContainer.innerHTML += `<p>${
       category.charAt(0).toUpperCase() + category.slice(1)
-    }: ${data.correct} / ${data.total} (${percentage.toFixed(2)}%)</p>`;
+    }: 
+      ${data.correct} / ${data.total} 
+      <span class="${colorClass}">(${percentage.toFixed(2)}%)</span></p>`;
   }
 }
 renderAttempt();
