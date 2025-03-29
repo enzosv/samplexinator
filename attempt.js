@@ -77,10 +77,11 @@ async function renderAttempt() {
       container.appendChild(div);
     });
 
-  const scorePercentage = (score / allQuestions.length) * 100;
+  const numQuestions = Object.keys(attempt.answers).length;
+  const scorePercentage = (score / numQuestions) * 100;
   const scoreContainer = document.getElementById("score-breakdown");
-  scoreContainer.innerHTML = `<h4>Score: ${score} / ${
-    allQuestions.length
-  } (${scorePercentage.toFixed(2)}%)</h4>`;
+  scoreContainer.innerHTML = `<h4>Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(
+    2
+  )}%)</h4>`;
 }
 renderAttempt();
