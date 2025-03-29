@@ -28,6 +28,7 @@ async function renderAttempt() {
   data.forEach((category) => {
     allQuestions = [...allQuestions, ...category];
   });
+  let questions = [];
 
   attempt.answers &&
     Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
@@ -36,6 +37,7 @@ async function renderAttempt() {
         console.error("Question not found:", questionId);
         return;
       }
+      questions.push(q);
 
       const div = document.createElement("div");
       div.className = "question border p-3 mb-3 rounded";
@@ -77,11 +79,33 @@ async function renderAttempt() {
       container.appendChild(div);
     });
 
-  const numQuestions = Object.keys(attempt.answers).length;
+  const numQuestions = questions.length;
   const scorePercentage = (score / numQuestions) * 100;
   const scoreContainer = document.getElementById("score-breakdown");
-  scoreContainer.innerHTML = `<h4>Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(
+  let scoreBreakdownText = `<h4>Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(
     2
   )}%)</h4>`;
+
+  const categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
+  let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
+
+  questions.forEach((q) => {
+    if (attempt.answers && attempt.answers[q.id] == q.correct_answer) {
+      categoryScores[q.category]++;
+    }
+    categoryCounts[q.category]++;
+  });
+
+  scoreBreakdownText += "<h5>Category Breakdown:</h5>";
+  for (const category in categoryCounts) {
+    const correct = categoryScores[category];
+    const total = categoryCounts[category];
+    const categoryPercentage = total > 0 ? (correct / total) * 100 : 0;
+    scoreBreakdownText += `<p>${category}: ${correct} / ${total} (${categoryPercentage.toFixed(
+      2
+    )}%)</p>`;
+  }
+
+  scoreContainer.innerHTML = scoreBreakdownText;
 }
 renderAttempt();
