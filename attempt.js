@@ -1,5 +1,20 @@
 const letters = ["A", "B", "C", "D"];
 
+function findQuestion(allQuestions, questionId) {
+  for (const category of Object.keys(allQuestions)) {
+    const found = allQuestions[category].find(
+      (q) => q.id == parseInt(questionId)
+    );
+    if (!found) {
+      continue;
+    }
+    const q = found;
+    q.category = category;
+    return q;
+  }
+  return null;
+}
+
 async function renderAttempt() {
   const urlParams = new URLSearchParams(window.location.search);
   const attemptIndex = urlParams.get("index");
@@ -13,6 +28,12 @@ async function renderAttempt() {
   }
 
   const attempt = history[attemptIndex];
+  if (!attempt.answers) {
+    document.getElementById("attempt-container").innerHTML =
+      "<p class='text-danger'>Invalid attempt.</p>";
+    return;
+  }
+
   const attemptInfo = document.getElementById("attempt-info");
   attemptInfo.innerHTML = `Attempt ${parseInt(attemptIndex) + 1} - 
     (${new Date(attempt.timestamp).toLocaleString()})`;
@@ -20,76 +41,63 @@ async function renderAttempt() {
   let score = 0;
   const response = await fetch(`./questions.json`);
   const allQuestions = await response.json();
-  let questions = [];
-  const container = document.getElementById("attempt-container");
 
-  attempt.answers &&
-    Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
-      let q;
-      Object.keys(allQuestions).forEach((category) => {
-        const found = allQuestions[category].find(
-          (q) => q.id == parseInt(questionId)
-        );
-        if (found) {
-          q = found;
-          q.category = category;
-        }
-      });
-      if (!q) {
-        console.error("Question not found:", questionId);
-        return;
-      }
-      questions.push(q);
-      const div = document.createElement("div");
-      div.className = "question border p-3 mb-3 rounded";
-      div.innerHTML = `<p><strong>${q.question}</strong></p>`;
-      for (const [key, value] of Object.entries(q.options)) {
-        const isUserAnswer = userAnswer === key;
-        const isCorrect = q.correct_answer === key;
-        div.innerHTML += `
+  const container = document.getElementById("attempt-container");
+  let questions = [];
+  let categoryCounts = {};
+  let categoryScores = {};
+  Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
+    const q = findQuestion(allQuestions, questionId);
+    if (!q) {
+      console.error("Question not found:", questionId);
+      return;
+    }
+    const correct = userAnswer == q.correct_answer;
+    if (!categoryCounts[q.category]) {
+      categoryCounts[q.category] = 0;
+      categoryScores[q.category] = 0;
+    }
+    if (correct) {
+      score++;
+      categoryScores[q.category]++;
+    }
+    categoryCounts[q.category]++;
+    questions.push(q);
+
+    const div = document.createElement("div");
+    div.className = "question border p-3 mb-3 rounded";
+    div.innerHTML = `<p class="fw-bold ${correct ? "" : "incorrect"}">${
+      q.question
+    }</p>`;
+    for (const [key, value] of Object.entries(q.options)) {
+      const isUserAnswer = userAnswer === key;
+      const isCorrect = String(q.correct_answer) === key;
+      div.innerHTML += `
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="question-${
                               q.id
                             }" value="${key}" disabled ${
-          isUserAnswer ? "checked" : ""
-        }>
+        isUserAnswer ? "checked" : ""
+      }>
                             <label class="form-check-label ${
-                              isCorrect
-                                ? "correct"
-                                : isUserAnswer
-                                ? "incorrect"
-                                : ""
+                              isCorrect ? "fw-bold" : ""
                             }">
                                 ${letters[key]}: ${value}
                             </label>
                         </div>
                     `;
-      }
-      const correct = userAnswer == q.correct_answer;
-      if (correct) {
-        score++;
-      }
-      div.innerHTML += `<p class="fw-bold ${
-        correct ? "text-success" : "text-danger"
-      }">Your Answer: ${letters[userAnswer] || "No answer"} | Correct Answer: ${
-        letters[q.correct_answer]
-      }</p>`;
-      container.appendChild(div);
-    });
+    }
+
+    container.appendChild(div);
+  });
+
   const numQuestions = questions.length;
   const scorePercentage = (score / numQuestions) * 100;
   const scoreContainer = document.getElementById("score-breakdown");
   let scoreBreakdownText = `<h4>Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(
     2
   )}%)</h4>`;
-  const categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
-  let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
-  questions.forEach((q) => {
-    if (attempt.answers && attempt.answers[q.id] == q.correct_answer) {
-      categoryScores[q.category]++;
-    }
-    categoryCounts[q.category]++;
-  });
+
   for (const category in categoryCounts) {
     const correct = categoryScores[category];
     const total = categoryCounts[category];
