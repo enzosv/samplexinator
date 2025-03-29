@@ -36,9 +36,10 @@ async function renderHistory() {
     }
     const numQuestions = Object.keys(attempt.answers).length;
     let score = 0;
-    let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
 
     let questions = [];
+    let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
+    let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
     Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
       const q = findQuestion(allQuestions, questionId);
       if (!q) {
@@ -51,24 +52,34 @@ async function renderHistory() {
         score++;
         categoryScores[q.category]++;
       }
+      categoryCounts[q.category]++;
     });
 
     const scorePercentage = (score / numQuestions) * 100;
-    const scoreClass = scorePercentage < 75 ? "low-score" : "high-score";
+    const scoreClass = scorePercentage < 75 ? "text-danger" : "";
     let date = new Date(attempt.timestamp).toLocaleString();
 
-    historyTable.innerHTML += `
-          <tr>
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
             <td>${index + 1}</td>
-            <td class="${scoreClass}">${score} / ${numQuestions} (${scorePercentage.toFixed(
-      2
-    )}%)</td>
-            <td>${categoryScores.anatomy}</td>
-            <td>${categoryScores.physics}</td>
-            <td>${categoryScores.procedures}</td>
             <td>${date}</td>
-            <td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>
-          </tr>
-        `;
+            <td class="${scoreClass}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+      2
+    )}%)</small></td>`;
+
+    for (const category in categoryCounts) {
+      const correct = categoryScores[category] ?? 0;
+      const total = categoryCounts[category] ?? 0;
+      const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
+      // row.innerHTML += `<td>${correct}/${total} <small>(${
+      //   categoryPercentage.toFixed(2) ?? 0
+      // }%)</small></td>`;
+      row.innerHTML += `<td class="${
+        categoryPercentage < 75 ? "text-danger" : ""
+      }">${correct}/${total}</td>`;
+    }
+    row.innerHTML += `<td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>`;
+    historyTable.appendChild(row);
   });
 }
