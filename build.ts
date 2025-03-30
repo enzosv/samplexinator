@@ -41,8 +41,18 @@ async function copyHtml() {
   console.log("✅ HTML files copied to dist/");
 }
 
+async function copyJson() {
+  for await (const file of Deno.readDir(SRC_DIR)) {
+    if (file.isFile && file.name.endsWith(".json")) {
+      await copy(`${SRC_DIR}/${file.name}`, `${DIST_DIR}/${file.name}`, {
+        overwrite: false,
+      });
+    }
+  }
+  console.log("✅ JSON files copied to dist/");
+}
+
 // Run the tasks
-await compileTs();
-await copyHtml();
+await Promise.all([compileTs(), copyHtml(), copyJson()]);
 console.log("🚀 Build completed successfully!");
 Deno.exit(0);
