@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "esnext",
-      "deno.ns"
-    ]
+    "lib": ["dom", "esnext", "deno.ns"]
   },
   "tasks": {
     "serve": "deno run --allow-net --allow-read https://deno.land/std/http/file_server.ts",
     "build": "deno run -A build.ts",
-    "compile": "deno bundle ./src/samplex.ts ./dist/samplex.js"
+    "compile": "deno run -A compile.ts"
   }
 }
