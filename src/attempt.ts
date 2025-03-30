@@ -51,9 +51,9 @@ async function renderAttempt() {
   const allQuestions = await response.json();
 
   const container = document.getElementById("attempt-container")!;
-  let questions: Question[] = [];
-  let categoryCounts: { [key: string]: number } = {};
-  let categoryScores: { [key: string]: number } = {};
+  const questions: Question[] = [];
+  const categoryCounts: { [key: string]: number } = {};
+  const categoryScores: { [key: string]: number } = {};
 
   Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
     const q = findQuestion(allQuestions, questionId);
