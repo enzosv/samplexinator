@@ -33,12 +33,16 @@ async function renderHistory() {
 
   let totalScores = { anatomy: 0, physics: 0, procedures: 0 };
   let totalCounts = { anatomy: 0, physics: 0, procedures: 0 };
+  let maxY = 0;
 
   history.forEach((attempt, index) => {
     if (!attempt.answers) {
       return;
     }
     const numQuestions = Object.keys(attempt.answers).length;
+    if (numQuestions > maxY) {
+      maxY = numQuestions;
+    }
     let score = 0;
     let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
     let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
@@ -73,7 +77,7 @@ async function renderHistory() {
     historyTable.appendChild(row);
   });
   populateAverage(totalScores, totalCounts);
-  renderChart(anatomyScores, physicsScores, procedureScores);
+  renderChart(anatomyScores, physicsScores, procedureScores, maxY);
 }
 
 function generateRow(
@@ -135,7 +139,12 @@ function scoreClass(percentage) {
   return percentage < 75 ? "text-danger" : "";
 }
 
-function renderChart(anatomyScores, physicsScores, procedureScores) {
+function renderChart(
+  anatomyScores,
+  physicsScores,
+  procedureScores,
+  maxY: number
+) {
   const labels = anatomyScores.map((_, i) => `Attempt ${i + 1}`);
 
   const ctx = document.getElementById("history-chart").getContext("2d");
@@ -165,7 +174,7 @@ function renderChart(anatomyScores, physicsScores, procedureScores) {
       responsive: true,
       scales: {
         x: { stacked: true },
-        y: { stacked: true },
+        y: { stacked: true, max: maxY },
       },
     },
   });
