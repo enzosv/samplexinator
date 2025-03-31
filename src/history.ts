@@ -198,7 +198,13 @@ function renderChart(
       responsive: true,
       scales: {
         x: { stacked: true },
-        y: { stacked: true, max: maxY },
+        y: { stacked: true, max: maxY, title: { display: true, text: 'Score' } },
+      },
+      plugins: {
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+        },
       },
     },
   });
