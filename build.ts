@@ -21,7 +21,8 @@ async function compileTs() {
     entryPoints: entryPoints,
     outdir: DIST_DIR,
     bundle: false, // Keeps files separate
-    minify: true,
+    minify: false,
+    // keepNames: true, // Prevent renaming functions/classes that might be needed by HTML
     format: "esm",
     platform: "browser",
     target: ["es2020"], // Ensure modern JS output
@@ -43,15 +44,26 @@ async function copyHtml() {
 
 async function copyJson() {
   for await (const file of Deno.readDir(SRC_DIR)) {
-    if (file.isFile && file.name.endsWith(".json")) {
-      await copy(`${SRC_DIR}/${file.name}`, `${DIST_DIR}/${file.name}`, {
-        overwrite: false,
-      });
+    if (!file.isFile || !file.name.endsWith(".json")) {
+      continue;
+    }
+    const sourcePath = `${SRC_DIR}/${file.name}`;
+    const destPath = `${DIST_DIR}/${file.name}`;
+    try {
+      // Read the JSON file content
+      const content = await Deno.readTextFile(sourcePath);
+      // Parse the JSON content
+      const jsonObj = JSON.parse(content);
+      // Stringify without indentation (minifies)
+      const minifiedJson = JSON.stringify(jsonObj);
+      // Write the minified content to the destination
+      await Deno.writeTextFile(destPath, minifiedJson);
+    } catch (error) {
+      console.error(`❌ Error processing JSON file ${file.name}:`, error);
     }
   }
-  console.log("✅ JSON files copied to dist/");
+  console.log("✅ JSON files minified and copied to dist/");
 }
-
 // Run the tasks
 await Promise.all([compileTs(), copyHtml(), copyJson()]);
 console.log("🚀 Build completed successfully!");
