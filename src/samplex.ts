@@ -117,4 +117,6 @@ function submitAnswers() {
 document.addEventListener("DOMContentLoaded", async function () {
   const questions = await loadQuestions();
   renderQuestions(questions);
+
+  document.getElementById("submit-button")?.addEventListener("click", submitAnswers);
 });
