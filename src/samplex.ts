@@ -4,6 +4,7 @@ const storageKey = "quizHistory";
 
 
 
+
 async function fetchQuestions(): Promise<Category> {
   const response = await fetch("./questions.json");
   return response.json();
@@ -36,7 +37,7 @@ async function loadQuestions() {
   return loadedQuestions.sort(() => 0.5 - Math.random());
 }
 
-function renderQuestions(questions: Question[]) {
+function renderSamplexQuestions(questions: Question[]) {
   const container = document.getElementById("quiz-container");
   if (!container) {
     console.error("container could not be found");
@@ -103,7 +104,7 @@ function submitAnswers() {
 
 document.addEventListener("DOMContentLoaded", async function () {
   const questions = await loadQuestions();
-  renderQuestions(questions);
+  renderSamplexQuestions(questions);
 
   document.getElementById("submit-button")?.addEventListener("click", submitAnswers);
 });

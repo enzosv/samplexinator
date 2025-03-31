@@ -139,8 +139,7 @@ async function renderAttempt() {
   }
   const attemptInfo = document.getElementById("attempt-info");
   if (attemptInfo) {
-    attemptInfo!.innerHTML = `Attempt ${(attempt.index ?? 0) + 1} - 
-    (${new Date(attempt.timestamp).toLocaleString()})`;
+    attemptInfo!.innerHTML = `Attempt ${(attempt.index ?? 0) + 1}`
   }
 
 
