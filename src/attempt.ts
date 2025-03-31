@@ -1,17 +1,11 @@
 const letters = ["A", "B", "C", "D"];
+const storageKey = "quizHistory";
 
-interface Question {
-  id: number;
-  question: string;
-  options: { [key: string]: string };
-  correct_answer: string;
-  category?: string;
-}
 
-function findQuestion(allQuestions: any, questionId: string): Question | null {
-  for (const category of Object.keys(allQuestions)) {
-    const found = (allQuestions[category] as Question[]).find(
-      (q) => q.id == parseInt(questionId)
+function findQuestion(all_questions: any, question_id: number): Question | null {
+  for (const category of Object.keys(all_questions)) {
+    const found = (all_questions[category] as Question[]).find(
+      (q) => q.id == question_id
     );
     if (!found) {
       continue;
@@ -23,100 +17,136 @@ function findQuestion(allQuestions: any, questionId: string): Question | null {
   return null;
 }
 
-async function renderAttempt() {
+function renderScore(questions: Question[]) {
+  const categoryCounts: { [key: string]: number } = {};
+  const categoryScores: { [key: string]: number } = {};
+
+  let score = 0;
+
+  for (const question of questions) {
+    const category = question.category;
+    if (!category) {
+      console.error("invalid question. missing category");
+      continue;
+    }
+    if (!categoryCounts[category]) {
+      categoryCounts[category] = 0;
+      categoryScores[category] = 0;
+    }
+    const correct = question.correct_answer == question.user_answer;
+    if (correct) {
+      categoryScores[category]++;
+      score++;
+    }
+    categoryCounts[category]++;
+  }
+
+  const numQuestions = questions.length;
+  const scorePercentage = (score / numQuestions) * 100;
+  const scoreContainer = document.getElementById("score-breakdown");
+  let scoreBreakdownText = `<h4 class="${scorePercentage < 75 ? "incorrect" : "correct"
+    }">Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(2)}%)</h4>`;
+
+  for (const category in categoryCounts) {
+    const correct = categoryScores[category];
+    const total = categoryCounts[category];
+    const categoryPercentage = total > 0 ? (correct / total) * 100 : 0;
+    scoreBreakdownText += `<p class="${categoryPercentage < 75 ? "incorrect" : "correct"
+      }">${category}: ${correct} / ${total} (${categoryPercentage.toFixed(
+        2
+      )}%)</p>`;
+  }
+  scoreContainer!.innerHTML = scoreBreakdownText;
+}
+
+function findAttempt(): Attempt | null {
   const urlParams = new URLSearchParams(globalThis.location.search);
   const attemptIndex = urlParams.get("index");
   const storageKey = "quizHistory";
-  const history = JSON.parse(localStorage.getItem(storageKey) || "[]") as any[];
+  const history = JSON.parse(localStorage.getItem(storageKey) || "[]") as Attempt[];
 
   if (attemptIndex === null || parseInt(attemptIndex) >= history.length) {
-    document.getElementById("attempt-container")!.innerHTML =
-      "<p class='text-danger'>Invalid attempt.</p>";
-    return;
+    console.error("404: not found");
+    return null;
   }
 
   const attempt = history[attemptIndex];
   if (!attempt.answers) {
-    document.getElementById("attempt-container")!.innerHTML =
-      "<p class='text-danger'>Invalid attempt.</p>";
-    return;
+    console.error("invalid attempt", JSON.stringify(attempt));
+    return null;
   }
+  attempt.index = attemptIndex;
+  return attempt;
+}
 
-  const attemptInfo = document.getElementById("attempt-info");
-  attemptInfo!.innerHTML = `Attempt ${parseInt(attemptIndex) + 1} - 
-    (${new Date(attempt.timestamp).toLocaleString()})`;
-
-  let score = 0;
+async function findQuestions(answers: Answer[]) {
   const response = await fetch(`./questions.json`);
-  const allQuestions = await response.json();
-
-  const container = document.getElementById("attempt-container")!;
+  const all_questions = await response.json();
   const questions: Question[] = [];
-  const categoryCounts: { [key: string]: number } = {};
-  const categoryScores: { [key: string]: number } = {};
 
-  Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
-    const q = findQuestion(allQuestions, questionId);
-    if (!q) {
-      console.error("Question not found:", questionId);
-      return;
+  for (const answer of answers) {
+    const question = findQuestion(all_questions, answer.question_id);
+    if (!question) {
+      console.error(`question ${answer.question_id} could not be found`);
+      continue;
     }
-    const correct = userAnswer == q.correct_answer;
-    if (!categoryCounts[q.category!]) {
-      categoryCounts[q.category!] = 0;
-      categoryScores[q.category!] = 0;
-    }
-    if (correct) {
-      score++;
-      categoryScores[q.category!]++;
-    }
-    categoryCounts[q.category!]++;
-    questions.push(q);
+    question.user_answer = answer.user_answer;
+    questions.push(question);
+  }
+  return questions;
+}
 
+function renderQuestions(container: HTMLElement, questions: Question[]) {
+  for (const question of questions) {
+    const correct = question.correct_answer == question.user_answer;
+    // render
     const div = document.createElement("div");
     div.className = "question border p-3 mb-3 rounded";
-    div.innerHTML = `<p class="fw-bold ${correct ? "" : "incorrect"}">${
-      q.question
-    }</p>`;
-    for (const [key, value] of Object.entries(q.options)) {
-      const isUserAnswer = userAnswer === key;
-      const isCorrect = String(q.correct_answer) === key;
+    div.innerHTML = `<p class="fw-bold ${correct ? "" : "incorrect"}">${question.question
+      }</p>`;
+    for (let i = 0; i < question.options.length; i++) {
+
+      const isUserAnswer = question.user_answer === i;
+      const isCorrect = question.correct_answer === i;
       div.innerHTML += `
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question-${
-                              q.id
-                            }" value="${key}" disabled ${
-        isUserAnswer ? "checked" : ""
-      }>
-                            <label class="form-check-label ${
-                              isCorrect ? "fw-bold" : ""
-                            }">
-                                ${letters[key]}: ${value}
+                            <input class="form-check-input" type="radio" name="question-${question.id
+        }" value="${i}" disabled ${isUserAnswer ? "checked" : ""
+        }>
+                            <label class="form-check-label ${isCorrect ? "fw-bold" : ""
+        }">
+                                ${letters[i]}: ${question.question}
                             </label>
                         </div>
                     `;
     }
 
     container.appendChild(div);
-  });
-
-  const numQuestions = questions.length;
-  const scorePercentage = (score / numQuestions) * 100;
-  const scoreContainer = document.getElementById("score-breakdown");
-  let scoreBreakdownText = `<h4 class="${
-    scorePercentage < 75 ? "incorrect" : "correct"
-  }">Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(2)}%)</h4>`;
-
-  for (const category in categoryCounts) {
-    const correct = categoryScores[category];
-    const total = categoryCounts[category];
-    const categoryPercentage = total > 0 ? (correct / total) * 100 : 0;
-    scoreBreakdownText += `<p class="${
-      categoryPercentage < 75 ? "incorrect" : "correct"
-    }">${category}: ${correct} / ${total} (${categoryPercentage.toFixed(
-      2
-    )}%)</p>`;
   }
-  scoreContainer!.innerHTML = scoreBreakdownText;
+}
+
+async function renderAttempt() {
+  const container = document.getElementById("attempt-container")!;
+  if (!container) {
+    console.error("container not found");
+    return;
+  }
+  const attempt = findAttempt();
+  if (!attempt) {
+    container.innerHTML =
+      "<p class='text-danger'>Invalid attempt.</p>";
+    return;
+  }
+  const attemptInfo = document.getElementById("attempt-info");
+  if (attemptInfo) {
+    attemptInfo!.innerHTML = `Attempt ${(attempt.index ?? 0) + 1} - 
+    (${new Date(attempt.timestamp).toLocaleString()})`;
+  }
+
+
+  const questions = await findQuestions(attempt.answers);
+  renderQuestions(container, questions);
+  renderScore(questions);
 }
 renderAttempt();
+
