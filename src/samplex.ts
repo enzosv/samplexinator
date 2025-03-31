@@ -30,7 +30,7 @@ async function loadQuestions() {
   for (const category in data) {
     const shuffled = data[category]
       .sort(() => 0.5 - Math.random()) // shuffle
-      .slice(0, config.count_per_category) // number of questions per category
+      .slice(0, category == "physics" ? 4 : 3) // number of questions per category
       .map((q) => ({ ...q, category: category })); // add category to data
     loadedQuestions = [...loadedQuestions, ...shuffled];
   }
