@@ -48,7 +48,6 @@ async function renderHistory() {
     let score = 0;
     let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
     let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
-    console.log(JSON.stringify(attempt));
 
     for (const answer of attempt.answers) {
       const question = findQuestion(all_questions, answer.question_id);
