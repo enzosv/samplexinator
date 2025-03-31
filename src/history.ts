@@ -153,17 +153,22 @@ function scoreClass(percentage) {
 }
 
 function renderChart(
-  anatomyScores,
-  physicsScores,
-  procedureScores,
+  anatomyScores: number[],
+  physicsScores: number[],
+  procedureScores: number[],
   maxY: number
 ) {
   const container = document.getElementById("history-chart") as HTMLCanvasElement;
   if (!container) {
-    console.error("missing chart");
+    console.error("Missing chart canvas element with id 'history-chart'");
     return;
   }
   const ctx = container.getContext("2d");
+  if (!ctx) {
+    console.error("Failed to get 2D context for chart canvas.");
+    return;
+  }
+
 
   const labels = anatomyScores.map((_, i) => `Attempt ${i + 1}`);
 
