@@ -91,7 +91,6 @@ function saveAnswer(question_id: number, choice: number) {
 function submitAnswers() {
   const data = localStorage.getItem(storageKey);
   const history = data ? JSON.parse(data) : [];
-
   const attempt = {
     timestamp: new Date().toISOString(),
     answers: answers,
@@ -99,6 +98,7 @@ function submitAnswers() {
 
   history.push(attempt);
   localStorage.setItem(storageKey, JSON.stringify(history));
+
   globalThis.location.href = `attempt.html?index=${history.length - 1}`;
 }
 
