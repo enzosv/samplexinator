@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "esnext", "deno.ns"]
+    "lib": [
+      "dom",
+      "esnext",
+      "deno.ns"
+    ]
   },
   "tasks": {
     "serve": "deno run --allow-net --allow-read https://deno.land/std/http/file_server.ts",
     "build": "deno run -A build.ts",
-    "compile": "deno run -A compile.ts"
+    "compile": "deno run -A compile.ts",
+    "dev": "deno run --allow-read --allow-write --allow-run --allow-net dev.ts"
   }
 }
