@@ -51,13 +51,33 @@ function renderSamplexQuestions(questions: Question[]) {
     div.innerHTML = `<p><strong>${index + 1}) ${q.question}</strong></p>`;
 
     for (let i = 0; i < q.options.length; i++) {
-      div.innerHTML += `
-                  <div class="form-check">
-          <input class="form-check-input d-none" type="radio" id="option-${q.id}-${i}" name="question-${q.id}" value="${i}" onchange="saveAnswer(${q.id}, ${i});">
-          <label class="form-check-label btn btn-outline-primary w-100 text-start py-2" for="option-${q.id}-${i}">
-              <strong>${letters[i]}</strong>: ${q.options[i]}
-          </label>
-      </div>`;
+      const optionWrapper = document.createElement("div");
+      optionWrapper.className = "form-check";
+
+      const input = document.createElement("input");
+      input.className = "form-check-input d-none"; // Keep hidden if using label styling
+      input.type = "radio";
+      input.id = `option-${q.id}-${i}`;
+      input.name = `question-${q.id}`; // Group radios by question
+      input.value = i.toString(); // Set value to the option index
+
+      input.addEventListener("change", () => {
+        saveAnswer(q.id, i);
+      });
+
+      const label = document.createElement("label");
+      label.className =
+        "form-check-label btn btn-outline-primary w-100 text-start py-2";
+      label.htmlFor = input.id; // Associate label with input
+      // Use innerHTML for the strong tag, ensure q.options[i] is safe or sanitize if needed
+      label.innerHTML = `<strong>${letters[i]}</strong>: ${q.options[i]}`;
+
+      // Append input and label to the wrapper div
+      optionWrapper.appendChild(input);
+      optionWrapper.appendChild(label);
+
+      // Append the option wrapper to the main question div
+      div.appendChild(optionWrapper);
     }
 
     container.appendChild(div);
