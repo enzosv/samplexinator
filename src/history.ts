@@ -2,10 +2,13 @@ document.addEventListener("DOMContentLoaded", function () {
   renderHistory();
 });
 
-function findQuestion(allQuestions, questionId) {
-  for (const category of Object.keys(allQuestions)) {
-    const found = allQuestions[category].find(
-      (q) => q.id == parseInt(questionId)
+const storageKey = "quizHistory";
+
+
+function findQuestion(all_questions, question_id) {
+  for (const category of Object.keys(all_questions)) {
+    const found = all_questions[category].find(
+      (q) => q.id == parseInt(question_id)
     );
     if (found) {
       return { ...found, category };
@@ -15,30 +18,37 @@ function findQuestion(allQuestions, questionId) {
 }
 
 async function renderHistory() {
-  const historyTable = document.getElementById("history-table");
-  let history = JSON.parse(localStorage.getItem("quizHistory")) || [];
+  const historyTable = document.getElementById("history-table")!;
+  if (!historyTable) {
+    console.error("historyTable not found");
+    return;
+  }
+  const history = JSON.parse(localStorage.getItem(storageKey) || "[]") as Attempt[];
 
   if (history.length === 0) {
     historyTable.innerHTML =
-      "<tr><td colspan='6' class='text-center'>No history available</td></tr>";
+      "<tr><td colspan='7' class='text-center'>No history available</td></tr>";
     return;
   }
 
   const response = await fetch(`./questions.json`);
-  const allQuestions = await response.json();
+  const all_questions = await response.json();
 
-  let anatomyScores = [];
-  let physicsScores = [];
-  let procedureScores = [];
+  let anatomyScores: number[] = [];
+  let physicsScores: number[] = [];
+  let procedureScores: number[] = [];
 
   let totalScores = { anatomy: 0, physics: 0, procedures: 0 };
   let totalCounts = { anatomy: 0, physics: 0, procedures: 0 };
   let maxY = 0;
 
-  history.forEach((attempt, index) => {
+  for (let i = 0; i < history.length; i++) {
+    const attempt = history[i];
     if (!attempt.answers) {
+      console.warn("invalid attempt. no answers", JSON.stringify(attempt));
       return;
     }
+    console.log(attempt);
     const numQuestions = Object.keys(attempt.answers).length;
     if (numQuestions > maxY) {
       maxY = numQuestions;
@@ -46,28 +56,32 @@ async function renderHistory() {
     let score = 0;
     let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
     let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
-
-    Object.entries(attempt.answers).forEach(([questionId, userAnswer]) => {
-      const q = findQuestion(allQuestions, questionId);
-      if (!q) {
-        console.error("Question not found:", questionId);
+    for (const answer of attempt.answers) {
+      const question = findQuestion(all_questions, answer.question_id);
+      if (!question) {
+        console.error("Question not found:", answer.question_id);
         return;
       }
-      q.correct = userAnswer == q.correct_answer;
-      if (q.correct) {
-        score++;
-        categoryScores[q.category]++;
-        totalScores[q.category]++;
+      const category = question.category;
+      if (!category) {
+        console.error("invalid question. missing category");
+        continue;
       }
-      categoryCounts[q.category]++;
-      totalCounts[q.category]++;
-    });
+      const correct = answer.user_answer == question.correct_answer;
+      if (correct) {
+        score++;
+        categoryScores[category]++;
+        totalScores[category]++;
+      }
+      categoryCounts[category]++;
+      totalCounts[category]++;
+    }
 
     anatomyScores.push(categoryScores.anatomy);
     physicsScores.push(categoryScores.physics);
     procedureScores.push(categoryScores.procedures);
     const row = generateRow(
-      index,
+      i,
       attempt.timestamp,
       score,
       numQuestions,
@@ -75,8 +89,10 @@ async function renderHistory() {
       categoryScores
     );
     historyTable.appendChild(row);
-  });
-  populateAverage(totalScores, totalCounts);
+  }
+
+
+  populateAverage(history.length, totalScores, totalCounts);
   renderChart(anatomyScores, physicsScores, procedureScores, maxY);
 }
 
@@ -96,8 +112,8 @@ function generateRow(
             <td>${index + 1}</td>
             <td>${date}</td>
             <td class="${scoreClass(
-              scorePercentage
-            )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+    scorePercentage
+  )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
     2
   )}%)</small></td>`;
 
@@ -113,7 +129,7 @@ function generateRow(
   return row;
 }
 
-function populateAverage(totalScores, totalCounts) {
+function populateAverage(count, totalScores, totalCounts) {
   const averageScore =
     ((totalScores.anatomy + totalScores.physics + totalScores.procedures) *
       100) /
@@ -125,7 +141,7 @@ function populateAverage(totalScores, totalCounts) {
     (totalScores.procedures * 100) / totalCounts.procedures;
 
   document.getElementById("average-scores").innerHTML = `
-<th>${history.length} Attempts</th>
+<th>${count} Attempt(s)</th>
 <th></th>
 <th class="${scoreClass(averageScore)}">${averageScore.toFixed(2)}%</th>
 <th class="${scoreClass(anatomyScore)}">${anatomyScore.toFixed(2)}%</th>
