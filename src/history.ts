@@ -1,21 +1,15 @@
+import {
+  Attempt,
+  CategoryData,
+  storageKey,
+  findQuestion,
+  fetchQuestions,
+} from "./shared.js";
+
 document.addEventListener("DOMContentLoaded", function () {
   renderHistory();
 });
 
-const storageKey = "quizHistory";
-
-
-function findQuestion(all_questions, question_id) {
-  for (const category of Object.keys(all_questions)) {
-    const found = all_questions[category].find(
-      (q) => q.id == parseInt(question_id)
-    );
-    if (found) {
-      return { ...found, category };
-    }
-  }
-  return null;
-}
 
 async function renderHistory() {
   const historyTable = document.getElementById("history-table")!;
@@ -31,15 +25,14 @@ async function renderHistory() {
     return;
   }
 
-  const response = await fetch(`./questions.json`);
-  const all_questions = await response.json();
+  const all_questions = await fetchQuestions();
 
   let anatomyScores: number[] = [];
   let physicsScores: number[] = [];
   let procedureScores: number[] = [];
 
-  let totalScores = { anatomy: 0, physics: 0, procedures: 0 };
-  let totalCounts = { anatomy: 0, physics: 0, procedures: 0 };
+  let totalScores: CategoryData = { anatomy: 0, physics: 0, procedures: 0 };
+  let totalCounts: CategoryData = { anatomy: 0, physics: 0, procedures: 0 };
   let maxY = 0;
 
   for (let i = 0; i < history.length; i++) {
@@ -96,12 +89,12 @@ async function renderHistory() {
 }
 
 function generateRow(
-  index,
-  timestamp,
-  score,
-  numQuestions,
-  categoryCounts,
-  categoryScores
+  index: number,
+  timestamp: string,
+  score: number,
+  numQuestions: number,
+  categoryCounts: CategoryData, // Assuming CategoryData interface is available
+  categoryScores: CategoryData
 ) {
   const row = document.createElement("tr");
   const date = new Date(timestamp).toLocaleString();

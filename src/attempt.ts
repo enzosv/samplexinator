@@ -1,21 +1,13 @@
-const letters = ["A", "B", "C", "D"];
-const storageKey = "quizHistory";
+import {
+  Question,
+  Answer,
+  Attempt,
+  letters,
+  storageKey,
+  findQuestion,
+  fetchQuestions,
+} from "./shared.js"
 
-
-function findQuestion(all_questions: any, question_id: number): Question | null {
-  for (const category of Object.keys(all_questions)) {
-    const found = (all_questions[category] as Question[]).find(
-      (q) => q.id == question_id
-    );
-    if (!found) {
-      continue;
-    }
-    const q = found;
-    q.category = category;
-    return q;
-  }
-  return null;
-}
 
 function renderScore(questions: Question[]) {
   const categoryCounts: { [key: string]: number } = {};
@@ -62,7 +54,6 @@ function renderScore(questions: Question[]) {
 function findAttempt(): Attempt | null {
   const urlParams = new URLSearchParams(globalThis.location.search);
   const attemptIndex = urlParams.get("index");
-  const storageKey = "quizHistory";
   const history = JSON.parse(localStorage.getItem(storageKey) || "[]") as Attempt[];
 
   if (attemptIndex === null || parseInt(attemptIndex) >= history.length) {
@@ -80,8 +71,7 @@ function findAttempt(): Attempt | null {
 }
 
 async function findQuestions(answers: Answer[]) {
-  const response = await fetch(`./questions.json`);
-  const all_questions = await response.json();
+  const all_questions = await fetchQuestions();
   const questions: Question[] = [];
 
   for (const answer of answers) {

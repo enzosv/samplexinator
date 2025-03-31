@@ -1,25 +1,12 @@
+import {
+  Question,
+  Answer,
+  letters,
+  storageKey,
+  fetchQuestions,
+} from "./shared.js"
+
 const answers: Answer[] = [];
-const letters = ["A", "B", "C", "D"];
-const storageKey = "quizHistory";
-
-
-
-
-async function fetchQuestions(): Promise<Category> {
-  const response = await fetch("./questions.json");
-  return response.json();
-}
-
-interface Category {
-  [category: string]: Question[];
-}
-
-interface Question {
-  id: number;
-  question: string;
-  options: string[];
-  correct_answer: number;
-}
 
 async function loadQuestions() {
   const data = await fetchQuestions();
