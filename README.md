@@ -11,4 +11,3 @@ A mini webpage to aid in reviewing for the Radiology boards
   - ChatGPT didn't do so well
 2. Replace questions.json with your output
 3. If categories changed, change the categories in history.json
-4. Modify config.json to indicate how many questions you want per category
