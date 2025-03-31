@@ -133,6 +133,7 @@ async function renderAttempt() {
     attemptInfo!.innerHTML = `Attempt ${attempt_number}`;
   }
 
+  console.log(JSON.stringify(attempt));
 
   const questions = await findQuestions(attempt.answers);
   renderQuestions(container, questions);
