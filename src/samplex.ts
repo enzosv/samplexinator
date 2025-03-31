@@ -2,11 +2,6 @@ const letters = ["A", "B", "C", "D"];
 const answers: Record<number, string> = {};
 const storageKey = "quizHistory";
 
-async function fetchConfig() {
-  const response = await fetch("./config.json");
-  return response.json();
-}
-
 async function fetchQuestions(): Promise<Category> {
   const response = await fetch("./questions.json");
   return response.json();
@@ -24,7 +19,7 @@ interface Question {
 }
 
 async function loadQuestions() {
-  const [data, config] = await Promise.all([fetchQuestions(), fetchConfig()]);
+  const data = await fetchQuestions();
   let loadedQuestions: Question[] = [];
 
   for (const category in data) {
