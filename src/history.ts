@@ -48,7 +48,6 @@ async function renderHistory() {
       console.warn("invalid attempt. no answers", JSON.stringify(attempt));
       return;
     }
-    console.log(attempt);
     const numQuestions = Object.keys(attempt.answers).length;
     if (numQuestions > maxY) {
       maxY = numQuestions;
@@ -130,6 +129,11 @@ function generateRow(
 }
 
 function populateAverage(count, totalScores, totalCounts) {
+  const container = document.getElementById("average-scores");
+  if (!container) {
+    console.error("missing average row");
+    return;
+  }
   const averageScore =
     ((totalScores.anatomy + totalScores.physics + totalScores.procedures) *
       100) /
@@ -140,7 +144,7 @@ function populateAverage(count, totalScores, totalCounts) {
   const proceduresScore =
     (totalScores.procedures * 100) / totalCounts.procedures;
 
-  document.getElementById("average-scores").innerHTML = `
+  container.innerHTML = `
 <th>${count} Attempt(s)</th>
 <th></th>
 <th class="${scoreClass(averageScore)}">${averageScore.toFixed(2)}%</th>
@@ -161,9 +165,15 @@ function renderChart(
   procedureScores,
   maxY: number
 ) {
+  const container = document.getElementById("history-chart") as HTMLCanvasElement;
+  if (!container) {
+    console.error("missing chart");
+    return;
+  }
+  const ctx = container.getContext("2d");
+
   const labels = anatomyScores.map((_, i) => `Attempt ${i + 1}`);
 
-  const ctx = document.getElementById("history-chart").getContext("2d");
   new Chart(ctx, {
     type: "bar",
     data: {
