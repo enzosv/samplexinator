@@ -77,27 +77,25 @@ function renderQuestions(questions: Question[]) {
 function saveAnswer(questionId: number, choice: string) {
   answers[questionId] = choice;
 
-  const options = document.getElementsByName(`question-${questionId}`);
-  options.forEach((option) => {
-    const input = option as HTMLInputElement;
+  // Get all labels for the current question using a query that selects labels whose 'for' attribute starts with 'option-{questionId}-'
+  const labels = document.querySelectorAll(`label[for^="option-${questionId}-"]`);
 
-    const label = document.querySelector(
-      `label[for="option-${questionId}-${input.value}"]`
-    );
-    if (label) {
-      label.classList.remove("btn-primary", "active"); // Remove highlight from all
-      label.classList.add("btn-outline-primary"); // Reapply outline
+  labels.forEach((label) => {
+    const l = label as HTMLLabelElement;
+    // Get the corresponding input element using the label's 'for' attribute
+    const input = document.getElementById(l.htmlFor) as HTMLInputElement;
+
+    // If this label corresponds to the selected radio button's value, activate it
+    if (input.value === choice) {
+      l.classList.remove("btn-outline-primary");
+      l.classList.add("btn-primary", "active");
+      return;
     }
-  });
+    // Reset all labels for this question: remove active/primary styles, ensure outline style is present
 
-  // Highlight the selected option
-  const selectedLabel = document.querySelector(
-    `label[for="option-${questionId}-${choice}"]`
-  );
-  if (selectedLabel) {
-    selectedLabel.classList.remove("btn-outline-primary");
-    selectedLabel.classList.add("btn-primary", "active");
-  }
+    l.classList.remove("btn-primary", "active");
+    l.classList.add("btn-outline-primary");
+  });
 }
 
 function submitAnswers() {
