@@ -188,7 +188,7 @@ function renderChart(
           backgroundColor: "#2ecc71",
         },
         {
-          label: "Procedure",
+          label: "Procedures",
           data: procedureScores,
           backgroundColor: "#f1c40f",
         },
