@@ -115,6 +115,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const questions = await loadQuestions();
   renderSamplexQuestions(questions);
 
+  // TODO: add count of answered questions above submit button
+  // TODO: sticky footer
   document
     .getElementById("submit-button")
     ?.addEventListener("click", submitAnswers);
