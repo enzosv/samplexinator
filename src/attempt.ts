@@ -134,7 +134,7 @@ async function renderAttempt() {
   }
   const attemptInfo = document.getElementById("attempt-info");
   if (attemptInfo) {
-    const attempt_number: number = attempt.index ?? 0;
+    const attempt_number = Number(attempt.index ?? 0) + 1;
     attemptInfo!.innerHTML = `Attempt ${attempt_number}`;
   }
 
@@ -143,6 +143,6 @@ async function renderAttempt() {
   renderScore(questions);
 }
 
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
   renderAttempt();
 });
