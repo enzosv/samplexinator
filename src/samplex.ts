@@ -7,6 +7,7 @@ import {
 } from "./shared.js";
 
 const answers: Answer[] = [];
+let questions_count = 0;
 
 async function loadQuestions() {
   const data = await fetchQuestions();
@@ -94,6 +95,9 @@ function saveAnswer(question_id: number, choice: number) {
 
     l.classList.remove("btn-primary", "active");
     l.classList.add("btn-outline-primary");
+
+    // Update the count display and submit button state
+    updateSubmitState();
   });
 }
 
@@ -113,11 +117,21 @@ export function submitAnswers() {
 
 document.addEventListener("DOMContentLoaded", async function () {
   const questions = await loadQuestions();
+  questions_count = questions.length;
+  updateSubmitState();
   renderSamplexQuestions(questions);
 
-  // TODO: add count of answered questions above submit button
-  // TODO: sticky footer
   document
     .getElementById("submit-button")
     ?.addEventListener("click", submitAnswers);
 });
+
+function updateSubmitState() {
+  const answeredCount = answers.length;
+  const submitButton = document.getElementById("submit-button") as HTMLButtonElement;
+
+
+  document.getElementById("answered-count")!.textContent = `${answeredCount} / ${questions_count} Answered`;
+
+  submitButton!.disabled = answeredCount === 0;
+}
