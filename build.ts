@@ -30,16 +30,16 @@ async function compileTs() {
   console.log("✅ TS files compiled to dist/");
 }
 
-// Function to copy HTML files
-async function copyHtml() {
+// Function to copy HTML and CSS files
+async function copyHtmlCss() {
   for await (const file of Deno.readDir(SRC_DIR)) {
-    if (file.isFile && file.name.endsWith(".html")) {
+    if (file.isFile && (file.name.endsWith(".html") || file.name.endsWith(".css"))) {
       await copy(`${SRC_DIR}/${file.name}`, `${DIST_DIR}/${file.name}`, {
         overwrite: true,
       });
     }
   }
-  console.log("✅ HTML files copied to dist/");
+  console.log("✅ HTML and CSS files copied to dist/");
 }
 
 async function copyJson() {
@@ -65,6 +65,6 @@ async function copyJson() {
   console.log("✅ JSON files minified and copied to dist/");
 }
 // Run the tasks
-await Promise.all([compileTs(), copyHtml(), copyJson()]);
+await Promise.all([compileTs(), copyHtmlCss(), copyJson()]);
 console.log("🚀 Build completed successfully!");
 Deno.exit(0);
