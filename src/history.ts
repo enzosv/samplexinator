@@ -34,7 +34,6 @@ async function renderHistory() {
 
   let totalScores: CategoryData = { anatomy: 0, physics: 0, procedures: 0 };
   let totalCounts: CategoryData = { anatomy: 0, physics: 0, procedures: 0 };
-  let maxY = 0;
 
   for (let i = 0; i < history.length; i++) {
     const attempt = history[i];
@@ -43,9 +42,6 @@ async function renderHistory() {
       return;
     }
     const numQuestions = Object.keys(attempt.answers).length;
-    if (numQuestions > maxY) {
-      maxY = numQuestions;
-    }
     let score = 0;
     let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
     let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
@@ -72,9 +68,9 @@ async function renderHistory() {
 
     // TODO: base on percentage
     // so graph is consistent even if number of questions change
-    anatomyScores.push(categoryScores.anatomy);
-    physicsScores.push(categoryScores.physics);
-    procedureScores.push(categoryScores.procedures);
+    anatomyScores.push(categoryScores.anatomy * 100 / (categoryCounts.anatomy * 3));
+    physicsScores.push(categoryScores.physics * 100 / (categoryCounts.physics * 3));
+    procedureScores.push(categoryScores.procedures * 100 / (categoryCounts.procedures * 3));
     const row = generateRow(
       i,
       attempt.timestamp,
@@ -87,7 +83,7 @@ async function renderHistory() {
   }
 
   populateAverage(history.length, totalScores, totalCounts);
-  renderChart(anatomyScores, physicsScores, procedureScores, maxY);
+  renderChart(anatomyScores, physicsScores, procedureScores);
 }
 
 function generateRow(
@@ -106,8 +102,8 @@ function generateRow(
             <td>${index + 1}</td>
             <td>${date}</td>
             <td class="${scoreClass(
-              scorePercentage
-            )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+    scorePercentage
+  )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
     2
   )}%)</small></td>`;
 
@@ -158,7 +154,6 @@ function renderChart(
   anatomyScores: number[],
   physicsScores: number[],
   procedureScores: number[],
-  maxY: number
 ) {
   const container = document.getElementById(
     "history-chart"
@@ -203,8 +198,8 @@ function renderChart(
         x: { stacked: true },
         y: {
           stacked: true,
-          max: maxY,
           title: { display: true, text: "Score" },
+          max: 100
         },
       },
       plugins: {
