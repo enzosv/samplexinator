@@ -1,10 +1,10 @@
 import {
-  Question,
   Answer,
-  letters,
-  storageKey,
   fetchQuestions,
-} from "./shared.js"
+  letters,
+  Question,
+  storageKey,
+} from "./shared.js";
 
 const answers: Answer[] = [];
 
@@ -24,7 +24,7 @@ async function loadQuestions() {
   return loadedQuestions.sort(() => 0.5 - Math.random());
 }
 
-function renderSamplexQuestions(questions: Question[]) {
+export function renderSamplexQuestions(questions: Question[]) {
   const container = document.getElementById("quiz-container");
   if (!container) {
     console.error("container could not be found");
@@ -75,7 +75,9 @@ function saveAnswer(question_id: number, choice: number) {
   answers.push({ question_id: question_id, user_answer: choice });
 
   // Get all labels for the current question using a query that selects labels whose 'for' attribute starts with 'option-{question_id}-'
-  const labels = document.querySelectorAll(`label[for^="option-${question_id}-"]`);
+  const labels = document.querySelectorAll(
+    `label[for^="option-${question_id}-"]`
+  );
 
   labels.forEach((label) => {
     const l = label as HTMLLabelElement;
@@ -95,7 +97,7 @@ function saveAnswer(question_id: number, choice: number) {
   });
 }
 
-function submitAnswers() {
+export function submitAnswers() {
   const data = localStorage.getItem(storageKey);
   const history = data ? JSON.parse(data) : [];
   const attempt = {
@@ -113,5 +115,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   const questions = await loadQuestions();
   renderSamplexQuestions(questions);
 
-  document.getElementById("submit-button")?.addEventListener("click", submitAnswers);
+  // TODO: add count of answered questions above submit button
+  // TODO: sticky footer
+  document
+    .getElementById("submit-button")
+    ?.addEventListener("click", submitAnswers);
 });

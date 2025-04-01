@@ -1,15 +1,14 @@
 import {
   Attempt,
   CategoryData,
-  storageKey,
-  findQuestion,
   fetchQuestions,
+  findQuestion,
+  storageKey,
 } from "./shared.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   renderHistory();
 });
-
 
 async function renderHistory() {
   const historyTable = document.getElementById("history-table")!;
@@ -17,7 +16,9 @@ async function renderHistory() {
     console.error("historyTable not found");
     return;
   }
-  const history = JSON.parse(localStorage.getItem(storageKey) || "[]") as Attempt[];
+  const history = JSON.parse(
+    localStorage.getItem(storageKey) || "[]"
+  ) as Attempt[];
 
   if (history.length === 0) {
     historyTable.innerHTML =
@@ -70,6 +71,8 @@ async function renderHistory() {
       totalCounts[category]++;
     }
 
+    // TODO: base on percentage
+    // so graph is consistent even if number of questions change
     anatomyScores.push(categoryScores.anatomy);
     physicsScores.push(categoryScores.physics);
     procedureScores.push(categoryScores.procedures);
@@ -83,7 +86,6 @@ async function renderHistory() {
     );
     historyTable.appendChild(row);
   }
-
 
   populateAverage(history.length, totalScores, totalCounts);
   renderChart(anatomyScores, physicsScores, procedureScores, maxY);
@@ -105,8 +107,8 @@ function generateRow(
             <td>${index + 1}</td>
             <td>${date}</td>
             <td class="${scoreClass(
-    scorePercentage
-  )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+              scorePercentage
+            )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
     2
   )}%)</small></td>`;
 
@@ -159,7 +161,9 @@ function renderChart(
   procedureScores: number[],
   maxY: number
 ) {
-  const container = document.getElementById("history-chart") as HTMLCanvasElement;
+  const container = document.getElementById(
+    "history-chart"
+  ) as HTMLCanvasElement;
   if (!container) {
     console.error("Missing chart canvas element with id 'history-chart'");
     return;
@@ -169,7 +173,6 @@ function renderChart(
     console.error("Failed to get 2D context for chart canvas.");
     return;
   }
-
 
   const labels = anatomyScores.map((_, i) => `Attempt ${i + 1}`);
 
@@ -199,11 +202,15 @@ function renderChart(
       responsive: true,
       scales: {
         x: { stacked: true },
-        y: { stacked: true, max: maxY, title: { display: true, text: 'Score' } },
+        y: {
+          stacked: true,
+          max: maxY,
+          title: { display: true, text: "Score" },
+        },
       },
       plugins: {
         tooltip: {
-          mode: 'index',
+          mode: "index",
           intersect: false,
         },
       },
