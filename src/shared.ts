@@ -41,20 +41,20 @@ export interface QuestionCategoriesJson {
 /**
  * Finds a question by its ID within the categorized questions object fetched from JSON.
  * Returns a *new* question object with the category name added.
- * @param allQuestions - The object containing categorized questions (like the result of fetchQuestions).
- * @param questionId - The numeric ID of the question to find.
+ * @param all_questions - The object containing categorized questions (like the result of fetchQuestions).
+ * @param question_id - The numeric ID of the question to find.
  * @returns A Question object with the category property added, or null if not found.
  */
 export function findQuestion(
-    allQuestions: QuestionCategoriesJson,
-    questionId: number
+  all_questions: QuestionCategoriesJson,
+  question_id: number
 ): Question | null {
-    for (const category in allQuestions) {
+  for (const category in all_questions) {
         // Ensure we are iterating over the object's own properties
-        if (Object.prototype.hasOwnProperty.call(allQuestions, category)) {
-            const questionsInCategory = allQuestions[category];
+    if (Object.prototype.hasOwnProperty.call(all_questions, category)) {
+      const questionsInCategory = all_questions[category];
             // Use strict equality check (===)
-            const found = questionsInCategory.find((q) => q.id === questionId);
+      const found = questionsInCategory.find((q) => q.id === question_id);
             if (found) {
                 // Return a *new* object, merging the found question with its category.
                 // This avoids modifying the original fetched data.
