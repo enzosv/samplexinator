@@ -25,11 +25,15 @@ export interface Attempt {
   index?: number; // Optional: Added when retrieving specific attempt
 }
 
+export interface Score {
+  correct: number;
+  total: number;
+}
+
 export interface CategoryData {
-  anatomy: number;
-  physics: number;
-  procedures: number;
-  [key: string]: number; // Allow dynamic access using category strings
+  anatomy: Score;
+  physics: Score;
+  procedures: Score;
 }
 
 // Interface representing the structure directly fetched from questions.json

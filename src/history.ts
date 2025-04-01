@@ -3,6 +3,7 @@ import {
   CategoryData,
   fetchQuestions,
   findQuestion,
+  Score,
   storageKey,
 } from "./shared.js";
 
@@ -28,12 +29,15 @@ async function renderHistory() {
 
   const all_questions = await fetchQuestions();
 
-  let anatomyScores: number[] = [];
-  let physicsScores: number[] = [];
-  let procedureScores: number[] = [];
+  let anatomyScores: Score[] = [];
+  let physicsScores: Score[] = [];
+  let procedureScores: Score[] = [];
 
-  let totalScores: CategoryData = { anatomy: 0, physics: 0, procedures: 0 };
-  let totalCounts: CategoryData = { anatomy: 0, physics: 0, procedures: 0 };
+  let totalScores: CategoryData = {
+    anatomy: { correct: 0, total: 0 },
+    physics: { correct: 0, total: 0 },
+    procedures: { correct: 0, total: 0 },
+  };
 
   for (let i = 0; i < history.length; i++) {
     const attempt = history[i];
@@ -43,8 +47,11 @@ async function renderHistory() {
     }
     const numQuestions = Object.keys(attempt.answers).length;
     let score = 0;
-    let categoryCounts = { anatomy: 0, physics: 0, procedures: 0 };
-    let categoryScores = { anatomy: 0, physics: 0, procedures: 0 };
+    let scores = {
+      anatomy: { correct: 0, total: 0 },
+      physics: { correct: 0, total: 0 },
+      procedures: { correct: 0, total: 0 }
+    };
     for (const answer of attempt.answers) {
       const question = findQuestion(all_questions, answer.question_id);
       if (!question) {
@@ -59,30 +66,28 @@ async function renderHistory() {
       const correct = answer.user_answer == question.correct_answer;
       if (correct) {
         score++;
-        categoryScores[category]++;
-        totalScores[category]++;
+        scores[category].correct++;
+        totalScores[category].correct++;
       }
-      categoryCounts[category]++;
-      totalCounts[category]++;
+      scores[category].total++;
+      totalScores[category].total++;
     }
 
-    // TODO: base on percentage
-    // so graph is consistent even if number of questions change
-    anatomyScores.push(categoryScores.anatomy * 100 / (categoryCounts.anatomy * 3));
-    physicsScores.push(categoryScores.physics * 100 / (categoryCounts.physics * 3));
-    procedureScores.push(categoryScores.procedures * 100 / (categoryCounts.procedures * 3));
+    anatomyScores.push(scores.anatomy);
+    physicsScores.push(scores.physics);
+    procedureScores.push(scores.procedures);
+
     const row = generateRow(
       i,
       attempt.timestamp,
       score,
       numQuestions,
-      categoryCounts,
-      categoryScores
+      scores,
     );
     historyTable.appendChild(row);
   }
 
-  populateAverage(history.length, totalScores, totalCounts);
+  populateAverage(history.length, totalScores);
   renderChart(anatomyScores, physicsScores, procedureScores);
 }
 
@@ -91,8 +96,7 @@ function generateRow(
   timestamp: string,
   score: number,
   numQuestions: number,
-  categoryCounts: CategoryData, // Assuming CategoryData interface is available
-  categoryScores: CategoryData
+  scores: CategoryData, // Assuming CategoryData interface is available
 ) {
   const row = document.createElement("tr");
   const date = new Date(timestamp).toLocaleString();
@@ -107,9 +111,9 @@ function generateRow(
     2
   )}%)</small></td>`;
 
-  for (const category in categoryCounts) {
-    const correct = categoryScores[category] ?? 0;
-    const total = categoryCounts[category] ?? 0;
+  for (const category in scores) {
+    const correct = scores[category].correct ?? 0;
+    const total = scores[category].total ?? 0;
     const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
     row.innerHTML += `<td class="${scoreClass(
       categoryPercentage
@@ -119,21 +123,21 @@ function generateRow(
   return row;
 }
 
-function populateAverage(count, totalScores, totalCounts) {
+function populateAverage(count, scores) {
   const container = document.getElementById("average-scores");
   if (!container) {
     console.error("missing average row");
     return;
   }
   const averageScore =
-    ((totalScores.anatomy + totalScores.physics + totalScores.procedures) *
+    ((scores.anatomy.correct + scores.physics.correct + scores.procedures.correct) *
       100) /
-    (totalCounts.anatomy + totalCounts.physics + totalCounts.procedures);
+    (scores.anatomy.total + scores.physics.total + scores.procedures.total);
 
-  const anatomyScore = (totalScores.anatomy * 100) / totalCounts.anatomy;
-  const physicsScore = (totalScores.physics * 100) / totalCounts.physics;
+  const anatomyScore = (scores.anatomy.correct * 100) / scores.anatomy.total;
+  const physicsScore = (scores.physics.correct * 100) / scores.physics.total;
   const proceduresScore =
-    (totalScores.procedures * 100) / totalCounts.procedures;
+    (scores.procedures.correct * 100) / scores.procedures.total;
 
   container.innerHTML = `
 <th>${count} Attempt(s)</th>
@@ -151,9 +155,9 @@ function scoreClass(percentage) {
 }
 
 function renderChart(
-  anatomyScores: number[],
-  physicsScores: number[],
-  procedureScores: number[],
+  anatomyScores: Score[],
+  physicsScores: Score[],
+  procedureScores: Score[],
 ) {
   const container = document.getElementById(
     "history-chart"
@@ -177,17 +181,17 @@ function renderChart(
       datasets: [
         {
           label: "Anatomy",
-          data: anatomyScores,
+          data: anatomyScores.map((score) => score.correct * 100 / (score.total * 3)), //*3 because 3 categories
           backgroundColor: "#3498db",
         },
         {
           label: "Physics",
-          data: physicsScores,
+          data: physicsScores.map((score) => score.correct * 100 / (score.total * 3)),
           backgroundColor: "#2ecc71",
         },
         {
           label: "Procedures",
-          data: procedureScores,
+          data: procedureScores.map((score) => score.correct * 100 / (score.total * 3)),
           backgroundColor: "#f1c40f",
         },
       ],
@@ -199,13 +203,50 @@ function renderChart(
         y: {
           stacked: true,
           title: { display: true, text: "Score" },
-          max: 100
+          max: 100,
+          ticks: {
+            callback: function (value) {
+              return value + '%'; // Add '%' sign to y-axis labels
+            }
+          }
         },
       },
       plugins: {
         tooltip: {
           mode: "index",
           intersect: false,
+          callbacks: {
+            label: function (context) {
+              const dataIndex = context.dataIndex; // This is the attempt index
+
+
+              let label = context.dataset.label || ""; // e.g., "Anatomy"
+              let rawScore = 0;
+              let rawCount = 0;
+
+              // Determine which category this dataset corresponds to
+              switch (label.toLowerCase()) {
+                case 'anatomy':
+                  rawScore = anatomyScores[dataIndex].correct
+                  rawCount = anatomyScores[dataIndex].total
+                  break;
+                case 'physics':
+                  rawScore = physicsScores[dataIndex].correct
+                  rawCount = physicsScores[dataIndex].total
+                  break;
+                case 'procedures': // Match the dataset label
+                  rawScore = procedureScores[dataIndex].correct
+                  rawCount = procedureScores[dataIndex].total
+                  break;
+              }
+              if (label) {
+                label += ": ";
+              }
+              // Format the tooltip string with raw score and count
+              label += `${rawScore} / ${rawCount}`;
+              return label;
+            },
+          },
         },
       },
     },
