@@ -1,7 +1,6 @@
 import { loadQuestions } from "./samplex.js";
 import { Answer, letters, Question, storageKey } from "./shared.js";
 
-// Use a different key for localStorage to separate review attempts
 
 // --- State Variables ---
 let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)
