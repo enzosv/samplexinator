@@ -129,9 +129,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 function updateSubmitState() {
   const answeredCount = answers.length;
   const submitButton = document.getElementById("submit-button") as HTMLButtonElement;
-
-
-  document.getElementById("answered-count")!.textContent = `${answeredCount} / ${questions_count} Answered`;
-
-  submitButton!.disabled = answeredCount === 0;
+  const answeredCountElement = document.getElementById("answered-count");
+  if (answeredCountElement) {
+    answeredCountElement.textContent = `${answeredCount} / ${questions_count} Answered`;
+  }
+  if (submitButton) {
+    submitButton.disabled = answeredCount === 0;
+  }
 }
