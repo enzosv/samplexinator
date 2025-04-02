@@ -153,12 +153,15 @@ function updateNextButtonState(enabled: boolean, text?: string) {
  */
 function updateProgressIndicator() {
   if (!progressIndicator) return;
-  progressIndicator.textContent = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length
+  let content = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length
     } 
  | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
   if (mistakes > 0) {
-    progressIndicator!.innerHTML += `<div class="alert alert-danger">${mistakes} Mistake${mistakes == 1 ? "" : "s"}`;
+    // Construct the full HTML string including the alert if needed
+    content += `<div class="alert alert-danger mt-2">${mistakes} Mistake${mistakes == 1 ? "" : "s"}</div>`;
   }
+  // Set innerHTML once
+  progressIndicator.innerHTML = content;
 }
 
 /**
