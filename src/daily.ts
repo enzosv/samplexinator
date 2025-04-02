@@ -6,10 +6,7 @@ import { Answer, letters, Question, storageKey } from "./shared.js";
 // --- State Variables ---
 let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)
 let currentQuestionIndex: number = 0; // Index within the currentQuestionSet
-const currentAttempt: { timestamp: string; answers: Answer[] } = {
-  timestamp: new Date().toISOString(),
-  answers: [], // Store ALL answers, including corrections
-};
+let initialAnswers: Answer[] | null = [];
 let incorrectQuestionsInRound: Question[] = []; // Questions answered incorrectly in the current round
 const questionsAnsweredCorrectly: Set<number> = new Set(); // Keep track of Qs answered correctly at least once
 
@@ -20,7 +17,6 @@ let progressIndicator: HTMLElement | null;
 
 let mistakes = 0;
 let totalQuestions = 0;
-let firstAttempt = true;
 
 // --- Functions ---
 
@@ -83,11 +79,13 @@ function handleAnswerSelection(
 ) {
   const isCorrect = choiceIndex === question.correct_answer;
 
-  // Record the answer (even if it's a correction)
-  currentAttempt.answers.push({
-    question_id: question.id,
-    user_answer: choiceIndex,
-  });
+  if (initialAnswers) {
+    initialAnswers.push({
+      question_id: question.id,
+      user_answer: choiceIndex,
+    });
+  }
+
 
   // Disable all options for this question after selection
   const allLabels = quizContainer?.querySelectorAll(
@@ -158,7 +156,7 @@ function updateNextButtonState(enabled: boolean, text?: string) {
     incorrectQuestionsInRound.length === 0 &&
     remainingIncorrect.length === 0
   ) {
-    nextButton.textContent = "Finish";
+    nextButton.textContent = "View";
   } else {
     nextButton.textContent = "Review";
   }
@@ -169,10 +167,12 @@ function updateNextButtonState(enabled: boolean, text?: string) {
  */
 function updateProgressIndicator() {
   if (!progressIndicator) return;
-  progressIndicator.textContent = ` ${currentQuestionIndex + 1} of ${
-    currentQuestionSet.length
-  } 
+  progressIndicator.textContent = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length
+    } 
  | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
+  if (mistakes > 0) {
+    progressIndicator!.innerHTML += `<div class="alert alert-danger">${mistakes} Mistake${mistakes == 1 ? "" : "s"}`;
+  }
 }
 
 /**
@@ -180,15 +180,6 @@ function updateProgressIndicator() {
  */
 function nextStep() {
   currentQuestionIndex++;
-  if (firstAttempt) {
-    //save first attempt to history
-    firstAttempt = false;
-    const data = localStorage.getItem(storageKey);
-    const history = data ? JSON.parse(data) : [];
-    history.push(currentAttempt);
-    localStorage.setItem(storageKey, JSON.stringify(history));
-  }
-
   if (currentQuestionIndex < currentQuestionSet.length) {
     // --- Render next question in the current set ---
     renderCurrentQuestion();
@@ -196,11 +187,24 @@ function nextStep() {
     return;
   }
   // --- End of the current question set ---
+
+  if (initialAnswers) {
+    //save first attempt to history
+    const data = localStorage.getItem(storageKey);
+    const history = data ? JSON.parse(data) : [];
+    history.push({ answers: initialAnswers, timestamp: new Date().toISOString() });
+    localStorage.setItem(storageKey, JSON.stringify(history));
+    initialAnswers = null; // stop tracking initital answers
+  }
+
   const questionsToReview = currentQuestionSet.filter(
     (q) => !questionsAnsweredCorrectly.has(q.id)
   );
   if (questionsToReview.length < 1) {
-    finishAttempt();
+    const data = localStorage.getItem(storageKey);
+    const history = data ? JSON.parse(data) : [];
+    // view attempt
+    globalThis.location.href = `attempt.html?index=${history.length - 1}`;
     return;
   }
 
@@ -213,29 +217,6 @@ function nextStep() {
   updateProgressIndicator();
 }
 
-/**
- * Saves the attempt to localStorage and redirects (or shows completion message).
- */
-function finishAttempt() {
-  // show completion message
-  progressIndicator!.textContent = "Done!";
-  if (mistakes > 0) {
-    quizContainer!.innerHTML = `<div class="alert alert-danger">${mistakes} Mistake${
-      mistakes == 1 ? "" : "s"
-    }</div>`;
-  } else {
-    quizContainer!.innerHTML = "";
-  }
-  if (!nextButton) {
-    return;
-  }
-  nextButton.textContent = "History";
-  nextButton.disabled = false;
-  nextButton.onclick = () => {
-    globalThis.location.href = "history.html";
-  }; // Redirect to history
-  // Consider removing the event listener if navigating away
-}
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
