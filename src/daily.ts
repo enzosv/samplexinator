@@ -1,6 +1,5 @@
 import { loadQuestions } from "./samplex.js";
-import { Answer, letters, Question } from "./shared.js";
-import { storageKey } from "./shared.ts";
+import { Answer, letters, Question, storageKey } from "./shared.js";
 
 // Use a different key for localStorage to separate review attempts
 
@@ -218,16 +217,8 @@ function nextStep() {
  * Saves the attempt to localStorage and redirects (or shows completion message).
  */
 function finishAttempt() {
-  // console.log("Attempt finished. Saving results.");
-  // Add final timestamp if needed, though it's set at the start
-  // currentAttempt.timestamp = new Date().toISOString();
-
-  // const historyData = localStorage.getItem(reviewStorageKey);
-  // const history = historyData ? JSON.parse(historyData) : [];
-  // history.push(currentAttempt);
-  // localStorage.setItem(reviewStorageKey, JSON.stringify(history));
-
-  // Clear the UI and show completion message
+  // show completion message
+  progressIndicator!.textContent = "Done!";
   if (mistakes > 0) {
     quizContainer!.innerHTML = `<div class="alert alert-danger">${mistakes} Mistake${
       mistakes == 1 ? "" : "s"
@@ -235,7 +226,6 @@ function finishAttempt() {
   } else {
     quizContainer!.innerHTML = "";
   }
-  progressIndicator!.textContent = "Done!";
   if (!nextButton) {
     return;
   }
