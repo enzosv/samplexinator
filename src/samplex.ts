@@ -9,7 +9,7 @@ import {
 const answers: Answer[] = [];
 let questions_count = 0;
 
-async function loadQuestions() {
+export async function loadQuestions() {
   const data = await fetchQuestions();
   let loadedQuestions: Question[] = [];
 
