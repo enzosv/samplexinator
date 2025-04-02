@@ -25,6 +25,7 @@ let nextButton: HTMLButtonElement | null;
 let progressIndicator: HTMLElement | null;
 
 let mistakes = 0;
+let totalQuestions = 0;
 
 // --- Functions ---
 
@@ -158,15 +159,8 @@ function updateNextButtonState(enabled: boolean, text?: string) {
  */
 function updateProgressIndicator() {
     if (!progressIndicator) return;
-    const totalInSet = currentQuestionSet.length;
-    const currentNum = currentQuestionIndex + 1;
-
-    progressIndicator.textContent = ` ${currentNum} of ${totalInSet}`;
-
-    // Add overall progress if desired
-    const totalCorrect = questionsAnsweredCorrectly.size;
-    const totalAttempted = new Set(currentAttempt.answers.map(a => a.question_id)).size;
-    progressIndicator.textContent += ` | ${totalCorrect}/${totalInSet} Correct`;
+    progressIndicator.textContent = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length} 
+ | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
 }
 
 
@@ -212,8 +206,12 @@ function finishAttempt() {
     // localStorage.setItem(reviewStorageKey, JSON.stringify(history));
 
     // Clear the UI and show completion message
-    quizContainer!.innerHTML = `<div class="alert alert-success">Complete! ${mistakes} Mistake${mistakes == 1 ? "" : "s"}</div>`;
-    progressIndicator!.textContent = "Finished!";
+    if (mistakes > 0) {
+        quizContainer!.innerHTML = `<div class="alert alert-danger">${mistakes} Mistake${mistakes == 1 ? "" : "s"}</div>`;
+    } else {
+        quizContainer!.innerHTML = '';
+    }
+    progressIndicator!.textContent = "Done!";
     if (!nextButton) {
         return;
     }
@@ -239,6 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     progressIndicator.textContent = "Loading questions...";
     currentQuestionSet = await loadQuestions();
+    totalQuestions = currentQuestionSet.length;
 
     if (currentQuestionSet.length < 1) {
         quizContainer.innerHTML = `<div class="alert alert-warning">No questions loaded. Cannot start review mode.</div>`;
