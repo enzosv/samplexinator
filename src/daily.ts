@@ -6,7 +6,6 @@ import { Answer, letters, Question, storageKey } from "./shared.js";
 let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)
 let currentQuestionIndex: number = 0; // Index within the currentQuestionSet
 let initialAnswers: Answer[] | null = [];
-let incorrectQuestionsInRound: Question[] = []; // Questions answered incorrectly in the current round
 const questionsAnsweredCorrectly: Set<number> = new Set(); // Keep track of Qs answered correctly at least once
 
 // --- DOM Elements ---
@@ -111,20 +110,9 @@ function handleAnswerSelection(
   selectedLabel.classList.remove("btn-secondary", "disabled"); // Re-enable selected style change
   if (isCorrect) {
     questionsAnsweredCorrectly.add(question.id); // Mark as correctly answered at least once
-    // If this question was previously incorrect in this round, remove it
-    incorrectQuestionsInRound = incorrectQuestionsInRound.filter(
-      (q) => q.id !== question.id
-    );
   } else {
     mistakes++;
     selectedLabel.classList.add("btn-danger");
-    // Mark as incorrect for this round if not already marked correct in a *previous* round
-    if (!questionsAnsweredCorrectly.has(question.id)) {
-      // Avoid adding duplicates if answered incorrectly multiple times in review rounds
-      if (!incorrectQuestionsInRound.some((q) => q.id === question.id)) {
-        incorrectQuestionsInRound.push(question);
-      }
-    }
   }
 
   updateProgressIndicator();
@@ -148,17 +136,16 @@ function updateNextButtonState(enabled: boolean, text?: string) {
     nextButton.textContent = "Next";
     return;
   }
-  const remainingIncorrect = currentQuestionSet.filter(
-    (q) => !questionsAnsweredCorrectly.has(q.id)
+  // Check if any questions in the current set still need a correct answer
+  const needsReview = currentQuestionSet.some(
+    q => !questionsAnsweredCorrectly.has(q.id)
   );
-  if (
-    incorrectQuestionsInRound.length === 0 &&
-    remainingIncorrect.length === 0
-  ) {
-    nextButton.textContent = "View";
-  } else {
+  if (needsReview) {
     nextButton.textContent = "Review";
+    return;
   }
+  // done. go to view attempt next
+  nextButton.textContent = "View";
 }
 
 /**
@@ -210,10 +197,9 @@ function nextStep() {
   // --- Start a Review Round ---
   currentQuestionSet = questionsToReview.sort(() => 0.5 - Math.random()); // Shuffle review questions
   currentQuestionIndex = 0;
-  incorrectQuestionsInRound = []; // Reset for the new round
   renderCurrentQuestion();
   updateNextButtonState(false, "Next"); // Start review round
-  updateProgressIndicator();
+  updateProgressIndicator(); // Update progress for the new round
 }
 
 
