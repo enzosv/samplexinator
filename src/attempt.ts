@@ -6,46 +6,24 @@ import {
   letters,
   Question,
   storageKey,
+  AttemptResult,
 } from "./shared.js";
 
 function renderScore(questions: Question[]) {
-  const categoryCounts: { [key: string]: number } = {};
-  const categoryScores: { [key: string]: number } = {};
-
-  let score = 0;
-
-  for (const question of questions) {
-    const category = question.category;
-    if (!category) {
-      console.error("invalid question. missing category");
-      continue;
-    }
-    if (!categoryCounts[category]) {
-      categoryCounts[category] = 0;
-      categoryScores[category] = 0;
-    }
-    const correct = question.correct_answer == question.user_answer;
-    if (correct) {
-      categoryScores[category]++;
-      score++;
-    }
-    categoryCounts[category]++;
-  }
-
-  const numQuestions = questions.length;
-  const scorePercentage = (score / numQuestions) * 100;
+  const result = AttemptResult.fromAnsweredQuestions(questions);
+  const scorePercentage = result.getTotalScorePercentage();
+  addSticker(scorePercentage);
   const scoreContainer = document.getElementById("score-breakdown");
   let scoreBreakdownText = `<h4 class="${
     scorePercentage < 75 ? "incorrect" : "correct"
-  }">Score: ${score} / ${numQuestions} (${scorePercentage.toFixed(2)}%)</h4>`;
-
-  for (const category in categoryCounts) {
-    const correct = categoryScores[category];
-    const total = categoryCounts[category];
-    const categoryPercentage = total > 0 ? (correct / total) * 100 : 0;
+  }">Score: ${result.getTotalScore()} / ${
+    questions.length
+  } (${scorePercentage.toFixed(2)}%)</h4>`;
+  for (const [topicName, score] of Object.entries(result.topics)) {
+    const percentage = score.getPercentage();
     scoreBreakdownText += `<p class="${
-      categoryPercentage < 75 ? "incorrect" : "correct"
-    }">${category}: ${correct} / ${total} (${categoryPercentage.toFixed(
+      percentage < 75 ? "incorrect" : "correct"
+    }">${topicName}: ${score.correct} / ${score.total} (${percentage.toFixed(
       2
     )}%)</p>`;
   }
