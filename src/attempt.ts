@@ -119,7 +119,7 @@ function addSticker(scorePercentage: number) {
   }
   stickerElement.innerHTML = `<img src='./assets/${stickerName(
     scorePercentage
-  )}' height=256>`;
+  )}' height=128>`;
 }
 
 async function renderAttempt() {
