@@ -30,44 +30,60 @@ async function compileTs() {
   console.log("✅ TS files compiled to dist/");
 }
 
-// Function to copy HTML and CSS files
-async function copyHtmlCss() {
-  for await (const file of Deno.readDir(SRC_DIR)) {
-    if (
-      file.isFile &&
-      (file.name.endsWith(".html") || file.name.endsWith(".css"))
-    ) {
-      await copy(`${SRC_DIR}/${file.name}`, `${DIST_DIR}/${file.name}`, {
-        overwrite: true,
-      });
-    }
-  }
-  console.log("✅ HTML and CSS files copied to dist/");
-}
+async function copyAssets(
+  srcDir: string = SRC_DIR,
+  destDir: string = DIST_DIR
+) {
+  for await (const entry of Deno.readDir(srcDir)) {
+    const sourcePath = `${srcDir}/${entry.name}`;
+    const destPath = `${destDir}/${entry.name}`;
 
-async function copyJson() {
-  for await (const file of Deno.readDir(SRC_DIR)) {
-    if (!file.isFile || !file.name.endsWith(".json")) {
+    if (entry.isDirectory) {
+      // Create destination directory if it doesn't exist
+      try {
+        await Deno.mkdir(destPath, { recursive: true });
+      } catch (err) {
+        if (!(err instanceof Deno.errors.AlreadyExists)) {
+          throw err;
+        }
+      }
+      // Recursively copy directory contents
+      await copyAssets(sourcePath, destPath);
       continue;
     }
-    const sourcePath = `${SRC_DIR}/${file.name}`;
-    const destPath = `${DIST_DIR}/${file.name}`;
+
+    if (!entry.isFile) {
+      continue;
+    }
+
+    if (entry.name.endsWith(".ts")) {
+      // skip ts files
+      continue;
+    }
+
+    if (!entry.name.endsWith(".json")) {
+      // Direct copy for non-JSON files
+      await Deno.copyFile(sourcePath, destPath);
+      continue;
+    }
+
+    // Minify JSON files
     try {
-      // Read the JSON file content
       const content = await Deno.readTextFile(sourcePath);
-      // Parse the JSON content
       const jsonObj = JSON.parse(content);
-      // Stringify without indentation (minifies)
       const minifiedJson = JSON.stringify(jsonObj);
-      // Write the minified content to the destination
       await Deno.writeTextFile(destPath, minifiedJson);
     } catch (error) {
-      console.error(`❌ Error processing JSON file ${file.name}:`, error);
+      console.error(`❌ Error processing JSON file ${entry.name}:`, error);
     }
   }
-  console.log("✅ JSON files minified and copied to dist/");
+
+  if (srcDir === SRC_DIR) {
+    console.log("✅ All assets copied to dist/");
+  }
 }
+
 // Run the tasks
-await Promise.all([compileTs(), copyHtmlCss(), copyJson()]);
+await Promise.all([compileTs(), copyAssets()]);
 console.log("🚀 Build completed successfully!");
 Deno.exit(0);
