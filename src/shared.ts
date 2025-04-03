@@ -25,9 +25,74 @@ export interface Attempt {
   index?: number; // Optional: Added when retrieving specific attempt
 }
 
-export interface Score {
+export class Score {
   correct: number;
   total: number;
+
+  constructor() {
+    this.correct = 0;
+    this.total = 0;
+  }
+
+  getPercentage(): number {
+    return this.total > 0 ? (this.correct / this.total) * 100 : 0;
+  }
+}
+
+export class AttemptResult {
+  topics: Record<string, Score>;
+
+  constructor() {
+    this.topics = {};
+  }
+
+  addTopic(name: string) {
+    if (!(name in this.topics)) {
+      this.topics[name] = new Score();
+    }
+  }
+
+  getTotalScore(): number {
+    let totalCorrect = 0;
+
+    for (const score of Object.values(this.topics)) {
+      totalCorrect += score.correct;
+    }
+    return totalCorrect;
+  }
+
+  getTotalScorePercentage(): number {
+    let totalCorrect = 0;
+    let totalQuestions = 0;
+
+    for (const score of Object.values(this.topics)) {
+      totalCorrect += score.correct;
+      totalQuestions += score.total;
+    }
+
+    return totalQuestions > 0 ? (totalCorrect / totalQuestions) * 100 : 0;
+  }
+
+  static fromAnsweredQuestions(questions: Question[]): AttemptResult {
+    const result = new AttemptResult();
+
+    for (const question of questions) {
+      const topic = question.category;
+      if (!topic) {
+        console.warn(
+          "invalid question. missing category",
+          JSON.stringify(question)
+        );
+        continue;
+      }
+      result.addTopic(topic);
+      result.topics[topic].total++;
+      if (question.correct_answer == question.user_answer) {
+        result.topics[topic].correct++;
+      }
+    }
+    return result;
+  }
 }
 
 export interface CategoryData {
@@ -75,7 +140,7 @@ export function findQuestion(
  * @returns A Promise resolving to the QuestionCategoriesJson object.
  */
 export async function fetchQuestions(): Promise<QuestionCategoriesJson> {
-  const response = await fetch("./questions.json");
+  const response = await fetch("./assets/questions.json");
   if (!response.ok) {
     // Basic error handling for the fetch request
     throw new Error(
