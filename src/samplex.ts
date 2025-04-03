@@ -116,6 +116,12 @@ export function submitAnswers() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+  if (!document.getElementById("smartenator")) {
+    // file is imported by others. which may cause this function to trigger
+    // prevent that
+    console.log("prevented")
+    return;
+  }
   const questions = await loadQuestions();
   questions_count = questions.length;
   updateSubmitState();
