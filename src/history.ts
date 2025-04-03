@@ -51,7 +51,7 @@ async function renderHistory() {
     let scores = {
       anatomy: { correct: 0, total: 0 },
       physics: { correct: 0, total: 0 },
-      procedures: { correct: 0, total: 0 }
+      procedures: { correct: 0, total: 0 },
     };
     for (const answer of attempt.answers) {
       const question = findQuestion(all_questions, answer.question_id);
@@ -78,13 +78,7 @@ async function renderHistory() {
     physicsScores.push(scores.physics);
     procedureScores.push(scores.procedures);
 
-    const row = generateRow(
-      i,
-      attempt.timestamp,
-      score,
-      numQuestions,
-      scores,
-    );
+    const row = generateRow(i, attempt.timestamp, score, numQuestions, scores);
     historyTable.appendChild(row);
   }
 
@@ -97,7 +91,7 @@ function generateRow(
   timestamp: string,
   score: number,
   numQuestions: number,
-  scores: CategoryData, // Assuming CategoryData interface is available
+  scores: CategoryData // Assuming CategoryData interface is available
 ) {
   const row = document.createElement("tr");
   const date = new Date(timestamp).toLocaleString();
@@ -107,8 +101,8 @@ function generateRow(
             <td>${index + 1}</td>
             <td>${date}</td>
             <td class="${scoreClass(
-    scorePercentage
-  )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+              scorePercentage
+            )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
     2
   )}%)</small></td>`;
 
@@ -131,7 +125,9 @@ function populateAverage(count, scores) {
     return;
   }
   const averageScore =
-    ((scores.anatomy.correct + scores.physics.correct + scores.procedures.correct) *
+    ((scores.anatomy.correct +
+      scores.physics.correct +
+      scores.procedures.correct) *
       100) /
     (scores.anatomy.total + scores.physics.total + scores.procedures.total);
 
@@ -158,7 +154,7 @@ function scoreClass(percentage) {
 function renderChart(
   anatomyScores: Score[],
   physicsScores: Score[],
-  procedureScores: Score[],
+  procedureScores: Score[]
 ) {
   const container = document.getElementById(
     "history-chart"
@@ -182,17 +178,23 @@ function renderChart(
       datasets: [
         {
           label: "Anatomy",
-          data: anatomyScores.map((score) => score.correct * 100 / (score.total * 3)), //*3 because 3 categories
+          data: anatomyScores.map(
+            (score) => (score.correct * 100) / (score.total * 3)
+          ), //*3 because 3 categories
           backgroundColor: "#3498db",
         },
         {
           label: "Physics",
-          data: physicsScores.map((score) => score.correct * 100 / (score.total * 3)),
+          data: physicsScores.map(
+            (score) => (score.correct * 100) / (score.total * 3)
+          ),
           backgroundColor: "#2ecc71",
         },
         {
           label: "Procedures",
-          data: procedureScores.map((score) => score.correct * 100 / (score.total * 3)),
+          data: procedureScores.map(
+            (score) => (score.correct * 100) / (score.total * 3)
+          ),
           backgroundColor: "#f1c40f",
         },
       ],
@@ -207,9 +209,9 @@ function renderChart(
           max: 100,
           ticks: {
             callback: function (value) {
-              return value + '%'; // Add '%' sign to y-axis labels
-            }
-          }
+              return value + "%"; // Add '%' sign to y-axis labels
+            },
+          },
         },
       },
       plugins: {
@@ -220,24 +222,23 @@ function renderChart(
             label: function (context) {
               const dataIndex = context.dataIndex; // This is the attempt index
 
-
               let label = context.dataset.label || ""; // e.g., "Anatomy"
               let rawScore = 0;
               let rawCount = 0;
 
               // Determine which category this dataset corresponds to
               switch (label.toLowerCase()) {
-                case 'anatomy':
-                  rawScore = anatomyScores[dataIndex].correct
-                  rawCount = anatomyScores[dataIndex].total
+                case "anatomy":
+                  rawScore = anatomyScores[dataIndex].correct;
+                  rawCount = anatomyScores[dataIndex].total;
                   break;
-                case 'physics':
-                  rawScore = physicsScores[dataIndex].correct
-                  rawCount = physicsScores[dataIndex].total
+                case "physics":
+                  rawScore = physicsScores[dataIndex].correct;
+                  rawCount = physicsScores[dataIndex].total;
                   break;
-                case 'procedures': // Match the dataset label
-                  rawScore = procedureScores[dataIndex].correct
-                  rawCount = procedureScores[dataIndex].total
+                case "procedures": // Match the dataset label
+                  rawScore = procedureScores[dataIndex].correct;
+                  rawCount = procedureScores[dataIndex].total;
                   break;
               }
               if (label) {

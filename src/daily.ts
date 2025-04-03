@@ -1,7 +1,6 @@
 import { loadQuestions } from "./samplex.js";
 import { Answer, letters, Question, storageKey } from "./shared.js";
 
-
 // --- State Variables ---
 let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)
 let currentQuestionIndex: number = 0; // Index within the currentQuestionSet
@@ -84,7 +83,6 @@ function handleAnswerSelection(
     });
   }
 
-
   // Disable all options for this question after selection
   const allLabels = quizContainer?.querySelectorAll(
     `label[for^="option-${question.id}-"]`
@@ -138,7 +136,7 @@ function updateNextButtonState(enabled: boolean, text?: string) {
   }
   // Check if any questions in the current set still need a correct answer
   const needsReview = currentQuestionSet.some(
-    q => !questionsAnsweredCorrectly.has(q.id)
+    (q) => !questionsAnsweredCorrectly.has(q.id)
   );
   if (needsReview) {
     nextButton.textContent = "Review";
@@ -153,12 +151,13 @@ function updateNextButtonState(enabled: boolean, text?: string) {
  */
 function updateProgressIndicator() {
   if (!progressIndicator) return;
-  let content = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length
-    } 
+  let content = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length} 
  | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
   if (mistakes > 0) {
     // Construct the full HTML string including the alert if needed
-    content += `<div class="alert alert-danger mt-2">${mistakes} Mistake${mistakes == 1 ? "" : "s"}</div>`;
+    content += `<div class="alert alert-danger mt-2">${mistakes} Mistake${
+      mistakes == 1 ? "" : "s"
+    }</div>`;
   }
   // Set innerHTML once
   progressIndicator.innerHTML = content;
@@ -181,7 +180,10 @@ function nextStep() {
     //save first attempt to history
     const data = localStorage.getItem(storageKey);
     const history = data ? JSON.parse(data) : [];
-    history.push({ answers: initialAnswers, timestamp: new Date().toISOString() });
+    history.push({
+      answers: initialAnswers,
+      timestamp: new Date().toISOString(),
+    });
     localStorage.setItem(storageKey, JSON.stringify(history));
     initialAnswers = null; // stop tracking initital answers
   }
@@ -204,7 +206,6 @@ function nextStep() {
   updateNextButtonState(false, "Next"); // Start review round
   updateProgressIndicator(); // Update progress for the new round
 }
-
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {

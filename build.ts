@@ -33,7 +33,10 @@ async function compileTs() {
 // Function to copy HTML and CSS files
 async function copyHtmlCss() {
   for await (const file of Deno.readDir(SRC_DIR)) {
-    if (file.isFile && (file.name.endsWith(".html") || file.name.endsWith(".css"))) {
+    if (
+      file.isFile &&
+      (file.name.endsWith(".html") || file.name.endsWith(".css"))
+    ) {
       await copy(`${SRC_DIR}/${file.name}`, `${DIST_DIR}/${file.name}`, {
         overwrite: true,
       });

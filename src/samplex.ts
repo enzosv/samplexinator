@@ -16,8 +16,8 @@ export async function loadQuestions() {
   for (const category in data) {
     const shuffled = data[category]
       .sort(() => 0.5 - Math.random()) // shuffle
-      // .slice(0, 1)
-      .slice(0, category == "physics" ? 4 : 3) // number of questions per category
+      .slice(0, 1)
+      // .slice(0, category == "physics" ? 4 : 3) // number of questions per category
       .map((q) => ({ ...q, category: category })); // add category to data
     loadedQuestions = [...loadedQuestions, ...shuffled];
   }
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (!document.getElementById("smartenator")) {
     // file is imported by others. which may cause this function to trigger
     // prevent that
-    console.log("prevented")
+    console.log("prevented");
     return;
   }
   const questions = await loadQuestions();
@@ -134,7 +134,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 function updateSubmitState() {
   const answeredCount = answers.length;
-  const submitButton = document.getElementById("submit-button") as HTMLButtonElement;
+  const submitButton = document.getElementById(
+    "submit-button"
+  ) as HTMLButtonElement;
   const answeredCountElement = document.getElementById("answered-count");
   if (answeredCountElement) {
     answeredCountElement.textContent = `${answeredCount} / ${questions_count} Answered`;
