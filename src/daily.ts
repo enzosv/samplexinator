@@ -25,13 +25,11 @@ function quizData() {
     // --- Computed Properties / Getters ---
     get currentQuestion(): Question | null {
       // Added check for empty array to prevent index out of bounds during loading/initial state
-      console.log(this.currentQuestionSet);
       const question =
         this.currentQuestionSet &&
-        this.currentQuestionSet.length > this.currentQuestionIndex
+          this.currentQuestionSet.length > this.currentQuestionIndex
           ? this.currentQuestionSet[this.currentQuestionIndex]
           : null;
-      console.log(Alpine.raw(question.id));
       return question;
     },
 
@@ -79,9 +77,8 @@ function quizData() {
         return "";
       // Ensure totalQuestions is not zero before displaying fraction
       const total = this.totalQuestions > 0 ? `/${this.totalQuestions}` : "";
-      return ` ${this.currentQuestionIndex + 1} of ${
-        this.currentQuestionSet.length
-      } | ${this.questionsAnsweredCorrectly.size}${total} Correct`;
+      return ` ${this.currentQuestionIndex + 1} of ${this.currentQuestionSet.length
+        } | ${this.questionsAnsweredCorrectly.size}${total} Correct`;
     },
 
     // --- Methods ---
@@ -100,7 +97,6 @@ function quizData() {
             "No questions loaded or failed to load. Cannot start quiz."
           );
         }
-        console.log("loaded questions", questions);
         this.currentQuestionSet = questions;
         this.totalQuestions = questions.length;
         this.currentQuestionIndex = 0;
@@ -120,7 +116,8 @@ function quizData() {
     },
 
     selectAnswer(choiceIndex: number) {
-      if (this.selectedAnswerIndex !== null || !this.currentQuestion) return; // Already answered
+      console.log(choiceIndex);
+      // if (this.selectedAnswerIndex !== null || !this.currentQuestion) return; // Already answered
 
       this.selectedAnswerIndex = choiceIndex;
       const isCorrect = choiceIndex === this.currentQuestion.correct_answer;
@@ -146,38 +143,39 @@ function quizData() {
     },
 
     getOptionClass(index: number): string {
-      let baseClass = "form-check-label btn w-100 text-start py-2";
+      const baseClass = "form-check-label btn w-100 text-start py-2";
       const question = this.currentQuestion; // Cache for safety
 
       if (this.selectedAnswerIndex === null || !question) {
         // No answer selected yet or no question
         return `${baseClass} btn-outline-primary`;
-      } else {
-        // Answer has been selected
-        const isCorrectAnswer = index === question.correct_answer;
-        const isSelectedAnswer = index === this.selectedAnswerIndex;
-
-        if (isCorrectAnswer) {
-          return `${baseClass} btn-success disabled`; // Always show correct green
-        } else if (isSelectedAnswer) {
-          return `${baseClass} btn-danger disabled`; // Show selected incorrect red
-        } else {
-          return `${baseClass} btn-secondary disabled`; // Other options grayed out
-        }
       }
+      // Answer has been selected
+      const isCorrectAnswer = index === question.correct_answer;
+      const isSelectedAnswer = index === this.selectedAnswerIndex;
+
+      if (isCorrectAnswer) {
+        return `${baseClass} btn-success disabled`; // Always show correct green
+      }
+      if (isSelectedAnswer) {
+        return `${baseClass} btn-danger disabled`; // Show selected incorrect red
+      }
+      return `${baseClass} btn-secondary disabled`; // Other options grayed out
     },
 
     nextStep() {
-      if (this.selectedAnswerIndex === null) return; // Shouldn't happen if button is enabled correctly
+      console.log("nexting");
 
-      if (!this.isLastQuestionInSet) {
-        // Move to next question in current set
-        this.currentQuestionIndex++;
-        this.selectedAnswerIndex = null; // Reset selection for the new question
-      } else {
-        // End of the current set (initial or review)
+      if (this.selectedAnswerIndex === null) return; // Shouldn't happen if button is enabled correctly
+      console.log("next");
+
+      if (this.isLastQuestionInSet) {
         this.handleEndOfSet();
+        return;
       }
+      // Move to next question in current set
+      this.selectedAnswerIndex = null; // Reset selection for the new question
+      this.currentQuestionIndex++;
     },
 
     handleEndOfSet() {
