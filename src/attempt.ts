@@ -89,7 +89,7 @@ function renderQuestions(container: HTMLElement, questions: Question[]) {
                             <label class="form-check-label ${
                               isCorrect ? "fw-bold" : ""
                             }">
-                                ${letters[i]}: ${question.question}
+                                ${letters[i]}: ${question.options[i]}
                             </label>
                         </div>
                     `;
