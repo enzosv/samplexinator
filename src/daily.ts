@@ -1,236 +1,253 @@
 import { loadQuestions } from "./samplex.js";
-import { Answer, letters, Question, storageKey } from "./shared.js";
+import {
+  Answer,
+  letters as importedLetters,
+  Question,
+  storageKey,
+} from "./shared.js";
 
+function quizData() {
+  console.log("quizData() function executed to return component object."); // Log: Component object creation
+  return {
+    // --- State ---
+    currentQuestionSet: [] as Question[],
+    currentQuestionIndex: 0,
+    initialAnswers: [] as Answer[] | null, // Track initial answers only
+    questionsAnsweredCorrectly: new Set<number>(),
+    mistakes: 0,
+    totalQuestions: 0, // Original total
+    selectedAnswerIndex: null as number | null, // Track selection for the *current* question
+    isLoading: true,
+    loadingMessage: "Loading questions...",
+    error: "" as string | null,
+    letters: importedLetters, // Expose letters to the template
 
-// --- State Variables ---
-let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)
-let currentQuestionIndex: number = 0; // Index within the currentQuestionSet
-let initialAnswers: Answer[] | null = [];
-const questionsAnsweredCorrectly: Set<number> = new Set(); // Keep track of Qs answered correctly at least once
+    // --- Computed Properties / Getters ---
+    get currentQuestion(): Question | null {
+      // Added check for empty array to prevent index out of bounds during loading/initial state
+      console.log(this.currentQuestionSet);
+      const question =
+        this.currentQuestionSet &&
+        this.currentQuestionSet.length > this.currentQuestionIndex
+          ? this.currentQuestionSet[this.currentQuestionIndex]
+          : null;
+      console.log(Alpine.raw(question.id));
+      return question;
+    },
 
-// --- DOM Elements ---
-let quizContainer: HTMLElement | null;
-let nextButton: HTMLButtonElement | null;
-let progressIndicator: HTMLElement | null;
+    get isLastQuestionInSet(): boolean {
+      // Ensure currentQuestionSet is not empty before accessing length
+      return (
+        this.currentQuestionSet.length > 0 &&
+        this.currentQuestionIndex >= this.currentQuestionSet.length - 1
+      );
+    },
 
-let mistakes = 0;
-let totalQuestions = 0;
+    get needsReview(): boolean {
+      // Ensure currentQuestionSet is not empty before checking
+      return (
+        this.currentQuestionSet.length > 0 &&
+        this.currentQuestionSet.some(
+          (q) => !this.questionsAnsweredCorrectly.has(q.id)
+        )
+      );
+    },
 
-// --- Functions ---
+    get nextButtonText(): string {
+      // Handle initial loading state more robustly
+      if (
+        this.isLoading ||
+        !this.currentQuestionSet ||
+        this.currentQuestionSet.length === 0
+      ) {
+        return "Loading..."; // Or some appropriate text
+      }
+      if (!this.isLastQuestionInSet) {
+        return "Next";
+      }
+      return this.needsReview ? "Review" : "View Results";
+    },
 
-/**
- * Renders the current question.
- */
-function renderCurrentQuestion() {
-  if (!quizContainer || currentQuestionIndex >= currentQuestionSet.length) {
-    console.error(
-      "Cannot render question: container missing or index out of bounds."
-    );
-    return;
-  }
+    get progressText(): string {
+      // Added check for empty array
+      if (
+        this.isLoading ||
+        this.error ||
+        !this.currentQuestionSet ||
+        this.currentQuestionSet.length === 0
+      )
+        return "";
+      // Ensure totalQuestions is not zero before displaying fraction
+      const total = this.totalQuestions > 0 ? `/${this.totalQuestions}` : "";
+      return ` ${this.currentQuestionIndex + 1} of ${
+        this.currentQuestionSet.length
+      } | ${this.questionsAnsweredCorrectly.size}${total} Correct`;
+    },
 
-  const q = currentQuestionSet[currentQuestionIndex];
-  quizContainer.innerHTML = ""; // Clear previous question
+    // --- Methods ---
+    async init() {
+      console.log("quizData.init() called"); // Log: init method start
+      this.isLoading = true;
+      this.loadingMessage = "Loading questions...";
+      this.error = null;
+      this.initialAnswers = []; // Reset for a new session, ensure it's an array initially
+      try {
+        // Ensure loadQuestions is awaited and handled
+        const questions = await loadQuestions();
+        if (!questions || questions.length < 1) {
+          // Added check for null/undefined questions
+          throw new Error(
+            "No questions loaded or failed to load. Cannot start quiz."
+          );
+        }
+        console.log("loaded questions", questions);
+        this.currentQuestionSet = questions;
+        this.totalQuestions = questions.length;
+        this.currentQuestionIndex = 0;
+        this.questionsAnsweredCorrectly.clear();
+        this.mistakes = 0;
+        this.selectedAnswerIndex = null;
+        this.isLoading = false;
+        console.log("quizData.init() finished loading questions successfully."); // Log: init success
+      } catch (err) {
+        console.error("Failed to load questions in init():", err); // Log: init error
+        this.error =
+          err instanceof Error
+            ? err.message
+            : "An unknown error occurred while loading questions.";
+        this.isLoading = false;
+      }
+    },
 
-  const div = document.createElement("div");
-  div.className = "question border p-3 mb-3 rounded";
-  div.innerHTML = `<p><strong>${q.question}</strong></p>`;
+    selectAnswer(choiceIndex: number) {
+      if (this.selectedAnswerIndex !== null || !this.currentQuestion) return; // Already answered
 
-  q.options.forEach((option, i) => {
-    const optionWrapper = document.createElement("div");
-    optionWrapper.className = "form-check";
+      this.selectedAnswerIndex = choiceIndex;
+      const isCorrect = choiceIndex === this.currentQuestion.correct_answer;
 
-    const input = document.createElement("input");
-    input.className = "form-check-input d-none"; // Hide radio button visually
-    input.type = "radio";
-    input.id = `option-${q.id}-${i}`;
-    input.name = `question-${q.id}`; // Group radios
-    input.value = i.toString();
-    input.disabled = false; // Ensure options are enabled initially
+      // Record initial answer if applicable
+      // Ensure initialAnswers is not null before pushing
+      if (this.initialAnswers && this.currentQuestion) {
+        this.initialAnswers.push({
+          question_id: this.currentQuestion.id,
+          user_answer: choiceIndex,
+        });
+      }
 
-    const label = document.createElement("label");
-    label.className =
-      "form-check-label btn btn-outline-primary w-100 text-start py-2";
-    label.htmlFor = input.id;
-    label.innerHTML = `<strong>${letters[i]}</strong>: ${option}`;
+      // Update state based on correctness
+      if (isCorrect) {
+        if (this.currentQuestion) {
+          // Ensure currentQuestion exists
+          this.questionsAnsweredCorrectly.add(this.currentQuestion.id);
+        }
+      } else {
+        this.mistakes++;
+      }
+    },
 
-    input.addEventListener("change", () => {
-      handleAnswerSelection(q, i, label);
-    });
+    getOptionClass(index: number): string {
+      let baseClass = "form-check-label btn w-100 text-start py-2";
+      const question = this.currentQuestion; // Cache for safety
 
-    optionWrapper.appendChild(input);
-    optionWrapper.appendChild(label);
-    div.appendChild(optionWrapper);
-  });
+      if (this.selectedAnswerIndex === null || !question) {
+        // No answer selected yet or no question
+        return `${baseClass} btn-outline-primary`;
+      } else {
+        // Answer has been selected
+        const isCorrectAnswer = index === question.correct_answer;
+        const isSelectedAnswer = index === this.selectedAnswerIndex;
 
-  quizContainer.appendChild(div);
-  updateNextButtonState(false); // Disable 'Next' until an answer is selected
+        if (isCorrectAnswer) {
+          return `${baseClass} btn-success disabled`; // Always show correct green
+        } else if (isSelectedAnswer) {
+          return `${baseClass} btn-danger disabled`; // Show selected incorrect red
+        } else {
+          return `${baseClass} btn-secondary disabled`; // Other options grayed out
+        }
+      }
+    },
+
+    nextStep() {
+      if (this.selectedAnswerIndex === null) return; // Shouldn't happen if button is enabled correctly
+
+      if (!this.isLastQuestionInSet) {
+        // Move to next question in current set
+        this.currentQuestionIndex++;
+        this.selectedAnswerIndex = null; // Reset selection for the new question
+      } else {
+        // End of the current set (initial or review)
+        this.handleEndOfSet();
+      }
+    },
+
+    handleEndOfSet() {
+      // Save initial answers if this was the first round
+      if (this.initialAnswers) {
+        this.saveInitialAnswers();
+        this.initialAnswers = null; // Stop tracking initial answers
+      }
+
+      // Determine questions for the next round (review)
+      // Ensure currentQuestionSet exists before filtering
+      const questionsToReview =
+        this.currentQuestionSet?.filter(
+          (q) => !this.questionsAnsweredCorrectly.has(q.id)
+        ) || []; // Default to empty array if set is undefined
+
+      if (questionsToReview.length < 1) {
+        // All questions answered correctly, navigate to results
+        this.viewResults();
+      } else {
+        // Start a review round
+        this.currentQuestionSet = questionsToReview.sort(
+          () => 0.5 - Math.random()
+        ); // Shuffle
+        this.currentQuestionIndex = 0;
+        this.selectedAnswerIndex = null; // Reset selection
+      }
+    },
+
+    saveInitialAnswers() {
+      // Ensure initialAnswers has data before saving
+      if (!this.initialAnswers || this.initialAnswers.length === 0) return;
+      try {
+        const data = localStorage.getItem(storageKey);
+        const history = data ? JSON.parse(data) : [];
+        history.push({
+          answers: this.initialAnswers,
+          timestamp: new Date().toISOString(),
+        });
+        localStorage.setItem(storageKey, JSON.stringify(history));
+      } catch (e) {
+        console.error("Failed to save answers to localStorage:", e);
+        // Optionally notify the user
+      }
+    },
+
+    viewResults() {
+      try {
+        const data = localStorage.getItem(storageKey);
+        const history = data ? JSON.parse(data) : [];
+        // Navigate to the attempt page for the last saved attempt
+        // Check if history is not empty before accessing length - 1
+        if (history.length > 0) {
+          globalThis.location.href = `attempt.html?index=${history.length - 1}`;
+        } else {
+          console.error("Attempting to view results, but no history found.");
+          this.error = "Could not find results to display.";
+        }
+      } catch (e) {
+        console.error("Failed to read history from localStorage:", e);
+        this.error = "Could not retrieve results.";
+        // Stay on the page but show an error
+      }
+    },
+  };
 }
 
-/**
- * Handles the logic when a user selects an answer.
- */
-function handleAnswerSelection(
-  question: Question,
-  choiceIndex: number,
-  selectedLabel: HTMLLabelElement
-) {
-  const isCorrect = choiceIndex === question.correct_answer;
-
-  if (initialAnswers) {
-    initialAnswers.push({
-      question_id: question.id,
-      user_answer: choiceIndex,
-    });
-  }
-
-
-  // Disable all options for this question after selection
-  const allLabels = quizContainer?.querySelectorAll(
-    `label[for^="option-${question.id}-"]`
-  );
-  if (!allLabels) {
-    console.error("labels missing");
-    return;
-  }
-  for (let i = 0; i < allLabels.length; i++) {
-    const label = allLabels[i];
-    const input = document.getElementById(
-      label.htmlFor
-    ) as HTMLInputElement | null;
-    if (input) input.disabled = true;
-    label.classList.remove("btn-outline-primary", "btn-primary", "active"); // Clear existing styles
-    label.classList.add("btn-secondary", "disabled"); // Visually
-    if (i == question.correct_answer) {
-      label.classList.add("btn-success");
-    }
-  }
-
-  // Provide visual feedback
-  selectedLabel.classList.remove("btn-secondary", "disabled"); // Re-enable selected style change
-  if (isCorrect) {
-    questionsAnsweredCorrectly.add(question.id); // Mark as correctly answered at least once
-  } else {
-    mistakes++;
-    selectedLabel.classList.add("btn-danger");
-  }
-
-  updateProgressIndicator();
-  updateNextButtonState(true);
-}
-
-/**
- * Updates the text/state of the next button.
- */
-function updateNextButtonState(enabled: boolean, text?: string) {
-  if (!nextButton) return;
-  nextButton.disabled = !enabled;
-  if (text) {
-    nextButton.textContent = text;
-    return;
-  }
-  // Determine default text based on context
-  const isLastQuestionInSet =
-    currentQuestionIndex >= currentQuestionSet.length - 1;
-  if (!isLastQuestionInSet) {
-    nextButton.textContent = "Next";
-    return;
-  }
-  // Check if any questions in the current set still need a correct answer
-  const needsReview = currentQuestionSet.some(
-    q => !questionsAnsweredCorrectly.has(q.id)
-  );
-  if (needsReview) {
-    nextButton.textContent = "Review";
-    return;
-  }
-  // done. go to view attempt next
-  nextButton.textContent = "View";
-}
-
-/**
- * Updates the progress indicator text.
- */
-function updateProgressIndicator() {
-  if (!progressIndicator) return;
-  let content = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length
-    } 
- | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
-  if (mistakes > 0) {
-    // Construct the full HTML string including the alert if needed
-    content += `<div class="alert alert-danger mt-2">${mistakes} Mistake${mistakes == 1 ? "" : "s"}</div>`;
-  }
-  // Set innerHTML once
-  progressIndicator.innerHTML = content;
-}
-
-/**
- * Moves to the next question or initiates a review round/finishes.
- */
-function nextStep() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < currentQuestionSet.length) {
-    // --- Render next question in the current set ---
-    renderCurrentQuestion();
-    updateNextButtonState(false); // Disable until answer
-    return;
-  }
-  // --- End of the current question set ---
-
-  if (initialAnswers) {
-    //save first attempt to history
-    const data = localStorage.getItem(storageKey);
-    const history = data ? JSON.parse(data) : [];
-    history.push({ answers: initialAnswers, timestamp: new Date().toISOString() });
-    localStorage.setItem(storageKey, JSON.stringify(history));
-    initialAnswers = null; // stop tracking initital answers
-  }
-
-  const questionsToReview = currentQuestionSet.filter(
-    (q) => !questionsAnsweredCorrectly.has(q.id)
-  );
-  if (questionsToReview.length < 1) {
-    const data = localStorage.getItem(storageKey);
-    const history = data ? JSON.parse(data) : [];
-    // view attempt
-    globalThis.location.href = `attempt.html?index=${history.length - 1}`;
-    return;
-  }
-
-  // --- Start a Review Round ---
-  currentQuestionSet = questionsToReview.sort(() => 0.5 - Math.random()); // Shuffle review questions
-  currentQuestionIndex = 0;
-  renderCurrentQuestion();
-  updateNextButtonState(false, "Next"); // Start review round
-  updateProgressIndicator(); // Update progress for the new round
-}
-
-
-// --- Initialization ---
-document.addEventListener("DOMContentLoaded", async () => {
-  quizContainer = document.getElementById("quiz-container");
-  nextButton = document.getElementById(
-    "next-button"
-  ) as HTMLButtonElement | null;
-  progressIndicator = document.getElementById("progress-indicator");
-
-  if (!quizContainer || !nextButton || !progressIndicator) {
-    console.error("Required DOM elements not found!");
-    return;
-  }
-
-  nextButton.addEventListener("click", nextStep);
-
-  progressIndicator.textContent = "Loading questions...";
-  currentQuestionSet = await loadQuestions();
-  totalQuestions = currentQuestionSet.length;
-
-  if (currentQuestionSet.length < 1) {
-    quizContainer.innerHTML = `<div class="alert alert-warning">No questions loaded. Cannot start review mode.</div>`;
-    progressIndicator.textContent = "Error";
-    return;
-  }
-  updateProgressIndicator();
-  currentQuestionIndex = 0;
-  renderCurrentQuestion();
+document.addEventListener("alpine:init", () => {
+  // This will use the Alpine object made available globally by the CDN script
+  console.log("Alpine initialized, registering 'quiz' data..."); // Debug log
+  Alpine.data("quiz", quizData);
+  console.log("'quiz' data registered."); // Debug log
 });
