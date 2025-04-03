@@ -5,6 +5,7 @@ import {
   findQuestion,
   Score,
   storageKey,
+  AttemptResult,
 } from "./shared.js";
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -29,16 +30,6 @@ async function renderHistory() {
 
   const all_questions = await fetchQuestions();
 
-  let anatomyScores: Score[] = [];
-  let physicsScores: Score[] = [];
-  let procedureScores: Score[] = [];
-
-  let totalScores: CategoryData = {
-    anatomy: { correct: 0, total: 0 },
-    physics: { correct: 0, total: 0 },
-    procedures: { correct: 0, total: 0 },
-  };
-
   for (let i = 0; i < history.length; i++) {
     const attempt = history[i];
     if (!attempt.answers) {
@@ -46,73 +37,50 @@ async function renderHistory() {
       return;
     }
 
-    const numQuestions = Object.keys(attempt.answers).length;
-    let score = 0;
-    let scores = {
-      anatomy: { correct: 0, total: 0 },
-      physics: { correct: 0, total: 0 },
-      procedures: { correct: 0, total: 0 },
-    };
+    const questions = [];
     for (const answer of attempt.answers) {
       const question = findQuestion(all_questions, answer.question_id);
       if (!question) {
         console.error("Question not found:", answer.question_id);
         return;
       }
-      const category = question.category;
-      if (!category) {
-        console.error("invalid question. missing category");
-        continue;
-      }
-      const correct = answer.user_answer == question.correct_answer;
-      if (correct) {
-        score++;
-        scores[category].correct++;
-        totalScores[category].correct++;
-      }
-      scores[category].total++;
-      totalScores[category].total++;
+      question.user_answer = answer.user_answer;
+      questions.push(question);
     }
+    const result = AttemptResult.fromAnsweredQuestions(questions);
 
-    anatomyScores.push(scores.anatomy);
-    physicsScores.push(scores.physics);
-    procedureScores.push(scores.procedures);
-
-    const row = generateRow(i, attempt.timestamp, score, numQuestions, scores);
+    const row = generateRow(i, attempt.timestamp, result);
     historyTable.appendChild(row);
   }
 
-  populateAverage(history.length, totalScores);
-  renderChart(anatomyScores, physicsScores, procedureScores);
+  // populateAverage(history.length, totalScores);
+  // renderChart(anatomyScores, physicsScores, procedureScores);
 }
 
-function generateRow(
-  index: number,
-  timestamp: string,
-  score: number,
-  numQuestions: number,
-  scores: CategoryData // Assuming CategoryData interface is available
-) {
+function generateRow(index: number, timestamp: string, result: AttemptResult) {
   const row = document.createElement("tr");
   const date = new Date(timestamp).toLocaleString();
-  const scorePercentage = (score / numQuestions) * 100;
+  const scorePercentage = result.getTotalScorePercentage();
 
   row.innerHTML = `
             <td>${index + 1}</td>
             <td>${date}</td>
             <td class="${scoreClass(
               scorePercentage
-            )}">${score} / ${numQuestions} <small>(${scorePercentage.toFixed(
+            )}">${result.getTotalScore()} / ${result.countQuestions()} <small>(${scorePercentage.toFixed(
     2
   )}%)</small></td>`;
 
-  for (const category in scores) {
-    const correct = scores[category].correct ?? 0;
-    const total = scores[category].total ?? 0;
-    const categoryPercentage = total > 0 ? (correct / total) * 100 : 100;
-    row.innerHTML += `<td class="${scoreClass(
-      categoryPercentage
-    )}">${correct}/${total}</td>`;
+  const columns = ["anatomy", "physics", "procedures"];
+  for (const column of columns) {
+    const score = result.topics[column];
+    if (!score) {
+      row.innerHTML += "<td>0/0</td>";
+      continue;
+    }
+    row.innerHTML += `<td class="${scoreClass(score.getPercentage())}">${
+      score.correct
+    }/${score.total}</td>`;
   }
   row.innerHTML += `<td><a href="attempt.html?index=${index}" class="btn btn-primary btn-sm">View</a></td>`;
   return row;
