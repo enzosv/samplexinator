@@ -99,6 +99,29 @@ function renderQuestions(container: HTMLElement, questions: Question[]) {
   }
 }
 
+function stickerName(scorePercentage: number) {
+  if (scorePercentage == 100) {
+    return "james.png";
+  }
+  if (scorePercentage >= 75) {
+    return "kylo.png";
+  }
+  if (scorePercentage >= 50) {
+    return "kikay.png";
+  }
+  return "bucky.png";
+}
+
+function addSticker(scorePercentage: number) {
+  const stickerElement = document.getElementById("sticker");
+  if (!stickerElement) {
+    return;
+  }
+  stickerElement.innerHTML = `<img src='./assets/${stickerName(
+    scorePercentage
+  )}' height=256>`;
+}
+
 async function renderAttempt() {
   const container = document.getElementById("attempt-container")!;
   if (!container) {
