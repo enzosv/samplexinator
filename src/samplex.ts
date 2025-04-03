@@ -116,7 +116,13 @@ export function submitAnswers() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+  if (!document.getElementById("smarteneator")) {
+    // file is imported by others. which may cause this function to trigger
+    // prevent that
+    return;
+  }
   const questions = await loadQuestions();
+
   questions_count = questions.length;
   updateSubmitState();
   renderSamplexQuestions(questions);
@@ -125,6 +131,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     .getElementById("submit-button")
     ?.addEventListener("click", submitAnswers);
 });
+
 
 function updateSubmitState() {
   const answeredCount = answers.length;
