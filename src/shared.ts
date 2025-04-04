@@ -14,6 +14,51 @@ export interface Question {
   mistakes?: number; //Optional: Added after finding question attempts
 }
 
+export function generateQuestionElement(question: Question, index: number, onSelect: any) {
+  const div = document.createElement("div");
+  div.className = "question border p-3 mb-3 rounded";
+  div.innerHTML = `<p><strong>${index + 1}) ${question.question}</strong></p>`;
+
+  for (let i = 0; i < question.options.length; i++) {
+    const optionWrapper = document.createElement("div");
+    optionWrapper.className = "form-check";
+
+    const input = document.createElement("input");
+    input.className = "form-check-input d-none"; // Keep hidden if using label styling
+    input.type = "radio";
+    input.id = `option-${question.id}-${i}`;
+    input.name = `question-${question.id}`; // Group radios by question
+    input.value = i.toString(); // Set value to the option index
+
+    const label = document.createElement("label");
+    label.className =
+      "form-check-label btn btn-outline-primary w-100 text-start py-2";
+    label.htmlFor = input.id; // Associate label with input
+    // Use innerHTML for the strong tag, ensure q.options[i] is safe or sanitize if needed
+    label.innerHTML = `<strong>${letters[i]}</strong>: ${question.options[i]}`;
+
+    if(!question.user_answer) {
+      input.addEventListener("change", () => {
+        onSelect(i);
+      });
+    } else {
+      input.checked = i == question.user_answer;
+      label.classList.remove("btn-outline-primary", "btn-primary", "active"); // Clear existing styles
+      label.classList.add("btn-secondary", "disabled"); // Vi
+      if(i==question.correct_answer){
+        label.classList.add("btn-success");
+      }
+    }
+    // Append input and label to the wrapper div
+    optionWrapper.appendChild(input);
+    optionWrapper.appendChild(label);
+
+    // Append the option wrapper to the main question div
+    div.appendChild(optionWrapper);
+  }
+  return div;
+}
+
 export interface Answer {
   question_id: number;
   user_answer: number; // The index selected by the user
