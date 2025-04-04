@@ -73,7 +73,13 @@ export function renderSamplexQuestions(questions: Question[]) {
 }
 
 function saveAnswer(question_id: number, choice: number) {
+  const existing = answers.findIndex(answer => answer.question_id == question_id)
+  if(existing > -1){
+    console.log(existing)
+    answers[existing].user_answer = choice;
+  } else {
   answers.push({ question_id: question_id, user_answer: choice });
+  }
 
   // Get all labels for the current question using a query that selects labels whose 'for' attribute starts with 'option-{question_id}-'
   const labels = document.querySelectorAll(
