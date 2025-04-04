@@ -98,17 +98,18 @@ function updateNextButtonState(enabled: boolean, text?: string) {
  * Updates the progress indicator text.
  */
 function updateProgressIndicator() {
-  if (!progressIndicator) return;
-  let content = ` ${currentQuestionIndex + 1} of ${currentQuestionSet.length} 
- | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
-  if (mistakes > 0) {
-    // Construct the full HTML string including the alert if needed
-    content += `<div class="alert alert-danger mt-2">${mistakes} Mistake${
-      mistakes == 1 ? "" : "s"
-    }</div>`;
+  if (progressIndicator) {
+    progressIndicator.innerHTML = `${currentQuestionIndex + 1} of ${
+      currentQuestionSet.length
+    } 
+   | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
   }
-  // Set innerHTML once
-  progressIndicator.innerHTML = content;
+  if (mistakes > 0) {
+    const counter = document.getElementById("mistake-counter");
+    if (counter) {
+      counter.innerHTML = `${mistakes} Mistake${mistakes == 1 ? "" : "s"}`;
+    }
+  }
 }
 
 /**
