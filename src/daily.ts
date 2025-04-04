@@ -157,6 +157,9 @@ function nextStep() {
   // --- Start a Review Round ---
   currentQuestionSet = questionsToReview.sort(() => 0.5 - Math.random()); // Shuffle review questions
   currentQuestionIndex = 0;
+  if (progressBar) {
+    progressBar.value = 0;
+  }
   renderCurrentQuestion();
   updateNextButtonState(false, "Next"); // Start review round
   updateProgressIndicator(); // Update progress for the new round
