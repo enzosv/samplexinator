@@ -1,29 +1,13 @@
 import {
   Answer,
-  fetchQuestions,
   generateQuestionElement,
   Question,
   storageKey,
+  loadQuestions,
 } from "./shared.js";
 
 const answers: Answer[] = [];
 let questions_count = 0;
-
-export async function loadQuestions() {
-  const data = await fetchQuestions();
-  let loadedQuestions: Question[] = [];
-
-  for (const category in data) {
-    const shuffled = data[category]
-      .sort(() => 0.5 - Math.random()) // shuffle
-      // .slice(0, 1)
-      .slice(0, category == "physics" ? 4 : 3) // number of questions per category
-      .map((q) => ({ ...q, category: category })); // add category to data
-    loadedQuestions = [...loadedQuestions, ...shuffled];
-  }
-
-  return loadedQuestions.sort(() => 0.5 - Math.random());
-}
 
 export function renderSamplexQuestions(questions: Question[]) {
   const container = document.getElementById("quiz-container");

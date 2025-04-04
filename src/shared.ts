@@ -14,6 +14,22 @@ export interface Question {
   mistakes?: number; //Optional: Added after finding question attempts
 }
 
+export async function loadQuestions() {
+  const data = await fetchQuestions();
+  let loadedQuestions: Question[] = [];
+
+  for (const category in data) {
+    const shuffled = data[category]
+      .sort(() => 0.5 - Math.random()) // shuffle
+      .slice(0, 1)
+      .slice(0, category == "physics" ? 4 : 3) // number of questions per category
+      .map((q) => ({ ...q, category: category })); // add category to data
+    loadedQuestions = [...loadedQuestions, ...shuffled];
+  }
+
+  return loadedQuestions.sort(() => 0.5 - Math.random());
+}
+
 export function generateQuestionElement(
   question: Question,
   index: number,
