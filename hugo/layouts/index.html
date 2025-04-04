@@ -1,0 +1,11 @@
+{{ define "title" }} {{ .Site.Title }} - Home {{ end }} {{ define "main" }} {{
+partial "quiz_ui.html" . }} {{ end }} {{ define "footer" }}
+<div id="sticky-footer" class="bg-light py-3 border-top px-5">
+  <p id="answered-count" class="text-muted px-5">0 / 0 Answered</p>
+  <button id="submit-button" class="btn btn-primary px-5" disabled>
+    Submit
+  </button>
+</div>
+{{ end }} {{ define "scripts" }} {{/* We might need specific scripts for this
+page later */}} {{/* The main bundle is already included in baseof.html */}} {{
+end }}

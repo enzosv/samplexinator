@@ -1,0 +1,46 @@
+{
+  "htmlElements": {
+    "tags": [
+      "a",
+      "body",
+      "button",
+      "div",
+      "h2",
+      "head",
+      "html",
+      "link",
+      "main",
+      "meta",
+      "p",
+      "script",
+      "title"
+    ],
+    "classes": [
+      "align-items-center",
+      "bg-light",
+      "border-top",
+      "btn",
+      "btn-primary",
+      "btn-secondary",
+      "container",
+      "d-flex",
+      "justify-content-between",
+      "mb-0",
+      "mt-3",
+      "pb-5",
+      "px-5",
+      "py-3",
+      "text-center",
+      "text-muted"
+    ],
+    "ids": [
+      "answered-count",
+      "next-button",
+      "progress-indicator",
+      "quiz-container",
+      "smartenator",
+      "sticky-footer",
+      "submit-button"
+    ]
+  }
+}

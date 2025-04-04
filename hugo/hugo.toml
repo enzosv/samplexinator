@@ -1,0 +1,15 @@
+baseURL = "/"
+languageCode = "en-us"
+title = "Smartenator Hugo"
+theme = "" # No theme needed for now
+
+[module]
+  [module.hugoVersion]
+    extended = true # Needed for SCSS/SASS processing if we add it later
+    min = "0.110.0" # Set a reasonable minimum version
+
+# Configure JS build options (optional, but good practice)
+[build]
+  writeStats = true # Generates build statistics
+  [build.buildStats]
+    enable = true

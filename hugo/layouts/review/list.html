@@ -1,0 +1,7 @@
+{{ define "title" }} {{ .Site.Title }} - Review Quiz {{ end }} {{ define "main"
+}}
+<h2>Review Quiz</h2>
+{{ partial "quiz_ui.html" . }} {{ end }} {{ define "footer" }} {{/* Footer
+content is in the partial */}} {{ end }} {{ define "scripts" }} {{/* Specific
+scripts for review page if needed */}} {{/* The main bundle is already included
+in baseof.html */}} {{ end }}

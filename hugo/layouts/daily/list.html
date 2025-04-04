@@ -1,0 +1,10 @@
+{{ define "title" }} {{ .Site.Title }} - Daily Quiz {{ end }} {{ define "main"
+}}
+<h2>Daily Quiz</h2>
+{{ partial "quiz_ui.html" . }} {{ end }} {{ define "footer" }}
+<div id="sticky-footer" class="bg-light py-3 border-top px-5">
+  <div id="progress-indicator" class="text-muted px-5">Loading...</div>
+  <button id="next-button" class="btn btn-primary px-5" disabled>Next</button>
+</div>
+{{ end }} {{ define "scripts" }} {{/* Specific scripts for daily page if needed
+*/}} {{/* The main bundle is already included in baseof.html */}} {{ end }}

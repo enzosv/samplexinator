@@ -1,0 +1,40 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.question {
+  margin-bottom: 15px;
+}
+
+#sticky-footer {
+  position: fixed;
+  /* Stick to the viewport */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  /* Ensure it's above other content */
+  display: flex;
+  /* Arrange items side-by-side */
+  justify-content: space-between;
+  /* Space out count and button */
+  align-items: center;
+  /* Vertically center items */
+  /* Background, padding, border already added via Bootstrap classes */
+}
+
+/* Disable Bootstrap's hover effect on answer buttons */
+#quiz-container .form-check-label.btn-outline-primary:hover {
+  /* Reset to default btn-outline-primary styles (or set explicitly) */
+  color: #0d6efd;
+  background-color: transparent;
+  border-color: #0d6efd;
+  /* Remove any background color change */
+}
+
+/* Optional: Style for disabled submit button */
+#submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
