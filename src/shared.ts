@@ -37,7 +37,7 @@ export function generateQuestionElement(question: Question, index: number, onSel
     // Use innerHTML for the strong tag, ensure q.options[i] is safe or sanitize if needed
     label.innerHTML = `<strong>${letters[i]}</strong>: ${question.options[i]}`;
 
-    if(!question.user_answer) {
+    if(question.user_answer === undefined) {
       input.addEventListener("change", () => {
         onSelect(i);
       });
@@ -45,9 +45,12 @@ export function generateQuestionElement(question: Question, index: number, onSel
       input.checked = i == question.user_answer;
       label.classList.remove("btn-outline-primary", "btn-primary", "active"); // Clear existing styles
       label.classList.add("btn-secondary", "disabled"); // Vi
+      if(input.checked && i != question.correct_answer){
+        label.classList.add("btn-danger");
+      }
       if(i==question.correct_answer){
         label.classList.add("btn-success");
-      }
+      }  
     }
     // Append input and label to the wrapper div
     optionWrapper.appendChild(input);
