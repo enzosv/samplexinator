@@ -29,11 +29,11 @@ async function renderHistory() {
 
   const all_questions = await fetchQuestions();
 
-  let anatomyScores: Score[] = [];
-  let physicsScores: Score[] = [];
-  let procedureScores: Score[] = [];
+  const anatomyScores: Score[] = [];
+  const physicsScores: Score[] = [];
+  const procedureScores: Score[] = [];
 
-  let totalScores: CategoryData = {
+  const totalScores: CategoryData = {
     anatomy: { correct: 0, total: 0 },
     physics: { correct: 0, total: 0 },
     procedures: { correct: 0, total: 0 },
@@ -48,7 +48,7 @@ async function renderHistory() {
 
     const numQuestions = Object.keys(attempt.answers).length;
     let score = 0;
-    let scores = {
+    const scores = {
       anatomy: { correct: 0, total: 0 },
       physics: { correct: 0, total: 0 },
       procedures: { correct: 0, total: 0 },
@@ -118,7 +118,7 @@ function generateRow(
   return row;
 }
 
-function populateAverage(count, scores) {
+function populateAverage(count: number, scores) {
   const container = document.getElementById("average-scores");
   if (!container) {
     console.error("missing average row");
@@ -147,7 +147,7 @@ function populateAverage(count, scores) {
 `;
 }
 
-function scoreClass(percentage) {
+function scoreClass(percentage: number) {
   return percentage < 75 ? "text-danger" : "";
 }
 
@@ -208,7 +208,7 @@ function renderChart(
           title: { display: true, text: "Score" },
           max: 100,
           ticks: {
-            callback: function (value) {
+            callback: function (value: number) {
               return value + "%"; // Add '%' sign to y-axis labels
             },
           },
