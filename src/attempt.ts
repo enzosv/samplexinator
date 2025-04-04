@@ -18,14 +18,14 @@ function renderScore(questions: Question[]) {
     scorePercentage < 75 ? "incorrect" : "correct"
   }">Score: ${result.getTotalScore()} / ${
     questions.length
-  } (${scorePercentage.toFixed(2)}%)</h4>`;
+  } <small>(${scorePercentage.toFixed(2)}%)</small></h4>`;
   for (const [topicName, score] of Object.entries(result.topics)) {
     const percentage = score.getPercentage();
     scoreBreakdownText += `<p class="${
       percentage < 75 ? "incorrect" : "correct"
-    }">${topicName}: ${score.correct} / ${score.total} (${percentage.toFixed(
-      2
-    )}%)</p>`;
+    }">${topicName.charAt(0).toUpperCase() + topicName.slice(1)}: ${
+      score.correct
+    } / ${score.total} <small>(${percentage.toFixed(2)}%)</small></p>`;
   }
   scoreContainer!.innerHTML = scoreBreakdownText;
 }
