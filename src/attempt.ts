@@ -3,10 +3,10 @@ import {
   Attempt,
   fetchQuestions,
   findQuestion,
-  letters,
   Question,
   storageKey,
   AttemptResult,
+  generateQuestionElement,
 } from "./shared.js";
 
 function renderScore(questions: Question[]) {
@@ -68,33 +68,9 @@ async function findQuestions(answers: Answer[]) {
 }
 
 function renderQuestions(container: HTMLElement, questions: Question[]) {
-  for (const question of questions) {
-    const correct = question.correct_answer == question.user_answer;
-    // render
-    const div = document.createElement("div");
-    div.className = "question border p-3 mb-3 rounded";
-    div.innerHTML = `<p class="fw-bold ${correct ? "" : "incorrect"}">${
-      question.question
-    }</p>`;
-    for (let i = 0; i < question.options.length; i++) {
-      const isUserAnswer = question.user_answer === i;
-      const isCorrect = question.correct_answer === i;
-      div.innerHTML += `
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="question-${
-                              question.id
-                            }" value="${i}" disabled ${
-        isUserAnswer ? "checked" : ""
-      }>
-                            <label class="form-check-label ${
-                              isCorrect ? "fw-bold" : ""
-                            }">
-                                ${letters[i]}: ${question.options[i]}
-                            </label>
-                        </div>
-                    `;
-    }
-
+  for (let i = 0; i < questions.length; i++) {
+    const question = questions[i];
+    const div = generateQuestionElement(question, i);
     container.appendChild(div);
   }
 }

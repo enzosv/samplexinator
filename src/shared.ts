@@ -14,7 +14,11 @@ export interface Question {
   mistakes?: number; //Optional: Added after finding question attempts
 }
 
-export function generateQuestionElement(question: Question, index: number, onSelect: any) {
+export function generateQuestionElement(
+  question: Question,
+  index: number,
+  onSelect?: any
+) {
   const div = document.createElement("div");
   div.className = "question border p-3 mb-3 rounded";
   div.innerHTML = `<p><strong>${index + 1}) ${question.question}</strong></p>`;
@@ -37,7 +41,7 @@ export function generateQuestionElement(question: Question, index: number, onSel
     // Use innerHTML for the strong tag, ensure q.options[i] is safe or sanitize if needed
     label.innerHTML = `<strong>${letters[i]}</strong>: ${question.options[i]}`;
 
-    if(question.user_answer === undefined) {
+    if (question.user_answer === undefined && onSelect) {
       input.addEventListener("change", () => {
         onSelect(i);
       });
@@ -45,12 +49,12 @@ export function generateQuestionElement(question: Question, index: number, onSel
       input.checked = i == question.user_answer;
       label.classList.remove("btn-outline-primary", "btn-primary", "active"); // Clear existing styles
       label.classList.add("btn-secondary", "disabled"); // Vi
-      if(input.checked && i != question.correct_answer){
+      if (input.checked && i != question.correct_answer) {
         label.classList.add("btn-danger");
       }
-      if(i==question.correct_answer){
+      if (i == question.correct_answer) {
         label.classList.add("btn-success");
-      }  
+      }
     }
     // Append input and label to the wrapper div
     optionWrapper.appendChild(input);
