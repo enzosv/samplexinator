@@ -34,14 +34,13 @@ export function renderSamplexQuestions(questions: Question[]) {
   }
   container.innerHTML = "";
 
-  questions.forEach((q, index) => {
-
-    const div = generateQuestionElement(q, index, (option: number) => {
-      saveAnswer(q.id, option);
+  for(let i =0; i<questions.length; i++){
+    const question = questions[i]
+    const div = generateQuestionElement(question, i, (option: number) => {
+      saveAnswer(question.id, option);
     });
-
     container.appendChild(div);
-  });
+  }
 }
 
 function saveAnswer(question_id: number, choice: number) {
