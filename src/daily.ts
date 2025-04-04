@@ -1,5 +1,10 @@
 import { loadQuestions } from "./samplex.js";
-import { Answer, letters, Question, storageKey } from "./shared.js";
+import {
+  Answer,
+  generateQuestionElement,
+  Question,
+  storageKey,
+} from "./shared.js";
 
 // --- State Variables ---
 let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)
@@ -28,93 +33,36 @@ function renderCurrentQuestion() {
     return;
   }
 
-  const q = currentQuestionSet[currentQuestionIndex];
+  const question = currentQuestionSet[currentQuestionIndex];
   quizContainer.innerHTML = ""; // Clear previous question
 
-  const div = document.createElement("div");
-  div.className = "question border p-3 mb-3 rounded";
-  div.innerHTML = `<p><strong>${q.question}</strong></p>`;
+  const div = generateQuestionElement(
+    question,
+    currentQuestionIndex,
+    (option: number) => {
+      question.user_answer = option;
+      renderCurrentQuestion();
+      const isCorrect = option === question.correct_answer;
 
-  q.options.forEach((option, i) => {
-    const optionWrapper = document.createElement("div");
-    optionWrapper.className = "form-check";
+      if (initialAnswers) {
+        initialAnswers.push({
+          question_id: question.id,
+          user_answer: option,
+        });
+      }
+      if (isCorrect) {
+        questionsAnsweredCorrectly.add(question.id); // Mark as correctly answered at least once
+      } else {
+        mistakes++;
+      }
 
-    const input = document.createElement("input");
-    input.className = "form-check-input d-none"; // Hide radio button visually
-    input.type = "radio";
-    input.id = `option-${q.id}-${i}`;
-    input.name = `question-${q.id}`; // Group radios
-    input.value = i.toString();
-    input.disabled = false; // Ensure options are enabled initially
-
-    const label = document.createElement("label");
-    label.className =
-      "form-check-label btn btn-outline-primary w-100 text-start py-2";
-    label.htmlFor = input.id;
-    label.innerHTML = `<strong>${letters[i]}</strong>: ${option}`;
-
-    input.addEventListener("change", () => {
-      handleAnswerSelection(q, i, label);
-    });
-
-    optionWrapper.appendChild(input);
-    optionWrapper.appendChild(label);
-    div.appendChild(optionWrapper);
-  });
+      updateProgressIndicator();
+      updateNextButtonState(true);
+    }
+  );
 
   quizContainer.appendChild(div);
   updateNextButtonState(false); // Disable 'Next' until an answer is selected
-}
-
-/**
- * Handles the logic when a user selects an answer.
- */
-function handleAnswerSelection(
-  question: Question,
-  choiceIndex: number,
-  selectedLabel: HTMLLabelElement
-) {
-  const isCorrect = choiceIndex === question.correct_answer;
-
-  if (initialAnswers) {
-    initialAnswers.push({
-      question_id: question.id,
-      user_answer: choiceIndex,
-    });
-  }
-
-  // Disable all options for this question after selection
-  const allLabels = quizContainer?.querySelectorAll(
-    `label[for^="option-${question.id}-"]`
-  );
-  if (!allLabels) {
-    console.error("labels missing");
-    return;
-  }
-  for (let i = 0; i < allLabels.length; i++) {
-    const label = allLabels[i];
-    const input = document.getElementById(
-      label.htmlFor
-    ) as HTMLInputElement | null;
-    if (input) input.disabled = true;
-    label.classList.remove("btn-outline-primary", "btn-primary", "active"); // Clear existing styles
-    label.classList.add("btn-secondary", "disabled"); // Visually
-    if (i == question.correct_answer) {
-      label.classList.add("btn-success");
-    }
-  }
-
-  // Provide visual feedback
-  selectedLabel.classList.remove("btn-secondary", "disabled"); // Re-enable selected style change
-  if (isCorrect) {
-    questionsAnsweredCorrectly.add(question.id); // Mark as correctly answered at least once
-  } else {
-    mistakes++;
-    selectedLabel.classList.add("btn-danger");
-  }
-
-  updateProgressIndicator();
-  updateNextButtonState(true);
 }
 
 /**
@@ -167,6 +115,7 @@ function updateProgressIndicator() {
  * Moves to the next question or initiates a review round/finishes.
  */
 function nextStep() {
+  currentQuestionSet[currentQuestionIndex].user_answer = undefined; // reset answer
   currentQuestionIndex++;
   if (currentQuestionIndex < currentQuestionSet.length) {
     // --- Render next question in the current set ---
