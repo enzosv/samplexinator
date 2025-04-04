@@ -14,6 +14,7 @@ const questionsAnsweredCorrectly: Set<number> = new Set(); // Keep track of Qs a
 
 // --- DOM Elements ---
 let quizContainer: HTMLElement | null;
+let progressBar: HTMLProgressElement | null;
 let nextButton: HTMLButtonElement | null;
 let progressIndicator: HTMLElement | null;
 
@@ -40,24 +41,7 @@ function renderCurrentQuestion() {
     question,
     currentQuestionIndex,
     (option: number) => {
-      question.user_answer = option;
-      renderCurrentQuestion();
-      const isCorrect = option === question.correct_answer;
-
-      if (initialAnswers) {
-        initialAnswers.push({
-          question_id: question.id,
-          user_answer: option,
-        });
-      }
-      if (isCorrect) {
-        questionsAnsweredCorrectly.add(question.id); // Mark as correctly answered at least once
-      } else {
-        mistakes++;
-      }
-
-      updateProgressIndicator();
-      updateNextButtonState(true);
+      handleAnswer(question, option);
     }
   );
 
@@ -94,15 +78,36 @@ function updateNextButtonState(enabled: boolean, text?: string) {
   nextButton.textContent = "View";
 }
 
+function handleAnswer(question: Question, option: number) {
+  question.user_answer = option;
+  renderCurrentQuestion();
+  const isCorrect = option === question.correct_answer;
+
+  if (initialAnswers) {
+    initialAnswers.push({
+      question_id: question.id,
+      user_answer: option,
+    });
+  }
+  if (isCorrect) {
+    questionsAnsweredCorrectly.add(question.id); // Mark as correctly answered at least once
+  } else {
+    mistakes++;
+  }
+  if (progressBar) {
+    progressBar.value = (currentQuestionIndex + 1) / currentQuestionSet.length;
+  }
+
+  updateProgressIndicator();
+  updateNextButtonState(true);
+}
+
 /**
  * Updates the progress indicator text.
  */
 function updateProgressIndicator() {
   if (progressIndicator) {
-    progressIndicator.innerHTML = `${currentQuestionIndex + 1} of ${
-      currentQuestionSet.length
-    } 
-   | ${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
+    progressIndicator.innerHTML = `${questionsAnsweredCorrectly.size}/${totalQuestions} Correct`;
   }
   if (mistakes > 0) {
     const counter = document.getElementById("mistake-counter");
@@ -164,6 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     "next-button"
   ) as HTMLButtonElement | null;
   progressIndicator = document.getElementById("progress-indicator");
+  progressBar = document.getElementById("progress") as HTMLProgressElement;
 
   if (!quizContainer || !nextButton || !progressIndicator) {
     console.error("Required DOM elements not found!");
