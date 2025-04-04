@@ -16,15 +16,14 @@ export async function loadQuestions() {
   for (const category in data) {
     const shuffled = data[category]
       .sort(() => 0.5 - Math.random()) // shuffle
-      .slice(0, 1)
-      // .slice(0, category == "physics" ? 4 : 3) // number of questions per category
+      // .slice(0, 1)
+      .slice(0, category == "physics" ? 4 : 3) // number of questions per category
       .map((q) => ({ ...q, category: category })); // add category to data
     loadedQuestions = [...loadedQuestions, ...shuffled];
   }
 
   return loadedQuestions.sort(() => 0.5 - Math.random());
 }
-
 
 export function renderSamplexQuestions(questions: Question[]) {
   const container = document.getElementById("quiz-container");
@@ -34,8 +33,8 @@ export function renderSamplexQuestions(questions: Question[]) {
   }
   container.innerHTML = "";
 
-  for(let i =0; i<questions.length; i++){
-    const question = questions[i]
+  for (let i = 0; i < questions.length; i++) {
+    const question = questions[i];
     const div = generateQuestionElement(question, i, (option: number) => {
       saveAnswer(question.id, option);
     });
@@ -44,9 +43,11 @@ export function renderSamplexQuestions(questions: Question[]) {
 }
 
 function saveAnswer(question_id: number, choice: number) {
-  const existing = answers.findIndex(answer => answer.question_id == question_id)
-  if(existing > -1){
-    console.log(existing)
+  const existing = answers.findIndex(
+    (answer) => answer.question_id == question_id
+  );
+  if (existing > -1) {
+    console.log(existing);
     answers[existing].user_answer = choice;
   } else {
     answers.push({ question_id: question_id, user_answer: choice });
