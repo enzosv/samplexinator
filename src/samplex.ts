@@ -94,12 +94,6 @@ export function submitAnswers() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-  if (!document.getElementById("smartenator")) {
-    // file is imported by others. which may cause this function to trigger
-    // prevent that
-    console.log("prevented");
-    return;
-  }
   const questions = await loadQuestions();
   questions_count = questions.length;
   updateSubmitState();
@@ -115,9 +109,15 @@ function updateSubmitState() {
   const submitButton = document.getElementById(
     "submit-button"
   ) as HTMLButtonElement;
-  const answeredCountElement = document.getElementById("answered-count");
-  if (answeredCountElement) {
-    answeredCountElement.textContent = `${answeredCount} / ${questions_count} Answered`;
+  // const answeredCountElement = document.getElementById("answered-count");
+  // if (answeredCountElement) {
+  //   answeredCountElement.textContent = ;
+  // }
+  const progress = document.getElementById("progress") as HTMLProgressElement;
+  if (progress) {
+    progress.value = answeredCount / questions_count;
+    // progress.textContent = `${answeredCount} / ${questions_count} Answered`;
+    // progress.style.width = `${(answeredCount * 100) / questions_count}%`;
   }
   if (submitButton) {
     submitButton.disabled = answeredCount === 0;
