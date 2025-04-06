@@ -137,14 +137,29 @@ function populateAverage(count: number, scores) {
     (scores.procedures.correct * 100) / scores.procedures.total;
 
   container.innerHTML = `
-<th>${count} Attempt(s)</th>
+<th>${count} Attempt${count != 0 ? "s" : ""}</th>
 <th></th>
 <th class="${scoreClass(averageScore)}">${averageScore.toFixed(2)}%</th>
 <th class="${scoreClass(anatomyScore)}">${anatomyScore.toFixed(2)}%</th>
 <th class="${scoreClass(physicsScore)}">${physicsScore.toFixed(2)}%</th>
 <th class="${scoreClass(proceduresScore)}">${proceduresScore.toFixed(2)}%</th>
-<th></th>
 `;
+  const resetButton = document.createElement("button");
+  resetButton.classList.add("btn", "btn-danger", "btn-sm");
+  resetButton.innerText = "Reset";
+  resetButton.onclick = () => {
+    if (
+      confirm(
+        "This will clear all attempts. This can't be undone. Are you sure?"
+      )
+    ) {
+      localStorage.clear();
+      globalThis.location.href = "history.html";
+    }
+  };
+  const resetColumn = document.createElement("th");
+  resetColumn.appendChild(resetButton);
+  container.appendChild(resetColumn);
 }
 
 function scoreClass(percentage: number) {
@@ -202,14 +217,22 @@ function renderChart(
     options: {
       responsive: true,
       scales: {
-        x: { stacked: true },
+        x: {
+          stacked: true,
+          min: 1,
+          ticks: {
+            callback: function (value: number) {
+              return value;
+            },
+          },
+        },
         y: {
           stacked: true,
           title: { display: true, text: "Score" },
           max: 100,
           ticks: {
             callback: function (value: number) {
-              return value + "%"; // Add '%' sign to y-axis labels
+              return value + "%";
             },
           },
         },

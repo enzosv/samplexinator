@@ -166,6 +166,8 @@ function nextStep() {
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
+  currentQuestionSet = await loadQuestions();
+
   quizContainer = document.getElementById("quiz-container");
   nextButton = document.getElementById(
     "next-button"
@@ -179,9 +181,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   nextButton.addEventListener("click", nextStep);
-
-  progressIndicator.textContent = "Loading questions...";
-  currentQuestionSet = await loadQuestions();
   totalQuestions = currentQuestionSet.length;
 
   if (currentQuestionSet.length < 1) {
