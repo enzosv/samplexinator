@@ -202,14 +202,21 @@ function renderChart(
     options: {
       responsive: true,
       scales: {
-        x: { stacked: true },
+        x: {
+          stacked: true,
+          ticks: {
+            callback: function (value: number) {
+              return value;
+            },
+          },
+        },
         y: {
           stacked: true,
           title: { display: true, text: "Score" },
           max: 100,
           ticks: {
             callback: function (value: number) {
-              return value + "%"; // Add '%' sign to y-axis labels
+              return value + "%";
             },
           },
         },
