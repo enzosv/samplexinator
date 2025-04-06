@@ -204,6 +204,7 @@ function renderChart(
       scales: {
         x: {
           stacked: true,
+          min: 1,
           ticks: {
             callback: function (value: number) {
               return value;
