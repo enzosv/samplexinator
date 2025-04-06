@@ -137,7 +137,7 @@ function populateAverage(count: number, scores) {
     (scores.procedures.correct * 100) / scores.procedures.total;
 
   container.innerHTML = `
-<th>${count} Attempt(s)</th>
+<th>${count} Attempt${count != 0 ? "s" : ""}</th>
 <th></th>
 <th class="${scoreClass(averageScore)}">${averageScore.toFixed(2)}%</th>
 <th class="${scoreClass(anatomyScore)}">${anatomyScore.toFixed(2)}%</th>

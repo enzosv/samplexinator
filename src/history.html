@@ -11,45 +11,40 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 20px;
-      }
-
-      .low-score {
-        color: red;
-      }
-
-      .high-score {
-        color: green;
+        margin: 0 auto;
+        padding: 0 20px;
       }
     </style>
   </head>
 
-  <body class="container">
-    <nav class="navbar navbar-expand navbar-light">
-      <div class="d-flex justify-content-start">
-        <a class="nav-link me-3" href="index.html">Smartenator</a>
-        <a class="nav-link me-3" href="daily.html">Flashcards</a>
-        <a class="nav-link fw-bold" href="#">History</a>
-      </div>
-    </nav>
-    <canvas id="history-chart"></canvas>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-expand navbar-light">
+        <div class="d-flex justify-content-start">
+          <a class="nav-link me-3" href="index.html">Smartenator</a>
+          <a class="nav-link me-3" href="daily.html">Flashcards</a>
+          <a class="nav-link fw-bold" href="#">History</a>
+        </div>
+      </nav>
+      <canvas id="history-chart"></canvas>
 
-    <table class="table table-striped mt-3">
-      <thead>
-        <tr id="average-scores"></tr>
-        <tr>
-          <th>Attempt</th>
-          <th>Date</th>
-          <th>Score</th>
-          <th>Anatomy</th>
-          <th>Physics</th>
-          <th>Procedures</th>
-          <th>View</th>
-        </tr>
-      </thead>
-      <tbody id="history-table"></tbody>
-    </table>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="history.js"></script>
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr id="average-scores"></tr>
+          <tr>
+            <th>Attempt</th>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Anatomy</th>
+            <th>Physics</th>
+            <th>Procedures</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody id="history-table"></tbody>
+      </table>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script type="module" src="history.js"></script>
+    </div>
   </body>
 </html>
