@@ -222,7 +222,7 @@ function renderChart(
           min: 1,
           ticks: {
             callback: function (value: number) {
-              return value;
+              return value + 1;
             },
           },
         },
