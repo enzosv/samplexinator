@@ -6,8 +6,11 @@ import {
   Question,
   storageKey,
   generateQuestionElement,
+  AttemptResult,
   Score,
 } from "./shared.js";
+
+const PBR_DATE = new Date("2025-06-22");
 
 function formatForChat(topics: Record<string, string>, title: string): string {
   const entries = Object.entries(topics).map(([key, value]) => {
@@ -25,15 +28,14 @@ function formatForChat(topics: Record<string, string>, title: string): string {
 }
 
 function renderScore(questions: Question[]) {
-  // const result = AttemptResult.fromAnsweredQuestions(questions);
-  // const scorePercentage = result.getTotalScorePercentage();
+  const attempt = AttemptResult.fromAnsweredQuestions(questions);
+  const scorePercentage = attempt.getTotalScorePercentage();
   // addSticker(scorePercentage);
   const scoreContainer = document.getElementById("score-breakdown");
-  // let scoreBreakdownText = `<h4 class="${
-  //   scorePercentage < 75 ? "incorrect" : "correct"
-  // }">Score: ${result.getTotalScore()} / ${
-  //   questions.length
-  // } <small>(${scorePercentage.toFixed(2)}%)</small></h4>`;
+  const score = `${attempt.getTotalScore()} / ${questions.length}`;
+  const scoreBreakdownText = `<h5 class="${
+    scorePercentage < 75 ? "incorrect" : "correct"
+  }">${score} <small>(${scorePercentage}%)</small></h5>`;
   // for (const [topicName, score] of Object.entries(result.topics)) {
   //   const percentage = score.getPercentage();
   //   scoreBreakdownText += `<p class="${
@@ -44,12 +46,12 @@ function renderScore(questions: Question[]) {
   // }
   // scoreContainer!.innerHTML = scoreBreakdownText;
   const topics = emojify(questions);
-  let result = "";
+  let result: string = scoreBreakdownText;
 
   for (const [key, value] of Object.entries(topics)) {
     const topic = key.charAt(0).toUpperCase() + key.slice(1);
     result += `
-    <div class="d-flex justify-content-between">
+    <div class="d-flex">
       <span class="topic-label">${topic}:</span>
       <span class="emoji-row">${value}</span>
     </div>`;
@@ -62,13 +64,13 @@ function renderScore(questions: Question[]) {
   }
 
   button.addEventListener("click", () => {
-    let shareTitle = "";
-    const streakElement = document.getElementById("streak");
-    if (streakElement) {
-      const storedStreak = streakElement.dataset.streak;
-      shareTitle = `${storedStreak} day streak 🔥`;
-    }
-    const shareText = formatForChat(topics, shareTitle);
+    // let shareTitle = "";
+    // const streakElement = document.getElementById("streak");
+    // if (streakElement) {
+    // const storedStreak = streakElement.dataset.streak;
+    // shareTitle = `${storedStreak} day streak 🔥`;
+    // }
+    const shareText = formatForChat(topics, score);
     navigator.clipboard.writeText(shareText).then(() => {
       button.textContent = "Copied";
       button.classList.add("btn-success");
@@ -224,12 +226,17 @@ function renderStreak(history: Attempt[], all_questions: Question[]) {
   if (streak > 0) {
     const streakElement = document.getElementById("streak");
     if (streakElement) {
-      streakElement.innerText = `🔥 You're on a ${streak} day streak! 🔥`;
+      streakElement.innerHTML = `${streak} day streak 🔥`;
       streakElement.dataset.streak = String(streak);
     }
   }
-
-  const PBR_DATE = new Date("2025-06-22");
+  const countdownElement = document.getElementById("countdown");
+  if (countdownElement) {
+    const countdown = Math.round(
+      Math.abs((PBR_DATE.getTime() - new Date().getTime()) / 86400000)
+    );
+    countdownElement.innerText = `${countdown} days to go`;
+  }
 
   const cal = new CalHeatmap();
   cal.paint({
