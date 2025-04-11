@@ -129,6 +129,15 @@ export class AttemptResult {
     return totalCorrect;
   }
 
+  countQuestions(): number {
+    let totalQuestions = 0;
+
+    for (const score of Object.values(this.topics)) {
+      totalQuestions += score.total;
+    }
+    return totalQuestions;
+  }
+
   getTotalScorePercentage(): number {
     let totalCorrect = 0;
     let totalQuestions = 0;

@@ -7,6 +7,7 @@ import {
   storageKey,
   AttemptResult,
   generateQuestionElement,
+  Score,
 } from "./shared.js";
 
 function renderScore(questions: Question[]) {
@@ -30,12 +31,9 @@ function renderScore(questions: Question[]) {
   scoreContainer!.innerHTML = scoreBreakdownText;
 }
 
-function findAttempt(): Attempt | null {
+function findAttempt(history: Attempt[]): Attempt | null {
   const urlParams = new URLSearchParams(globalThis.location.search);
   const attemptIndex = urlParams.get("index");
-  const history = JSON.parse(
-    localStorage.getItem(storageKey) || "[]"
-  ) as Attempt[];
 
   if (attemptIndex === null || parseInt(attemptIndex) >= history.length) {
     console.error("404: not found");
@@ -51,8 +49,7 @@ function findAttempt(): Attempt | null {
   return attempt;
 }
 
-async function findQuestions(answers: Answer[]) {
-  const all_questions = await fetchQuestions();
+function findQuestions(all_questions: Question[], answers: Answer[]) {
   const questions: Question[] = [];
 
   for (const answer of answers) {
@@ -104,7 +101,11 @@ async function renderAttempt() {
     console.error("container not found");
     return;
   }
-  const attempt = findAttempt();
+  const history = JSON.parse(
+    localStorage.getItem(storageKey) || "[]"
+  ) as Attempt[];
+
+  const attempt = findAttempt(history);
   if (!attempt) {
     container.innerHTML = "<p class='text-danger'>Invalid attempt.</p>";
     return;
@@ -114,12 +115,93 @@ async function renderAttempt() {
     const attempt_number = Number(attempt.index ?? 0) + 1;
     attemptInfo!.innerHTML = `Attempt ${attempt_number}`;
   }
+  const all_questions = await fetchQuestions();
 
-  const questions = await findQuestions(attempt.answers);
+  const questions = findQuestions(all_questions, attempt.answers);
   renderQuestions(container, questions);
   renderScore(questions);
+  renderStreak(history, all_questions);
+}
+
+function renderStreak(history: Attempt[], all_questions: Question[]) {
+  const heatmapData = formatDataForHeatmap(history, all_questions);
+  const streak = calculateStreak(heatmapData.data);
+  if (streak > 0) {
+    const streakElement = document.getElementById("streak");
+    if (streakElement) {
+      streakElement.innerText = `🔥 You're on a ${streak} day streak! 🔥`;
+    }
+  }
+
+  const cal = new CalHeatmap();
+  cal.paint({
+    animationDuration: 0,
+    itemSelector: "#cal-heatmap",
+    domain: { type: "month" },
+    subDomain: { type: "day", radius: 2 },
+    data: { source: heatmapData.data, x: "date", y: "value" },
+    date: { start: heatmapData.earliest },
+  });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   renderAttempt();
 });
+
+interface HeatmapEntry {
+  date: string;
+  value: number;
+}
+
+function calculateStreak(entries: HeatmapEntry[]) {
+  // entries: [{ date: 'YYYY-MM-DD', value: number }, ...]
+  const datesWithData = new Set(entries.map((entry) => entry.date));
+
+  let streak = 0;
+  const today = new Date();
+
+  while (true) {
+    const yyyyMmDd = today.toISOString().split("T")[0];
+    if (datesWithData.has(yyyyMmDd)) {
+      streak++;
+      today.setDate(today.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function formatDataForHeatmap(history: Attempt[], all_questions: Question[]) {
+  const dateMap = {} as Record<string, Score>;
+  let earliest = "9999-12-31";
+
+  for (const entry of history) {
+    const date = entry.timestamp.split("T")[0]; // 'YYYY-MM-DD'
+    const questions = findQuestions(all_questions, entry.answers);
+    let correct = 0;
+    for (const question of questions) {
+      if (question.user_answer === question.correct_answer) {
+        correct++;
+      }
+    }
+    if (!(date in dateMap)) {
+      dateMap[date] = new Score();
+    }
+    dateMap[date].correct += correct;
+    dateMap[date].total += questions.length;
+    if (date < earliest) {
+      earliest = date;
+    }
+  }
+
+  const formatted = Object.entries(dateMap).map(([date, value]) => ({
+    date: date,
+    value: value.getPercentage(),
+  }));
+  return {
+    data: formatted,
+    earliest: new Date(earliest),
+  };
+}
