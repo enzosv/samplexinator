@@ -139,8 +139,29 @@ function renderStreak(history: Attempt[], all_questions: Question[]) {
     itemSelector: "#cal-heatmap",
     domain: { type: "month" },
     subDomain: { type: "day", radius: 2 },
-    data: { source: heatmapData.data, x: "date", y: "value" },
-    date: { start: heatmapData.earliest },
+    range: 3,
+    data: {
+      source: heatmapData.data,
+      x: "date",
+      y: "value",
+      max: new Date("2025-06-22"),
+    },
+    date: {
+      start: heatmapData.earliest,
+      highlight: [
+        new Date("2025-06-22"),
+        new Date(), // Highlight today
+      ],
+      timezone: "Asia/Manila",
+    },
+    scale: {
+      color: {
+        range: ["red", "green"],
+        interpolate: "hsl",
+        type: "linear",
+        domain: [0, 100],
+      },
+    },
   });
 }
 
