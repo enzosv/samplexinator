@@ -5,10 +5,24 @@ import {
   findQuestion,
   Question,
   storageKey,
-  AttemptResult,
   generateQuestionElement,
   Score,
 } from "./shared.js";
+
+function formatForChat(topics: Record<string, string>, title: string): string {
+  const entries = Object.entries(topics).map(([key, value]) => {
+    const label = `${key.charAt(0).toUpperCase() + key.slice(1)}:`;
+    return [label, value] as [string, string];
+  });
+
+  const maxLength = Math.max(...entries.map(([label]) => label.length));
+
+  const lines = entries.map(
+    ([label, value]) => `${label.padEnd(maxLength + 2)}${value}`
+  );
+
+  return "```" + title + "\n" + lines.join("\n") + "\n```";
+}
 
 function renderScore(questions: Question[]) {
   // const result = AttemptResult.fromAnsweredQuestions(questions);
@@ -31,10 +45,9 @@ function renderScore(questions: Question[]) {
   // scoreContainer!.innerHTML = scoreBreakdownText;
   const topics = emojify(questions);
   let result = "";
-  let shareText = "";
+
   for (const [key, value] of Object.entries(topics)) {
     const topic = key.charAt(0).toUpperCase() + key.slice(1);
-    shareText += `${topic}: ${value}\n`;
     result += `
     <div class="d-flex justify-content-between">
       <span class="topic-label">${topic}:</span>
@@ -49,7 +62,13 @@ function renderScore(questions: Question[]) {
   }
 
   button.addEventListener("click", () => {
-    console.log(shareText);
+    let shareTitle = "";
+    const streakElement = document.getElementById("streak");
+    if (streakElement) {
+      const storedStreak = streakElement.dataset.streak;
+      shareTitle = `${storedStreak} day streak 🔥`;
+    }
+    const shareText = formatForChat(topics, shareTitle);
     navigator.clipboard.writeText(shareText).then(() => {
       button.textContent = "Copied";
       button.classList.add("btn-success");
@@ -206,6 +225,7 @@ function renderStreak(history: Attempt[], all_questions: Question[]) {
     const streakElement = document.getElementById("streak");
     if (streakElement) {
       streakElement.innerText = `🔥 You're on a ${streak} day streak! 🔥`;
+      streakElement.dataset.streak = String(streak);
     }
   }
 
