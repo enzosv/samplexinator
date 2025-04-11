@@ -126,12 +126,11 @@ function populateAverage(count: number, scores: CategoryData) {
     console.error("missing average row");
     return;
   }
-  const averageScore =
-    ((scores.anatomy.correct +
-      scores.physics.correct +
-      scores.procedures.correct) *
-      100) /
-    (scores.anatomy.total + scores.physics.total + scores.procedures.total);
+  const correct =
+    scores.anatomy.correct + scores.physics.correct + scores.procedures.correct;
+  const total =
+    scores.anatomy.total + scores.physics.total + scores.procedures.total;
+  const averageScore = (correct * 100) / total;
 
   const anatomyScore = (scores.anatomy.correct * 100) / scores.anatomy.total;
   const physicsScore = (scores.physics.correct * 100) / scores.physics.total;
@@ -141,9 +140,9 @@ function populateAverage(count: number, scores: CategoryData) {
   container.innerHTML = `
 <th>${count} Attempt${count != 0 ? "s" : ""}</th>
 <th></th>
-<th class="${scoreClass(averageScore)}">${Number(
+<th class="${scoreClass(averageScore)}">${correct}/${total} <small>${Number(
     averageScore.toFixed(2)
-  ).toString()}%</th>
+  ).toString()}%</small></th>
 <th class="${scoreClass(anatomyScore)}">${Number(
     anatomyScore.toFixed(2)
   ).toString()}%</th>
