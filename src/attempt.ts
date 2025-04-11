@@ -35,7 +35,9 @@ function renderScore(questions: Question[]) {
   const score = `${attempt.getTotalScore()} / ${questions.length}`;
   const scoreBreakdownText = `<h5 class="${
     scorePercentage < 75 ? "incorrect" : "correct"
-  }">${score} <small>(${scorePercentage}%)</small></h5>`;
+  }">${score} <small>(${Number(
+    scorePercentage.toFixed(2)
+  ).toString()}%)</small></h5>`;
   // for (const [topicName, score] of Object.entries(result.topics)) {
   //   const percentage = score.getPercentage();
   //   scoreBreakdownText += `<p class="${
@@ -239,35 +241,54 @@ function renderStreak(history: Attempt[], all_questions: Question[]) {
   }
 
   const cal = new CalHeatmap();
-  cal.paint({
-    animationDuration: 0,
-    itemSelector: "#cal-heatmap",
-    domain: { type: "month" },
-    subDomain: { type: "day", radius: 2 },
-    range: 3,
-    data: {
-      source: heatmapData.data,
-      x: "date",
-      y: "value",
-      max: PBR_DATE,
-    },
-    date: {
-      start: heatmapData.earliest,
-      highlight: [
-        PBR_DATE,
-        new Date(), // Highlight today
-      ],
-      timezone: "Asia/Manila",
-    },
-    scale: {
-      color: {
-        range: ["red", "green"],
-        interpolate: "hsl",
-        type: "linear",
-        domain: [0, 100],
+  cal.paint(
+    {
+      animationDuration: 0,
+      itemSelector: "#cal-heatmap",
+      domain: { type: "month" },
+      subDomain: { type: "day", radius: 2 },
+      range: 3,
+      data: {
+        source: heatmapData.data,
+        x: "date",
+        y: "value",
+        max: PBR_DATE,
+      },
+      date: {
+        start: heatmapData.earliest,
+        highlight: [
+          PBR_DATE,
+          new Date(), // Highlight today
+        ],
+        timezone: "Asia/Manila",
+      },
+      scale: {
+        color: {
+          range: ["red", "green"],
+          interpolate: "hsl",
+          type: "linear",
+          domain: [0, 100],
+        },
       },
     },
-  });
+    [
+      [
+        Tooltip,
+        {
+          text: function (date, value) {
+            if (!date || !value) {
+              return;
+            }
+            const dateString = new Date(date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            return `${dateString} ${Number(value.toFixed(2)).toString()}%`;
+          },
+        },
+      ],
+    ]
+  );
 }
 
 document.addEventListener("DOMContentLoaded", function () {
