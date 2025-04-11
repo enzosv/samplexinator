@@ -206,22 +206,6 @@ function emojify(questions: Question): Record<string, string> {
   return topics;
 }
 
-function emojify2(questions: Question): string {
-  let result = "";
-  for (const question of questions) {
-    if (question.user_answer === undefined) {
-      result += "🥠";
-      continue;
-    }
-    if (question.user_answer == question.correct_answer) {
-      result += "🍪";
-      continue;
-    }
-    result += "💩";
-  }
-  return result;
-}
-
 function renderStreak(history: Attempt[], all_questions: Question[]) {
   const heatmapData = formatDataForHeatmap(history, all_questions);
   const streak = calculateStreak(heatmapData.data);
