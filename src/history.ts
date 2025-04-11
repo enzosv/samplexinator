@@ -69,7 +69,15 @@ async function renderHistory() {
       totalScores[category].total++;
     }
     const scores = AttemptResult.fromAnsweredQuestions(questions);
-
+    if (scores.topics.anatomy) {
+      anatomyScores.push(scores.topics.anatomy);
+    }
+    if (scores.topics.physics) {
+      physicsScores.push(scores.topics.physics);
+    }
+    if (scores.topics.procedures) {
+      procedureScores.push(scores.topics.procedures);
+    }
     const row = generateRow(i, attempt.timestamp, scores);
     historyTable.appendChild(row);
   }
@@ -89,9 +97,9 @@ function generateRow(index: number, timestamp: string, scores: AttemptResult) {
             <td>${date}</td>
             <td class="${scoreClass(
               scorePercentage
-            )}">${scores.getTotalScore()} / ${scores.countQuestions()} <small>(${scorePercentage.toFixed(
-    2
-  )}%)</small></td>`;
+            )}">${scores.getTotalScore()} / ${scores.countQuestions()} <small>(${Number(
+    scorePercentage.toFixed(2)
+  ).toString()}%)</small></td>`;
 
   const order = ["anatomy", "physics", "procedures"];
 
@@ -133,10 +141,18 @@ function populateAverage(count: number, scores: CategoryData) {
   container.innerHTML = `
 <th>${count} Attempt${count != 0 ? "s" : ""}</th>
 <th></th>
-<th class="${scoreClass(averageScore)}">${averageScore.toFixed(2)}%</th>
-<th class="${scoreClass(anatomyScore)}">${anatomyScore.toFixed(2)}%</th>
-<th class="${scoreClass(physicsScore)}">${physicsScore.toFixed(2)}%</th>
-<th class="${scoreClass(proceduresScore)}">${proceduresScore.toFixed(2)}%</th>
+<th class="${scoreClass(averageScore)}">${Number(
+    averageScore.toFixed(2)
+  ).toString()}%</th>
+<th class="${scoreClass(anatomyScore)}">${Number(
+    anatomyScore.toFixed(2)
+  ).toString()}%</th>
+<th class="${scoreClass(physicsScore)}">${Number(
+    physicsScore.toFixed(2)
+  ).toString()}%</th>
+<th class="${scoreClass(proceduresScore)}">${Number(
+    proceduresScore.toFixed(2)
+  ).toString()}%</th>
 `;
   const resetButton = document.createElement("button");
   resetButton.classList.add("btn", "btn-danger", "btn-sm");
@@ -213,7 +229,6 @@ function renderChart(
       scales: {
         x: {
           stacked: true,
-          min: 1,
           ticks: {
             callback: function (value: number) {
               return value + 1;
