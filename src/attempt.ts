@@ -7,6 +7,7 @@ import {
   storageKey,
   AttemptResult,
   generateQuestionElement,
+  Score,
 } from "./shared.js";
 
 function renderScore(questions: Question[]) {
@@ -48,8 +49,7 @@ function findAttempt(history: Attempt[]): Attempt | null {
   return attempt;
 }
 
-async function findQuestions(answers: Answer[]) {
-  const all_questions = await fetchQuestions();
+function findQuestions(all_questions: Question[], answers: Answer[]) {
   const questions: Question[] = [];
 
   for (const answer of answers) {
@@ -115,15 +115,16 @@ async function renderAttempt() {
     const attempt_number = Number(attempt.index ?? 0) + 1;
     attemptInfo!.innerHTML = `Attempt ${attempt_number}`;
   }
+  const all_questions = await fetchQuestions();
 
-  const questions = await findQuestions(attempt.answers);
+  const questions = findQuestions(all_questions, attempt.answers);
   renderQuestions(container, questions);
   renderScore(questions);
-  renderStreak(history);
+  renderStreak(history, all_questions);
 }
 
-function renderStreak(history: Attempt[]) {
-  const heatmapData = formatDataForHeatmap(history);
+function renderStreak(history: Attempt[], all_questions: Question[]) {
+  const heatmapData = formatDataForHeatmap(history, all_questions);
   const streak = calculateStreak(heatmapData.data);
   if (streak > 0) {
     const streakElement = document.getElementById("streak");
@@ -147,7 +148,12 @@ document.addEventListener("DOMContentLoaded", function () {
   renderAttempt();
 });
 
-function calculateStreak(entries) {
+interface HeatmapEntry {
+  date: string;
+  value: number;
+}
+
+function calculateStreak(entries: HeatmapEntry[]) {
   // entries: [{ date: 'YYYY-MM-DD', value: number }, ...]
   const datesWithData = new Set(entries.map((entry) => entry.date));
 
@@ -167,21 +173,32 @@ function calculateStreak(entries) {
   return streak;
 }
 
-function formatDataForHeatmap(history: Attempt[]) {
-  const dateMap = {};
+function formatDataForHeatmap(history: Attempt[], all_questions: Question[]) {
+  const dateMap = {} as Record<string, Score>;
   let earliest = "9999-12-31";
 
   for (const entry of history) {
     const date = entry.timestamp.split("T")[0]; // 'YYYY-MM-DD'
-    dateMap[date] = (dateMap[date] || 0) + 1; // TODO: make the value the percent correct
+    const questions = findQuestions(all_questions, entry.answers);
+    let correct = 0;
+    for (const question of questions) {
+      if (question.user_answer === question.correct_answer) {
+        correct++;
+      }
+    }
+    if (!(date in dateMap)) {
+      dateMap[date] = new Score();
+    }
+    dateMap[date].correct += correct;
+    dateMap[date].total += questions.length;
     if (date < earliest) {
       earliest = date;
     }
   }
 
   const formatted = Object.entries(dateMap).map(([date, value]) => ({
-    date,
-    value,
+    date: date,
+    value: value.getPercentage(),
   }));
   return {
     data: formatted,
