@@ -11,24 +11,58 @@ import {
 } from "./shared.js";
 
 function renderScore(questions: Question[]) {
-  const result = AttemptResult.fromAnsweredQuestions(questions);
-  const scorePercentage = result.getTotalScorePercentage();
-  addSticker(scorePercentage);
+  // const result = AttemptResult.fromAnsweredQuestions(questions);
+  // const scorePercentage = result.getTotalScorePercentage();
+  // addSticker(scorePercentage);
   const scoreContainer = document.getElementById("score-breakdown");
-  let scoreBreakdownText = `<h4 class="${
-    scorePercentage < 75 ? "incorrect" : "correct"
-  }">Score: ${result.getTotalScore()} / ${
-    questions.length
-  } <small>(${scorePercentage.toFixed(2)}%)</small></h4>`;
-  for (const [topicName, score] of Object.entries(result.topics)) {
-    const percentage = score.getPercentage();
-    scoreBreakdownText += `<p class="${
-      percentage < 75 ? "incorrect" : "correct"
-    }">${topicName.charAt(0).toUpperCase() + topicName.slice(1)}: ${
-      score.correct
-    } / ${score.total} <small>(${percentage.toFixed(2)}%)</small></p>`;
+  // let scoreBreakdownText = `<h4 class="${
+  //   scorePercentage < 75 ? "incorrect" : "correct"
+  // }">Score: ${result.getTotalScore()} / ${
+  //   questions.length
+  // } <small>(${scorePercentage.toFixed(2)}%)</small></h4>`;
+  // for (const [topicName, score] of Object.entries(result.topics)) {
+  //   const percentage = score.getPercentage();
+  //   scoreBreakdownText += `<p class="${
+  //     percentage < 75 ? "incorrect" : "correct"
+  //   }">${topicName.charAt(0).toUpperCase() + topicName.slice(1)}: ${
+  //     score.correct
+  //   } / ${score.total} <small>(${percentage.toFixed(2)}%)</small></p>`;
+  // }
+  // scoreContainer!.innerHTML = scoreBreakdownText;
+  const topics = emojify(questions);
+  let result = "";
+  let shareText = "";
+  for (const [key, value] of Object.entries(topics)) {
+    const topic = key.charAt(0).toUpperCase() + key.slice(1);
+    shareText += `${topic}: ${value}\n`;
+    result += `
+    <div class="d-flex justify-content-between">
+      <span class="topic-label">${topic}:</span>
+      <span class="emoji-row">${value}</span>
+    </div>`;
   }
-  scoreContainer!.innerHTML = scoreBreakdownText;
+  scoreContainer!.innerHTML = result;
+  const button = document.getElementById("share-btn") as HTMLButtonElement;
+  if (!button) {
+    console.error("Share button not found");
+    return;
+  }
+
+  button.addEventListener("click", () => {
+    console.log(shareText);
+    navigator.clipboard.writeText(shareText).then(() => {
+      button.textContent = "Copied";
+      button.classList.add("btn-success");
+      button.classList.remove("btn-primary");
+      button.disabled = true;
+      setTimeout(() => {
+        button.textContent = "Copy";
+        button.disabled = false;
+        button.classList.remove("btn-success");
+        button.classList.add("btn-primary");
+      }, 1500);
+    });
+  });
 }
 
 function findAttempt(history: Attempt[]): Attempt | null {
@@ -123,6 +157,48 @@ async function renderAttempt() {
   renderStreak(history, all_questions);
 }
 
+function emojify(questions: Question): Record<string, string> {
+  const topics = {} as Record<string, string>;
+  for (const question of questions) {
+    if (question.category === undefined) {
+      console.warn(
+        "invalid question. missing category",
+        JSON.stringify(question)
+      );
+      continue;
+    }
+    if (!(question.category in topics)) {
+      topics[question.category] = "";
+    }
+    if (question.user_answer === undefined) {
+      topics[question.category] += "🥠";
+      continue;
+    }
+    if (question.user_answer == question.correct_answer) {
+      topics[question.category] += "🍪";
+      continue;
+    }
+    topics[question.category] += "💩";
+  }
+  return topics;
+}
+
+function emojify2(questions: Question): string {
+  let result = "";
+  for (const question of questions) {
+    if (question.user_answer === undefined) {
+      result += "🥠";
+      continue;
+    }
+    if (question.user_answer == question.correct_answer) {
+      result += "🍪";
+      continue;
+    }
+    result += "💩";
+  }
+  return result;
+}
+
 function renderStreak(history: Attempt[], all_questions: Question[]) {
   const heatmapData = formatDataForHeatmap(history, all_questions);
   const streak = calculateStreak(heatmapData.data);
@@ -133,14 +209,37 @@ function renderStreak(history: Attempt[], all_questions: Question[]) {
     }
   }
 
+  const PBR_DATE = new Date("2025-06-22");
+
   const cal = new CalHeatmap();
   cal.paint({
     animationDuration: 0,
     itemSelector: "#cal-heatmap",
     domain: { type: "month" },
     subDomain: { type: "day", radius: 2 },
-    data: { source: heatmapData.data, x: "date", y: "value" },
-    date: { start: heatmapData.earliest },
+    range: 3,
+    data: {
+      source: heatmapData.data,
+      x: "date",
+      y: "value",
+      max: PBR_DATE,
+    },
+    date: {
+      start: heatmapData.earliest,
+      highlight: [
+        PBR_DATE,
+        new Date(), // Highlight today
+      ],
+      timezone: "Asia/Manila",
+    },
+    scale: {
+      color: {
+        range: ["red", "green"],
+        interpolate: "hsl",
+        type: "linear",
+        domain: [0, 100],
+      },
+    },
   });
 }
 
