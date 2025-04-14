@@ -125,53 +125,8 @@ function renderQuestions(container: HTMLElement, questions: Question[]) {
   for (let i = 0; i < questions.length; i++) {
     const question = questions[i];
     const div = generateQuestionElement(question, i);
-    const prompt = document.createElement("input") as HTMLInputElement;
-    prompt.placeholder = "Explain";
-    prompt.classList.add("m-4", "mb-2", "col-11");
-    prompt.value = getExplanation(question.id);
-    prompt.addEventListener("input", (_) =>
-      saveExplanation(question.id, prompt.value)
-    );
-
-    div.appendChild(prompt);
     container.appendChild(div);
   }
-}
-
-function getExplanation(question_id: number): string {
-  const data = localStorage.getItem("explanationsKey");
-  const explanations = data ? JSON.parse(data) : [];
-  for (let i = 0; i < explanations.length; i++) {
-    const existing = explanations[i];
-    if (existing.question_id == question_id) {
-      return existing.explanation;
-    }
-  }
-  return "";
-}
-
-function saveExplanation(question_id: number, explanation: string) {
-  // TODO: save to server
-
-  const data = localStorage.getItem("explanationsKey");
-  const explanations = data ? JSON.parse(data) : [];
-  let found = false;
-  for (let i = 0; i < explanations.length; i++) {
-    const existing = explanations[i];
-    if (existing.question_id == question_id) {
-      explanations[i].explanation = explanation;
-      found = true;
-      break;
-    }
-  }
-  if (!found) {
-    explanations.push({
-      question_id: question_id,
-      explanation: explanation,
-    });
-  }
-
-  localStorage.setItem("explanationsKey", JSON.stringify(explanations));
 }
 
 function stickerName(scorePercentage: number) {

@@ -2,6 +2,8 @@
 export const letters = ["A", "B", "C", "D"];
 export const storageKey = "quizHistory";
 
+let debounceTimer: number | undefined;
+
 // Export interfaces so they can be used in other files for type checking
 export interface Question {
   id: number;
@@ -39,6 +41,7 @@ export function generateQuestionElement(
   div.className = "question border p-3 mb-3 rounded";
   div.innerHTML = `<p><strong>${index + 1}) ${question.question}</strong></p>`;
 
+  const unanswered = question.user_answer === undefined;
   for (let i = 0; i < question.options.length; i++) {
     const optionWrapper = document.createElement("div");
     optionWrapper.className = "form-check";
@@ -57,11 +60,12 @@ export function generateQuestionElement(
     // Use innerHTML for the strong tag, ensure q.options[i] is safe or sanitize if needed
     label.innerHTML = `<strong>${letters[i]}</strong>: ${question.options[i]}`;
 
-    if (question.user_answer === undefined && onSelect) {
+    if (unanswered && onSelect) {
       input.addEventListener("change", () => {
         onSelect(i);
       });
     } else {
+      // already answered
       input.checked = i == question.user_answer;
       label.classList.remove("btn-outline-primary", "btn-primary", "active"); // Clear existing styles
       label.classList.add("btn-secondary", "disabled"); // Vi
@@ -79,6 +83,18 @@ export function generateQuestionElement(
     // Append the option wrapper to the main question div
     div.appendChild(optionWrapper);
   }
+  if (!unanswered) {
+    const prompt = document.createElement("input") as HTMLInputElement;
+    prompt.placeholder = "Explain";
+    prompt.classList.add("m-4", "mb-2", "col-11");
+    prompt.value = getExplanation(question.id);
+    prompt.addEventListener("input", (_) =>
+      saveExplanation(question.id, prompt.value)
+    );
+
+    div.appendChild(prompt);
+  }
+
   return div;
 }
 
@@ -226,4 +242,36 @@ export async function fetchQuestions(): Promise<QuestionCategoriesJson> {
   }
   // Assume the JSON structure matches QuestionCategoriesJson
   return response.json() as Promise<QuestionCategoriesJson>;
+}
+
+function getExplanation(question_id: number): string {
+  const data = localStorage.getItem("explanationsKey");
+  const explanations = data ? JSON.parse(data) : [];
+  for (let i = 0; i < explanations.length; i++) {
+    const existing = explanations[i];
+    if (existing.question_id == question_id) {
+      return existing.explanation;
+    }
+  }
+  return "";
+}
+
+function saveExplanation(question_id: number, explanation: string) {
+  clearTimeout(debounceTimer);
+  debounceTimer = globalThis.setTimeout(() => {
+    const data = localStorage.getItem("explanationsKey");
+    const explanations = data ? JSON.parse(data) : [];
+    const existing = explanations.findIndex(
+      (explanation) => explanation.question_id == question_id
+    );
+    if (existing > -1) {
+      explanations[existing].explanation = explanation;
+    } else {
+      explanations.push({
+        question_id: question_id,
+        explanation: explanation,
+      });
+    }
+    localStorage.setItem("explanationsKey", JSON.stringify(explanations));
+  }, 1000);
 }
