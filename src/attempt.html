@@ -8,20 +8,9 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css"
-    />
     <link rel="stylesheet" href="./main.css" />
 
     <style>
-      .correct {
-        color: green;
-      }
-
-      .incorrect {
-        color: red;
-      }
       .topic-label {
         min-width: 100px; /* Adjust as needed for alignment */
       }
@@ -45,26 +34,25 @@
         </nav>
       </div>
 
-      <h4 id="streak" class="text-center"></h4>
-      <p id="countdown" class="text-center"></p>
       <div class="d-flex justify-content-center align-items-center">
-        <div id="cal-heatmap" class="p-3"></div>
+        <iframe
+        src="heatmap.html"
+        style="border: none; height: 160px; width: 320px"
+      ></iframe>
+
         <div>
           <div id="score-breakdown" class=""></div>
           <button class="btn btn-sm btn-primary mt-3" id="share-btn">
             Copy
           </button>
         </div>
+          
+        </div>
 
-        <div id="sticker"></div>
       </div>
 
       <div id="attempt-container" class="mt-3"></div>
-    </div>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
+    </div>    
     <script type="module" src="./attempt.js"></script>
   </body>
 </html>
