@@ -1,6 +1,7 @@
 // Export constants
 export const letters = ["A", "B", "C", "D"];
 export const storageKey = "quizHistory";
+const explanationsKey = "explanationsKey";
 
 let debounceTimer: number | undefined;
 
@@ -245,7 +246,7 @@ export async function fetchQuestions(): Promise<QuestionCategoriesJson> {
 }
 
 function getExplanation(question_id: number): string {
-  const data = localStorage.getItem("explanationsKey");
+  const data = localStorage.getItem(explanationsKey);
   const explanations = data ? JSON.parse(data) : [];
   for (let i = 0; i < explanations.length; i++) {
     const existing = explanations[i];
@@ -257,9 +258,10 @@ function getExplanation(question_id: number): string {
 }
 
 function saveExplanation(question_id: number, explanation: string) {
+  // TODO: if question_id is different, trigger the previous debouncetimer
   clearTimeout(debounceTimer);
   debounceTimer = globalThis.setTimeout(() => {
-    const data = localStorage.getItem("explanationsKey");
+    const data = localStorage.getItem(explanationsKey);
     const explanations = data ? JSON.parse(data) : [];
     const existing = explanations.findIndex(
       (explanation) => explanation.question_id == question_id
@@ -272,6 +274,21 @@ function saveExplanation(question_id: number, explanation: string) {
         explanation: explanation,
       });
     }
-    localStorage.setItem("explanationsKey", JSON.stringify(explanations));
+    localStorage.setItem(explanationsKey, JSON.stringify(explanations));
   }, 1000);
+}
+
+export function findQuestions(all_questions: Question[], answers: Answer[]) {
+  const questions: Question[] = [];
+
+  for (const answer of answers) {
+    const question = findQuestion(all_questions, answer.question_id);
+    if (!question) {
+      console.error(`question ${answer.question_id} could not be found`);
+      continue;
+    }
+    question.user_answer = answer.user_answer;
+    questions.push(question);
+  }
+  return questions;
 }

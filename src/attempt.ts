@@ -1,8 +1,7 @@
 import {
-  Answer,
   Attempt,
   fetchQuestions,
-  findQuestion,
+  findQuestions,
   Question,
   storageKey,
   generateQuestionElement,
@@ -104,21 +103,6 @@ function findAttempt(history: Attempt[]): Attempt | null {
   }
   attempt.index = attemptIndex;
   return attempt;
-}
-
-function findQuestions(all_questions: Question[], answers: Answer[]) {
-  const questions: Question[] = [];
-
-  for (const answer of answers) {
-    const question = findQuestion(all_questions, answer.question_id);
-    if (!question) {
-      console.error(`question ${answer.question_id} could not be found`);
-      continue;
-    }
-    question.user_answer = answer.user_answer;
-    questions.push(question);
-  }
-  return questions;
 }
 
 function renderQuestions(container: HTMLElement, questions: Question[]) {
