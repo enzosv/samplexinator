@@ -86,7 +86,7 @@ export function generateQuestionElement(
   }
   if (!unanswered) {
     const prompt = document.createElement("input") as HTMLInputElement;
-    prompt.placeholder = "Explain";
+    prompt.placeholder = "Rationale";
     prompt.classList.add("m-4", "mb-2", "col-11");
     prompt.value = getExplanation(question.id);
     prompt.addEventListener("input", (_) =>
