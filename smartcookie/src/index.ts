@@ -16,17 +16,17 @@ interface Answer {
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const url = new URL(request.url);
-		const cache = caches.default;
-		const cached = await cache.match(url);
-		if (cached) {
-			return cached;
-		}
+		// const cache = caches.default;
+		// const cached = await cache.match(url);
+		// if (cached) {
+		// 	return cached;
+		// }
 
 		if (!url.pathname.startsWith('/api/')) {
 			return new Response('{"error":"404"}');
 		}
 
-		const data = await handleJSONRequest(url, env);
+		const data = await handleJSONRequest(request, env);
 
 		const response = new Response(JSON.stringify(data));
 		response.headers.set('Content-Type', 'application/json');
@@ -34,7 +34,7 @@ export default {
 		if (url.pathname == '/api/places') {
 			response.headers.set('Cache-Control', 'max-age=86400');
 		}
-		ctx.waitUntil(cache.put(url, response.clone()));
+		// ctx.waitUntil(cache.put(url, response.clone()));
 		return response;
 	},
 } satisfies ExportedHandler<Env>;
