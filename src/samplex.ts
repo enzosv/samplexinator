@@ -1,10 +1,10 @@
+import { Answer, storageKey } from "./shared.js";
+
 import {
-  Answer,
-  generateQuestionElement,
   Question,
-  storageKey,
   loadQuestions,
-} from "./shared.js";
+  generateQuestionElement,
+} from "./question.js";
 
 const answers: Answer[] = [];
 let questions_count = 0;

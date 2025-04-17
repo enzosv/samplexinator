@@ -1,11 +1,6 @@
-import {
-  Attempt,
-  Question,
-  findQuestions,
-  Score,
-  storageKey,
-  fetchQuestions,
-} from "./shared.js";
+import { Attempt, Score, storageKey } from "./shared.js";
+
+import { Question, findQuestions, fetchQuestions } from "./question.js";
 
 interface HeatmapEntry {
   date: string;
@@ -135,28 +130,10 @@ function calculateStreak(entries: HeatmapEntry[]): number {
   return streak;
 }
 
-let placeholder: HTMLElement | null = null;
-
-export async function loadHeatmap(placeholderId: string) {
-  placeholder = document.getElementById(placeholderId);
-  // if (!placeholder) {
-  //   console.error(`Heatmap placeholder with id "${placeholderId}" not found.`);
-  //   return;
-  // }
-  // const response = await fetch("heatmap.html");
-  // if (!response.ok) {
-  //   console.error(`HTTP error! status: ${response.status}`);
-  //   return;
-  // }
-  // const html = await response.text();
-  // placeholder.innerHTML = html;
-}
-
 document.addEventListener("DOMContentLoaded", async function () {
   const history = JSON.parse(
     localStorage.getItem(storageKey) || "[]"
   ) as Attempt[];
   const all_questions = await fetchQuestions();
   renderStreak(history, all_questions);
-  placeholder!.innerHTML = document.getElementById("container")!.innerHTML;
 });

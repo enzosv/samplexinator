@@ -1,13 +1,12 @@
 import {
   Attempt,
   CategoryData,
-  fetchQuestions,
-  findQuestion,
   Score,
   storageKey,
-  Question,
   AttemptResult,
 } from "./shared.js";
+
+import { Question, fetchQuestions, findQuestion } from "./question.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   renderHistory();

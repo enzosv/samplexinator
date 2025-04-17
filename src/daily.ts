@@ -1,10 +1,10 @@
+import { Answer, storageKey } from "./shared.js";
+
 import {
-  Answer,
-  generateQuestionElement,
   Question,
-  storageKey,
+  generateQuestionElement,
   loadQuestions,
-} from "./shared.js";
+} from "./question.js";
 
 // --- State Variables ---
 let currentQuestionSet: Question[] = []; // Questions for the current round (initial 10 or review set)

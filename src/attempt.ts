@@ -1,12 +1,11 @@
+import { Attempt, storageKey, AttemptResult } from "./shared.js";
+
 import {
-  Attempt,
+  Question,
   fetchQuestions,
   findQuestions,
-  Question,
-  storageKey,
   generateQuestionElement,
-  AttemptResult,
-} from "./shared.js";
+} from "./question.js";
 
 function formatForChat(topics: Record<string, string>, title: string): string {
   const entries = Object.entries(topics).map(([key, value]) => {
