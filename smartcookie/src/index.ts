@@ -39,7 +39,8 @@ export default {
 	},
 } satisfies ExportedHandler<Env>;
 
-async function handleJSONRequest(url: URL, env: Env) {
+async function handleJSONRequest(request: Request, env: Env) {
+	const url = new URL(request.url);
 	if (url.pathname == '/api/init_db') {
 		const { error: err } = await tryCatch(initDB(env.DB));
 		if (err) {
@@ -47,18 +48,32 @@ async function handleJSONRequest(url: URL, env: Env) {
 		}
 		return { success: true };
 	}
-	if (url.pathname == '/api/quiz') {
-		const { data: quiz_id, error: err } = await tryCatch(saveQuiz(env.DB, 1, []));
+	if (request.method == 'POST' && url.pathname == '/api/quiz') {
+		// save quiz
+
+		// parse body
+		const answers = (await request.json()) as Answer[];
+		if (!Array.isArray(answers)) {
+			return { error: 'Invalid request body - expected array of answers', status: 400 };
+		}
+
+		const { data: quiz_id, error: err } = await tryCatch(saveQuiz(env.DB, 1, answers));
 		if (err) {
 			throw err;
 		}
 		return { quiz_id: quiz_id };
 	}
-
+	if (request.method == 'GET' && url.pathname.startsWith('/api/quiz/')) {
+		const id = parseInt(url.pathname.split('/').pop() || '', 10);
+		if (isNaN(id)) {
+			return { error: 'Invalid quiz ID', status: 400 };
+		}
+		return queryQuiz(env.DB, id);
+	}
 	return { error: 404 };
 }
 
-async function initDB(db: D1Database): Promise<D1Result<unknown>[]> {
+function initDB(db: D1Database): Promise<D1Result<unknown>[]> {
 	const users = db.prepare(`CREATE TABLE IF NOT EXISTS "users" (
 		user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 		username TEXT NOT NULL UNIQUE,
@@ -99,6 +114,10 @@ async function initDB(db: D1Database): Promise<D1Result<unknown>[]> {
 		question_comment,
 		question_comment_index,
 	]);
+}
+
+function queryQuiz(db: D1Database, quiz_id: number) {
+	return db.prepare(`SELECT * FROM answers WHERE quiz_id = ?;`).bind(quiz_id).all();
 }
 
 async function saveQuiz(db: D1Database, user_id: number, answers: Answer[]): Promise<number> {
