@@ -1,4 +1,5 @@
 import { tryCatch } from './try-catch.ts';
+import { signup } from './auth.ts';
 
 export interface Env {
 	// If you set another name in the Wrangler config file for the value for 'binding',
@@ -25,7 +26,6 @@ export default {
 		if (!url.pathname.startsWith('/api/')) {
 			return new Response('{"error":"404"}');
 		}
-
 		const data = await handleJSONRequest(request, env);
 
 		const response = new Response(JSON.stringify(data));
@@ -41,6 +41,10 @@ export default {
 
 async function handleJSONRequest(request: Request, env: Env) {
 	const url = new URL(request.url);
+	if (request.method == 'POST' && url.pathname == '/api/signup') {
+		const { username, password } = await request.json();
+		return signup(env.DB, username, password);
+	}
 	if (request.method == 'POST' && url.pathname == '/api/init_db') {
 		const { data: _, error: err } = await tryCatch(initDB(env.DB));
 		if (err) {
