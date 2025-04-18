@@ -41,8 +41,8 @@ export default {
 
 async function handleJSONRequest(request: Request, env: Env) {
 	const url = new URL(request.url);
-	if (url.pathname == '/api/init_db') {
-		const { error: err } = await tryCatch(initDB(env.DB));
+	if (request.method == 'POST' && url.pathname == '/api/init_db') {
+		const { data: _, error: err } = await tryCatch(initDB(env.DB));
 		if (err) {
 			throw err;
 		}
@@ -84,16 +84,16 @@ function initDB(db: D1Database): Promise<D1Result<unknown>[]> {
 	const quizzes = db.prepare(`CREATE TABLE IF NOT EXISTS "quizzes" (
             quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL REFERENCES users(user_id) ON UPDATE CASCADE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, 
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL 
         );`);
-	const quizzes_index = db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS quizzes_user_idx ON quizzes(user_id);`);
+	const quizzes_index = db.prepare(`CREATE INDEX IF NOT EXISTS quizzes_user_idx ON quizzes(user_id);`);
 
 	const answers = db.prepare(`CREATE TABLE IF NOT EXISTS "answers" (
 			quiz_id INTEGER NOT NULL REFERENCES quizzes(quiz_id) ON UPDATE CASCADE,
             question_id INTEGER NOT NULL,
 			choice INTEGER NOT NULL
         );`);
-	const answers_index = db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS answer_quiz_idx ON answers(quiz_id);`);
+	const answers_index = db.prepare(`CREATE INDEX IF NOT EXISTS answer_quiz_idx ON answers(quiz_id);`);
 
 	const question_comment = db.prepare(`CREATE TABLE IF NOT EXISTS "question_comments" (
 			question_comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -102,7 +102,7 @@ function initDB(db: D1Database): Promise<D1Result<unknown>[]> {
 			comment TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         );`);
-	const question_comment_index = db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS question_comment_idx ON rationales(question_id);`);
+	const question_comment_index = db.prepare(`CREATE INDEX IF NOT EXISTS question_comment_idx ON question_comments(question_id);`);
 
 	return db.batch([
 		db.prepare(`PRAGMA foreign_keys = 1;`),
