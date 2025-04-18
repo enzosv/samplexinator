@@ -1,7 +1,8 @@
 import { Hono } from 'hono';
 import bcrypt from 'bcryptjs';
+import { sign } from 'hono/jwt';
 
-// Assuming this Worker is bound to D1 as DB
+const JWT_SECRET = 'your-secret-key'; // In production, use environment variable
 
 export async function signup(db: D1Database, username: string, password: string) {
 	if (!username || !password) {
@@ -26,16 +27,47 @@ export async function signup(db: D1Database, username: string, password: string)
 	// return c.text('Signup successful 🎉');
 }
 
-// app.post('/login', async (c) => {
-// 	const { username, password } = await c.req.json();
+export async function login(db: D1Database, username: string, password: string) {
+	if (!username || !password) {
+		return { error: 400, message: 'Username and password are required.' };
+	}
 
-// 	if (!USERS[username] || USERS[username] !== password) {
-// 		return c.text('Invalid credentials', 401);
-// 	}
+	// Find user
+	const user = await db
+		.prepare(
+			`
+        SELECT user_id, username, password_hash 
+        FROM users 
+        WHERE username = ?
+    `
+		)
+		.bind(username)
+		.first();
 
-// 	const token = await sign({ username }, JWT_SECRET, { expiresIn: '1h' });
-// 	return c.json({ token });
-// });
+	if (!user) {
+		return { error: 401, message: 'Invalid credentials' };
+	}
+
+	// Verify password
+	const validPassword = await bcrypt.compare(password, user.password_hash);
+	if (!validPassword) {
+		return { error: 401, message: 'Invalid credentials' };
+	}
+
+	// Generate JWT token
+	const token = await sign(
+		{
+			user_id: user.user_id,
+			username: user.username,
+		},
+		JWT_SECRET
+	);
+
+	return {
+		success: true,
+		token: token,
+	};
+}
 
 // Middleware to protect routes
 const requireAuth = async (c: any, next: () => Promise<void>) => {
