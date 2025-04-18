@@ -1,0 +1,15 @@
+meta {
+  name: get_quiz
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8787/api/quiz/4
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImVuem8ifQ.FHcKl3xyHs9RJXDwVyzJy2p-zlCwvX4DU8ZgjFVkW8o
+}
