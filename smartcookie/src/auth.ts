@@ -1,6 +1,5 @@
-import { Hono } from 'hono';
 import bcrypt from 'bcryptjs';
-import { sign } from 'hono/jwt';
+import { sign, verify } from 'hono/jwt';
 
 const JWT_SECRET = 'your-secret-key'; // In production, use environment variable
 
@@ -70,18 +69,17 @@ export async function login(db: D1Database, username: string, password: string) 
 }
 
 // Middleware to protect routes
-const requireAuth = async (c: any, next: () => Promise<void>) => {
-	const authHeader = c.req.header('Authorization');
+export async function verifyAuth(request: Request) {
+	const authHeader = request.headers.get('authorization');
+
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
-		return c.text('Unauthorized', 401);
+		throw { message: 'Unauthorized', code: 401 };
 	}
 
 	const token = authHeader.slice(7);
 	try {
-		const payload = await verify(token, JWT_SECRET);
-		c.set('user', payload);
-		await next();
-	} catch (e) {
-		return c.text('Invalid or expired token', 401);
+		return verify(token, JWT_SECRET);
+	} catch {
+		throw { message: 'Invalid', error: 401 };
 	}
-};
+}
