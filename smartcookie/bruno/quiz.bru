@@ -1,0 +1,22 @@
+meta {
+  name: quiz
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8787/api/quiz
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImVuem8ifQ.FHcKl3xyHs9RJXDwVyzJy2p-zlCwvX4DU8ZgjFVkW8o
+}
+
+body:json {
+  [
+   { "choice":1,
+    "question_id":1}
+  ]
+}
