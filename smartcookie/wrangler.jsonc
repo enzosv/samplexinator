@@ -11,7 +11,9 @@
 		{
 			"binding": "DB",
 			"database_name": "smartcookie",
-			"database_id": "5265759d-9fc7-4975-88da-8ab1bea32108"
+			"database_id": "5265759d-9fc7-4975-88da-8ab1bea32108",
+			"migrations_table": "migrations",
+      		"migrations_dir": "migrations"
 		}
 	],
 	"observability": {

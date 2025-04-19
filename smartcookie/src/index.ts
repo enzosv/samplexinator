@@ -49,13 +49,6 @@ async function handleJSONRequest(request: Request, env: Env) {
 		const { username, password } = await request.json();
 		return login(env.DB, username, password);
 	}
-	if (request.method == 'POST' && url.pathname == '/api/init_db') {
-		const { data: _, error: err } = await tryCatch(initDB(env.DB));
-		if (err) {
-			throw err;
-		}
-		return { success: true };
-	}
 	if (request.method == 'POST' && url.pathname == '/api/quiz') {
 		// save quiz
 
@@ -90,49 +83,6 @@ async function handleJSONRequest(request: Request, env: Env) {
 		return queryQuiz(env.DB, id, auth.user_id);
 	}
 	return { error: 404 };
-}
-
-function initDB(db: D1Database): Promise<D1Result<unknown>[]> {
-	const users = db.prepare(`CREATE TABLE IF NOT EXISTS "users" (
-		user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		username TEXT NOT NULL UNIQUE,
-		email TEXT UNIQUE,
-		password_hash TEXT NOT NULL,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	);`);
-	const quizzes = db.prepare(`CREATE TABLE IF NOT EXISTS "quizzes" (
-            quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,
-			user_id INTEGER NOT NULL REFERENCES users(user_id) ON UPDATE CASCADE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL 
-        );`);
-	const quizzes_index = db.prepare(`CREATE INDEX IF NOT EXISTS quizzes_user_idx ON quizzes(user_id);`);
-
-	const answers = db.prepare(`CREATE TABLE IF NOT EXISTS "answers" (
-			quiz_id INTEGER NOT NULL REFERENCES quizzes(quiz_id) ON UPDATE CASCADE,
-            question_id INTEGER NOT NULL,
-			choice INTEGER NOT NULL
-        );`);
-	const answers_index = db.prepare(`CREATE INDEX IF NOT EXISTS answer_quiz_idx ON answers(quiz_id);`);
-
-	const question_comment = db.prepare(`CREATE TABLE IF NOT EXISTS "question_comments" (
-			question_comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            question_id INTEGER NOT NULL,
-			user_id INTEGER NOT NULL REFERENCES users(user_id) ON UPDATE CASCADE,
-			comment TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-        );`);
-	const question_comment_index = db.prepare(`CREATE INDEX IF NOT EXISTS question_comment_idx ON question_comments(question_id);`);
-
-	return db.batch([
-		db.prepare(`PRAGMA foreign_keys = 1;`),
-		users,
-		quizzes,
-		quizzes_index,
-		answers,
-		answers_index,
-		question_comment,
-		question_comment_index,
-	]);
 }
 
 async function queryQuiz(db: D1Database, quiz_id: number, user_id: number) {
