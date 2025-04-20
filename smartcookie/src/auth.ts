@@ -1,8 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { sign, verify } from 'hono/jwt';
 
-const JWT_SECRET = 'your-secret-key'; // In production, use environment variable
-
 export async function signup(db: D1Database, username: string, password: string) {
 	if (!username || !password) {
 		// return c.text('Username and password are required.', 400);
@@ -26,7 +24,7 @@ export async function signup(db: D1Database, username: string, password: string)
 	// return c.text('Signup successful 🎉');
 }
 
-export async function login(db: D1Database, username: string, password: string) {
+export async function login(db: D1Database, jwt_secret: string, username: string, password: string) {
 	if (!username || !password) {
 		return { error: 400, message: 'Username and password are required.' };
 	}
@@ -59,7 +57,7 @@ export async function login(db: D1Database, username: string, password: string) 
 			user_id: user.user_id,
 			username: user.username,
 		},
-		JWT_SECRET
+		jwt_secret
 	);
 
 	return {
@@ -69,7 +67,7 @@ export async function login(db: D1Database, username: string, password: string) 
 }
 
 // Middleware to protect routes
-export async function verifyAuth(request: Request) {
+export async function verifyAuth(request: Request, jwt_secret: string) {
 	const authHeader = request.headers.get('authorization');
 
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -78,7 +76,7 @@ export async function verifyAuth(request: Request) {
 
 	const token = authHeader.slice(7);
 	try {
-		return verify(token, JWT_SECRET);
+		return verify(token, jwt_secret);
 	} catch {
 		throw { message: 'Invalid', error: 401 };
 	}

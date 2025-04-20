@@ -5,8 +5,7 @@ export interface Env {
 	// If you set another name in the Wrangler config file for the value for 'binding',
 	// replace "DB" with the variable name you defined.
 	DB: D1Database;
-	API_KEY: string;
-	ASSETS: string;
+	JWT_SECRET: string;
 }
 
 interface Answer {
@@ -47,7 +46,7 @@ async function handleJSONRequest(request: Request, env: Env) {
 	}
 	if (request.method == 'POST' && url.pathname == '/api/login') {
 		const { username, password } = await request.json();
-		return login(env.DB, username, password);
+		return login(env.DB, env.JWT_SECRET, username, password);
 	}
 	if (request.method == 'POST' && url.pathname == '/api/quiz') {
 		// save quiz
@@ -59,7 +58,7 @@ async function handleJSONRequest(request: Request, env: Env) {
 		}
 
 		// auth
-		const { data: auth, error: authError } = await tryCatch(verifyAuth(request));
+		const { data: auth, error: authError } = await tryCatch(verifyAuth(request, env.JWT_SECRET));
 		if (authError) {
 			return authError;
 		}
