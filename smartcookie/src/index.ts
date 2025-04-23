@@ -2,6 +2,8 @@ import { tryCatch } from './try-catch.ts';
 import { signup, login, verifyAuth } from './auth.ts';
 import { Answer, queryQuiz, saveQuiz } from './quiz.ts';
 
+const ALLOWED_ORIGINS = ['https://enzosv.github.io'];
+
 export interface Env {
 	// If you set another name in the Wrangler config file for the value for 'binding',
 	// replace "DB" with the variable name you defined.
@@ -11,6 +13,13 @@ export interface Env {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		const origin = request.headers.get('Origin');
+		if (request.method === 'OPTIONS') {
+			return new Response(null, {
+				status: 204,
+				headers: getCORSHeaders(origin),
+			});
+		}
 		const url = new URL(request.url);
 		// const cache = caches.default;
 		// const cached = await cache.match(url);
@@ -23,7 +32,9 @@ export default {
 		}
 		const data = await handleJSONRequest(request, env);
 
-		const response = new Response(JSON.stringify(data));
+		const response = new Response(JSON.stringify(data), {
+			headers: getCORSHeaders(origin),
+		});
 		response.headers.set('Content-Type', 'application/json');
 		response.headers.set('Cache-Control', 'max-age=300');
 		if (url.pathname == '/api/places') {
@@ -33,6 +44,20 @@ export default {
 		return response;
 	},
 } satisfies ExportedHandler<Env>;
+
+function getCORSHeaders(origin: string | null): HeadersInit {
+	const headers: HeadersInit = {
+		'Content-Type': 'application/json',
+		'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+		'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+	};
+
+	if (origin && ALLOWED_ORIGINS.includes(origin)) {
+		headers['Access-Control-Allow-Origin'] = origin;
+	}
+
+	return headers;
+}
 
 async function handleJSONRequest(request: Request, env: Env) {
 	const url = new URL(request.url);
